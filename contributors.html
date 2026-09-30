@@ -8,7 +8,7 @@
     <meta property="og:title" content="Contributors — Nekomo">
     <meta property="og:description" content="The people behind Nekomo, Shiro, and Kuro No.">
     <meta name="theme-color" content="#8d2249" />
-    <link rel="icon" href="/Images/150f78d18fd597611f77b4ae7d2f1f58.gif" type="image/gif">
+    <link rel="icon" href="/Images/nekomo-logo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -171,6 +171,98 @@
         .dev-card .role { font-size: 0.82rem; color: var(--accent-bright); font-weight: 500; margin-top: 2px; }
         .dev-card .note { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
 
+        /* ---------- History timeline ---------- */
+        .timeline {
+            margin-top: 24px;
+            position: relative;
+            padding-left: 28px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 6px; bottom: 6px; left: 5px;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-bright), rgba(255, 92, 122, 0.1));
+        }
+        .timeline-item { position: relative; padding-bottom: 28px; }
+        .timeline-item:last-child { padding-bottom: 0; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px; top: 4px;
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--accent-bright);
+            box-shadow: 0 0 10px rgba(255, 92, 122, 0.4);
+        }
+        .timeline-item h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .timeline-tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent-bright);
+            padding: 2px 9px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 92, 122, 0.3);
+            background: rgba(255, 92, 122, 0.08);
+        }
+        .timeline-item p { margin-top: 6px; font-size: 0.9rem; color: var(--text-muted); max-width: 620px; }
+        .timeline-item .forks { margin-top: 8px; font-size: 0.85rem; }
+        .timeline-item .forks a { color: var(--accent-bright); text-decoration: none; }
+        .timeline-item .forks a:hover { text-decoration: underline; }
+
+        /* ---------- Repo grid ---------- */
+        .repo-grid {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+        .repo-card {
+            display: block;
+            padding: 22px;
+            border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .repo-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 92, 122, 0.4);
+            box-shadow: 0 12px 40px rgba(229, 57, 95, 0.12);
+        }
+        .repo-card .repo-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .repo-card .repo-name svg { width: 16px; height: 16px; color: var(--accent-bright); flex-shrink: 0; }
+        .repo-card .archived-tag {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+        }
+        .repo-card p { margin-top: 8px; font-size: 0.86rem; color: var(--text-muted); }
+        .repo-card .repo-meta { margin-top: 10px; display: flex; gap: 14px; font-size: 0.78rem; color: var(--text-muted); }
+
         /* ---------- Contributors ---------- */
         .contrib-grid {
             margin-top: 24px;
@@ -247,7 +339,7 @@
 
     <nav>
         <a href="index.html" class="nav-logo">
-            <img src="/Images/150f78d18fd597611f77b4ae7d2f1f58.gif" alt="Nekomo cat">
+            <img src="/Images/nekomo-logo.png" alt="Nekomo cat">
             <span class="logo-text">Nekomo</span>
         </a>
         <div class="nav-links">
@@ -264,6 +356,77 @@
         <p class="page-label">Credits</p>
         <h1>Contributors</h1>
         <p class="page-sub">Nekomo stands on the shoulders of the Kuro No and Shiro projects — and lives on through everyone who keeps it going.</p>
+
+        <h2 class="section-heading">History <small>Where Nekomo came from, and what happened to the projects before it</small></h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <h3>Kuro No <span class="timeline-tag">Origin</span></h3>
+                <p>The project that started it all. Kuro No was an independent anime client built by <strong>Deceptions</strong>, sharing lineage with the broader Cloudstream/Kuro ecosystem. Development eventually stalled, leaving the community looking for a successor.</p>
+                <div class="forks">The original source is preserved (archived) at <a href="https://github.com/Nekomo-App/og-kuro-no-source" target="_blank" rel="noopener">Nekomo-App/og-kuro-no-source</a></div>
+            </div>
+            <div class="timeline-item">
+                <h3>Shiro <span class="timeline-tag">Successor</span></h3>
+                <p>Built by <strong>MarshMeadow</strong>, Shiro picked up where Kuro No left off — refining the app with its own take on discovery, streaming, and tracking. Like its predecessor, active development slowed down over time as maintainers moved on.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>Nekomo <span class="timeline-tag">Today</span></h3>
+                <p>When both Kuro No and Shiro fell quiet, the community forked and merged what remained of them into <strong>Nekomo</strong> — officially described as "a fork of Kuro No &amp; Shiro (og source code) for watching anime," carrying the torch forward as a fully open-source, community-maintained anime client. Every release since has been driven by contributors rather than a single owner.</p>
+                <div class="forks">Related lineage: <a href="https://github.com/LagradOst" target="_blank" rel="noopener">Cloudstream / Blatzar</a> &middot; the wider <a href="https://github.com/orgs/Nekomo-App/repositories" target="_blank" rel="noopener">Nekomo-App org &amp; its forks</a></div>
+            </div>
+        </div>
+
+        <h2 class="section-heading">Project Repositories <small>Every repo in the Nekomo-App org — live from GitHub</small></h2>
+        <div class="repo-grid">
+            <a class="repo-card" href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">
+                <div class="repo-name">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    Nekomo
+                </div>
+                <p>The main app. A fork of Kuro No &amp; Shiro (og source code) for watching anime — this is the primary Android client Nekomo releases come from.</p>
+                <div class="repo-meta"><span>Kotlin</span><span>33 stars</span><span>2 forks</span></div>
+            </a>
+            <a class="repo-card" href="https://github.com/Nekomo-App/neko-source" target="_blank" rel="noopener">
+                <div class="repo-name">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    neko-source
+                </div>
+                <p>Nekomo-Source-Code — the source code for the Nekomo app, kept as its own actively-forked repository.</p>
+                <div class="repo-meta"><span>Kotlin</span><span>MIT License</span><span>19 forks</span></div>
+            </a>
+            <a class="repo-card" href="https://github.com/Nekomo-App/og-kuro-no-source" target="_blank" rel="noopener">
+                <div class="repo-name">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    og-kuro-no-source
+                    <span class="archived-tag">Archived</span>
+                </div>
+                <p>The original Kuro No source code, preserved exactly as it was before the project became part of Nekomo's history.</p>
+                <div class="repo-meta"><span>Kotlin</span><span>MIT License</span><span>19 forks</span></div>
+            </a>
+            <a class="repo-card" href="https://github.com/Nekomo-App/nekomo-main-web" target="_blank" rel="noopener">
+                <div class="repo-name">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    nekomo-main-web
+                </div>
+                <p>This site — the official Nekomo website you're looking at right now.</p>
+                <div class="repo-meta"><span>HTML</span></div>
+            </a>
+            <a class="repo-card" href="https://github.com/Nekomo-App/nekomo-web" target="_blank" rel="noopener">
+                <div class="repo-name">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    nekomo-web
+                </div>
+                <p>Nekomo Web Demo — an experimental streaming website build.</p>
+                <div class="repo-meta"><span>TypeScript</span></div>
+            </a>
+            <a class="repo-card" href="https://github.com/Nekomo-App/nekomo-dmca" target="_blank" rel="noopener">
+                <div class="repo-name">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    nekomo-dmca
+                </div>
+                <p>Dedicated DMCA disclaimer repository for the project.</p>
+                <div class="repo-meta"><span>Docs</span></div>
+            </a>
+        </div>
 
         <h2 class="section-heading">Original Developers <small>The people who built what Nekomo came from</small></h2>
         <div class="legacy-grid">
@@ -302,7 +465,7 @@
     <footer>
         <div class="footer-inner">
             <div class="footer-brand">
-                <img src="/Images/8e752cf446947d3d01c0eaaf9e1504e2.gif" alt="Nekomo cat loaf">
+                <img src="/Images/nekomo-logo.png" alt="Nekomo cat loaf">
                 <span class="logo-text">Nekomo</span>
             </div>
             <div class="footer-links">
@@ -319,7 +482,7 @@
     <script>
         // Fetch contributors across Nekomo repos, merge duplicates by login
         (async function () {
-            const repos = ['Nekomo-App/Nekomo', 'Nekomo-App/neko-source'];
+            const repos = ['Nekomo-App/Nekomo', 'Nekomo-App/neko-source', 'Nekomo-App/og-kuro-no-source'];
             const grid = document.getElementById('contrib-grid');
             const orgUrl = 'https://github.com/orgs/Nekomo-App/people';
 

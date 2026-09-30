@@ -65,11 +65,11 @@
     /* ---------- Verification puzzle ---------- */
     function showGate(onPass) {
         var g = makeOverlay();
-        var a = 2 + Math.floor(Math.random() * 8); // 2-9
-        var b = 2 + Math.floor(Math.random() * 8);
+        var a = 1 + Math.floor(Math.random() * 5); // 1-5
+        var b = 1 + Math.floor(Math.random() * 5);
 
         g.card.innerHTML =
-            '<img src="/Images/150f78d18fd597611f77b4ae7d2f1f58.gif" alt="Nekomo cat">' +
+            '<img src="/Images/nekomo-logo.png" alt="Nekomo cat">' +
             '<h2>Quick check</h2>' +
             '<p>Answer this to prove you\'re human (or at least a smart cat).</p>' +
             '<div class="nk-puzzle-q">' + a + ' + ' + b + ' = ?</div>' +
@@ -96,8 +96,8 @@
                 input.value = '';
                 input.focus();
                 // new numbers each failed attempt
-                a = 2 + Math.floor(Math.random() * 8);
-                b = 2 + Math.floor(Math.random() * 8);
+                a = 1 + Math.floor(Math.random() * 5);
+                b = 1 + Math.floor(Math.random() * 5);
                 g.card.querySelector('.nk-puzzle-q').textContent = a + ' + ' + b + ' = ?';
             }
         });
