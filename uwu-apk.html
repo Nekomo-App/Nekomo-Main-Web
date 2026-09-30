@@ -3,33 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Downloading...</title>
+    <title>Preparing your download — Nekomo</title>
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/150f78d18fd597611f77b4ae7d2f1f58.gif" type="image/gif">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0508;
+            --surface: rgba(255, 92, 122, 0.05);
+            --surface-border: rgba(255, 92, 122, 0.14);
+            --accent-bright: #ff5c7a;
+            --accent-deep: #8d2249;
+            --text: #f7ecf0;
+            --text-muted: #b9929f;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(229, 57, 95, 0.18), transparent 60%),
+                var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            padding: 24px;
+        }
+        .card {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            background: #150910;
+            border: 1px solid var(--surface-border);
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+        }
+        .card img { width: 88px; image-rendering: pixelated; filter: drop-shadow(0 0 20px rgba(255, 92, 122, 0.35)); animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        h1 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; margin-top: 18px; }
+        .version {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            padding: 5px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            min-height: 1.6em;
+        }
+        .spinner {
+            width: 14px; height: 14px;
+            border: 2px solid rgba(255, 92, 122, 0.25);
+            border-top-color: var(--accent-bright);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        p.hint { margin-top: 16px; font-size: 0.86rem; color: var(--text-muted); }
+        .manual-link { display: none; margin-top: 20px; }
+        .manual-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent-deep));
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+        .changelog-link { display: block; margin-top: 18px; font-size: 0.82rem; }
+        .changelog-link a { color: var(--accent-bright); text-decoration: none; }
+        .changelog-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="/Images/150f78d18fd597611f77b4ae7d2f1f58.gif" alt="Nekomo cat">
+        <h1>Preparing your download&hellip;</h1>
+        <div class="version"><span class="spinner"></span> <span id="version-text">Checking latest release</span></div>
+        <p class="hint" id="hint">Fetching the newest official build from GitHub — this only takes a second.</p>
+        <div class="manual-link" id="manual-link">
+            <a id="manual-btn" href="https://github.com/Nekomo-App/Nekomo/releases">Continue manually</a>
+        </div>
+        <p class="changelog-link"><a href="updates.html">View full changelog &amp; release history</a></p>
+    </div>
+
     <script>
-        async function fetchLatestRelease() {
+        (function () {
             // All Nekomo releases are marked "prerelease", so /releases/latest 404s.
             // Fetch the releases list and use the newest non-draft entry instead.
             const apiUrl = 'https://api.github.com/repos/Nekomo-App/Nekomo/releases';
             const releasesUrl = 'https://github.com/Nekomo-App/Nekomo/releases';
-            try {
-                const response = await fetch(apiUrl);
-                const releases = await response.json();
-                const data = Array.isArray(releases) ? releases.find(r => !r.draft) : null;
-                const asset = data && data.assets.find(asset => /\.(apk|zip|exe)$/i.test(asset.name));
+            const versionText = document.getElementById('version-text');
+            const hint = document.getElementById('hint');
+            const manualLink = document.getElementById('manual-link');
+            const manualBtn = document.getElementById('manual-btn');
 
-                if (asset) {
-                    window.location.href = asset.browser_download_url;
-                } else {
-                    window.location.href = releasesUrl;
-                }
-            } catch (error) {
-                console.error('Error fetching the latest release:', error);
-                window.location.href = releasesUrl;
+            function startDownload(url) {
+                manualBtn.href = url;
+                manualLink.style.display = 'block';
+                window.location.href = url;
             }
-        }
 
-        window.onload = fetchLatestRelease;
+            async function fetchLatestRelease() {
+                try {
+                    const response = await fetch(apiUrl);
+                    const releases = await response.json();
+                    const data = Array.isArray(releases) ? releases.find(r => !r.draft) : null;
+                    const asset = data && data.assets.find(asset => /\.(apk|zip|exe)$/i.test(asset.name));
+
+                    if (data && data.tag_name) {
+                        versionText.textContent = 'Downloading ' + data.tag_name;
+                    }
+
+                    if (asset) {
+                        hint.textContent = 'Your download should start automatically.';
+                        startDownload(asset.browser_download_url);
+                    } else {
+                        hint.textContent = "Couldn't find a build asset — taking you to the releases page.";
+                        startDownload(releasesUrl);
+                    }
+                } catch (error) {
+                    hint.textContent = "Couldn't reach GitHub — taking you to the releases page.";
+                    startDownload(releasesUrl);
+                }
+            }
+
+            fetchLatestRelease();
+        })();
     </script>
-</head>
-<body>
 </body>
 </html>

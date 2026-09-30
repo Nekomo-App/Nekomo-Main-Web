@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Releases &amp; Updates — Nekomo</title>
+    <meta name="description" content="Official Nekomo release tracker — latest build, full changelog history, and how to stay automatically updated.">
+    <meta property="og:title" content="Releases &amp; Updates — Nekomo">
+    <meta property="og:description" content="Latest build, changelog history, and auto-update options for the official Nekomo app.">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/150f78d18fd597611f77b4ae7d2f1f58.gif" type="image/gif">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="gate.js" defer></script>
+    <style>
+        :root {
+            --bg: #0c0508;
+            --surface: rgba(255, 92, 122, 0.05);
+            --surface-border: rgba(255, 92, 122, 0.14);
+            --accent: #e5395f;
+            --accent-bright: #ff5c7a;
+            --accent-deep: #8d2249;
+            --text: #f7ecf0;
+            --text-muted: #b9929f;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .logo-text { font-family: 'Outfit', 'Inter', sans-serif; }
+        ::selection { background: var(--accent); color: #fff; }
+
+        .bg-fx {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(229, 57, 95, 0.15), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 90% 70%, rgba(141, 34, 73, 0.1), transparent 60%),
+                var(--bg);
+        }
+
+        /* ---------- Nav ---------- */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 28px;
+            background: rgba(12, 5, 8, 0.7);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 92, 122, 0.08);
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+        }
+        .nav-logo img { width: 34px; height: 34px; image-rendering: pixelated; }
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #ff7a95, var(--accent-bright) 50%, var(--accent-deep));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; align-items: center; gap: 6px; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 10px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); background: rgba(255, 92, 122, 0.08); }
+        .nav-cta {
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent-deep));
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .nav-cta:hover { filter: brightness(1.15); }
+        @media (max-width: 640px) {
+            .nav-links a:not(.nav-cta) { display: none; }
+        }
+
+        /* ---------- Content ---------- */
+        main { max-width: 860px; margin: 0 auto; padding: 140px 24px 90px; }
+        .page-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent-bright);
+        }
+        .page-label .live-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        h1 {
+            margin-top: 10px;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            background: linear-gradient(120deg, #fff 20%, #ffb3c2 55%, var(--accent-bright));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-sub { margin-top: 14px; color: var(--text-muted); max-width: 600px; }
+
+        .section-heading {
+            margin-top: 64px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .section-heading small {
+            display: block;
+            margin-top: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Latest release card ---------- */
+        .latest-card {
+            margin-top: 28px;
+            position: relative;
+            background: linear-gradient(160deg, rgba(229, 57, 95, 0.12), rgba(21, 9, 16, 0.9) 60%);
+            border: 1px solid rgba(255, 92, 122, 0.25);
+            border-radius: 22px;
+            padding: 32px;
+            overflow: hidden;
+        }
+        .latest-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(255, 92, 122, 0.16), transparent 65%);
+            pointer-events: none;
+        }
+        .latest-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        .latest-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: rgba(74, 222, 128, 0.14);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: #4ade80;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .latest-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+        .latest-version {
+            margin-top: 14px;
+            font-size: clamp(1.6rem, 4vw, 2.1rem);
+            font-weight: 800;
+        }
+        .latest-meta {
+            margin-top: 6px;
+            font-size: 0.86rem;
+            color: var(--text-muted);
+        }
+        .latest-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.94rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+            white-space: nowrap;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent-deep));
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(229, 57, 95, 0.3);
+        }
+        .btn-primary:hover { filter: brightness(1.12); }
+        .btn-ghost {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--text);
+        }
+        .btn-ghost:hover { background: rgba(255, 92, 122, 0.1); border-color: rgba(255, 92, 122, 0.3); }
+        .asset-chips { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; position: relative; }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+            background: rgba(12, 5, 8, 0.5);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .chip svg { width: 13px; height: 13px; color: var(--accent-bright); }
+        .latest-notes {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 92, 122, 0.12);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            position: relative;
+        }
+        .latest-notes h4 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-bright); margin-bottom: 10px; }
+        .md-body p { margin-top: 8px; }
+        .md-body p:first-child { margin-top: 0; }
+        .md-body ul { margin: 8px 0 8px 20px; }
+        .md-body h4 { color: var(--text); margin-top: 14px; font-size: 0.92rem; }
+        .md-body code { background: rgba(255, 92, 122, 0.1); padding: 2px 6px; border-radius: 6px; font-size: 0.85em; }
+        .latest-skeleton { color: var(--text-muted); font-size: 0.9rem; padding: 10px 0; }
+
+        /* ---------- Update methods ---------- */
+        .update-methods {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+        .method-card {
+            padding: 26px;
+            border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+        }
+        .method-card .method-icon {
+            width: 40px; height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 11px;
+            background: linear-gradient(135deg, rgba(255, 92, 122, 0.18), rgba(141, 34, 73, 0.18));
+            border: 1px solid rgba(255, 92, 122, 0.22);
+            color: var(--accent-bright);
+        }
+        .method-card .method-icon svg { width: 20px; height: 20px; }
+        .method-card h3 { margin-top: 14px; font-size: 1.05rem; font-weight: 600; }
+        .method-card p { margin-top: 8px; font-size: 0.88rem; color: var(--text-muted); }
+        .method-card ol { margin: 10px 0 0 18px; font-size: 0.86rem; color: var(--text-muted); }
+        .method-card ol li { margin-top: 4px; }
+        .method-card a.inline-link { color: var(--accent-bright); text-decoration: none; }
+        .method-card a.inline-link:hover { text-decoration: underline; }
+        .method-card .btn { margin-top: 16px; }
+
+        /* ---------- History ---------- */
+        .history-list { margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+        .history-row {
+            padding: 20px 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            transition: border-color 0.2s;
+        }
+        .history-row:hover { border-color: rgba(255, 92, 122, 0.3); }
+        .history-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .history-head .tag { font-weight: 700; font-size: 1rem; }
+        .history-head .date { font-size: 0.8rem; color: var(--text-muted); }
+        .history-links { margin-top: 4px; display: flex; gap: 14px; }
+        .history-links a { font-size: 0.82rem; color: var(--accent-bright); text-decoration: none; }
+        .history-links a:hover { text-decoration: underline; }
+        .history-excerpt { margin-top: 10px; font-size: 0.86rem; color: var(--text-muted); }
+        .history-status { text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 30px 0; }
+        .history-status a { color: var(--accent-bright); }
+
+        /* ---------- Footer ---------- */
+        footer {
+            border-top: 1px solid rgba(255, 92, 122, 0.1);
+            padding: 40px 24px;
+        }
+        .footer-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .footer-brand { display: flex; align-items: center; gap: 10px; }
+        .footer-brand img { width: 36px; image-rendering: pixelated; }
+        .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--accent-bright); }
+        .copyright {
+            width: 100%;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .copyright span { color: var(--accent-bright); }
+    </style>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="index.html" class="nav-logo">
+            <img src="/Images/150f78d18fd597611f77b4ae7d2f1f58.gif" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <div class="nav-links">
+            <a href="index.html#features">Features</a>
+            <a href="index.html#download">Download</a>
+            <a href="index.html#community">Community</a>
+            <a href="contributors.html">Contributors</a>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="index.html" class="nav-cta">Home</a>
+        </div>
+    </nav>
+
+    <main>
+        <p class="page-label"><span class="live-dot"></span> Release Tracker</p>
+        <h1>Releases &amp; Updates</h1>
+        <p class="page-sub">Live, straight from GitHub. This page always reflects the official Nekomo build — current version, full changelog history, and how to get automatic update notifications.</p>
+
+        <div class="latest-card" id="latest-card">
+            <p class="latest-skeleton">Fetching the latest release&hellip;</p>
+        </div>
+
+        <h2 class="section-heading">Stay auto-updated <small>Nekomo publishes every build here first — pick a method to get notified</small></h2>
+        <div class="update-methods">
+            <div class="method-card">
+                <div class="method-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <h3>Obtainium</h3>
+                <p>Nekomo's releases are marked as prereleases on GitHub, so the in-app update checker (and most APK stores) won't pick them up automatically. <a class="inline-link" href="https://github.com/ImranR98/Obtainium" target="_blank" rel="noopener">Obtainium</a> can track them for you:</p>
+                <ol>
+                    <li>Open Obtainium &rarr; Add App &rarr; paste <code>https://github.com/Nekomo-App/Nekomo</code></li>
+                    <li>Enable <strong>Include prereleases</strong> in additional settings</li>
+                    <li>Save — you'll get a notification on every new build</li>
+                </ol>
+            </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </div>
+                <h3>Watch on GitHub</h3>
+                <p>Get notified the moment a new build is published, directly from GitHub — no extra app required.</p>
+                <a class="btn btn-ghost" href="https://github.com/Nekomo-App/Nekomo/subscription" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    Watch releases
+                </a>
+            </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 12.64 12.64 0 0 0-.64-1.28h-.05A19.74 19.74 0 0 0 3.64 4.37 19.9 19.9 0 0 0 .11 18.06a19.83 19.83 0 0 0 6.04 3.03c.46-.63.87-1.3 1.22-2a12.9 12.9 0 0 1-1.93-.92c.16-.12.32-.24.47-.37a14.2 14.2 0 0 0 12.18 0c.15.13.31.25.47.37-.61.36-1.26.67-1.93.92.35.7.76 1.37 1.22 2a19.78 19.78 0 0 0 6.04-3.03 19.84 19.84 0 0 0-3.57-13.69zM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42s.95-2.42 2.16-2.42c1.21 0 2.18 1.09 2.16 2.42 0 1.34-.95 2.42-2.16 2.42zm7.97 0c-1.18 0-2.16-1.08-2.16-2.42s.95-2.42 2.16-2.42c1.21 0 2.18 1.09 2.16 2.42 0 1.34-.95 2.42-2.16 2.42z"/></svg>
+                </div>
+                <h3>Discord Announcements</h3>
+                <p>New builds are posted in the Nekomo Discord as soon as they go live — join to get pinged instantly.</p>
+                <a class="btn btn-ghost" href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 15 17 10"/></svg>
+                    Join Discord
+                </a>
+            </div>
+        </div>
+
+        <h2 class="section-heading">Release history <small>Every official Nekomo build, newest first &mdash; pulled live from GitHub</small></h2>
+        <div class="history-list" id="history-list">
+            <p class="history-status">Loading release history&hellip;</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/8e752cf446947d3d01c0eaaf9e1504e2.gif" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="contributors.html">Contributors</a>
+                <a href="https://github.com/Nekomo-App/Nekomo/releases" target="_blank" rel="noopener">GitHub Releases</a>
+                <a href="dmca.html">DMCA / Disclaimer</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const repo = 'Nekomo-App/Nekomo';
+            const apiUrl = 'https://api.github.com/repos/' + repo + '/releases?per_page=15';
+            const releasesUrl = 'https://github.com/' + repo + '/releases';
+
+            function escapeHtml(str) {
+                return str.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            }
+
+            // Minimal markdown-ish renderer for GitHub release bodies (headings, bullets, code, paragraphs)
+            function renderNotes(md) {
+                if (!md) return '<p>No release notes provided.</p>';
+                const lines = escapeHtml(md).split('\n');
+                let html = '';
+                let inList = false;
+                lines.forEach(raw => {
+                    const line = raw.trim();
+                    if (!line) { if (inList) { html += '</ul>'; inList = false; } return; }
+                    const bullet = line.match(/^[-*]\s+(.*)/);
+                    const heading = line.match(/^#{1,4}\s+(.*)/);
+                    if (heading) {
+                        if (inList) { html += '</ul>'; inList = false; }
+                        html += '<h4>' + heading[1] + '</h4>';
+                    } else if (bullet) {
+                        if (!inList) { html += '<ul>'; inList = true; }
+                        html += '<li>' + bullet[1].replace(/`([^`]+)`/g, '<code>$1</code>') + '</li>';
+                    } else {
+                        if (inList) { html += '</ul>'; inList = false; }
+                        html += '<p>' + line.replace(/`([^`]+)`/g, '<code>$1</code>') + '</p>';
+                    }
+                });
+                if (inList) html += '</ul>';
+                return html || '<p>No release notes provided.</p>';
+            }
+
+            function formatDate(iso) {
+                if (!iso) return '';
+                return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            function formatBytes(bytes) {
+                if (!bytes) return '';
+                const mb = bytes / (1024 * 1024);
+                return mb >= 1 ? mb.toFixed(1) + ' MB' : (bytes / 1024).toFixed(0) + ' KB';
+            }
+
+            fetch(apiUrl).then(res => {
+                if (!res.ok) throw new Error('GitHub API error');
+                return res.json();
+            }).then(releases => {
+                const list = (releases || []).filter(r => !r.draft);
+                if (!list.length) throw new Error('No releases');
+
+                const latest = list[0];
+                const asset = (latest.assets || []).find(a => /\.(apk|zip|exe)$/i.test(a.name));
+
+                document.getElementById('latest-card').innerHTML =
+                    '<div class="latest-top">' +
+                    '  <div>' +
+                    '    <span class="latest-badge"><span class="dot"></span> Latest build</span>' +
+                    '    <div class="latest-version">' + latest.tag_name + '</div>' +
+                    '    <div class="latest-meta">Published ' + formatDate(latest.published_at) + (latest.prerelease ? ' &middot; marked as prerelease on GitHub' : '') + '</div>' +
+                    '  </div>' +
+                    '  <div class="latest-actions">' +
+                    '    <a class="btn btn-primary" href="' + (asset ? asset.browser_download_url : releasesUrl) + '">' +
+                    '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+                    '      Download' +
+                    '    </a>' +
+                    '    <a class="btn btn-ghost" href="' + latest.html_url + '" target="_blank" rel="noopener">View on GitHub</a>' +
+                    '  </div>' +
+                    '</div>' +
+                    '<div class="asset-chips">' +
+                    (asset ? '<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>' + asset.name + '</span>' : '') +
+                    (asset && asset.size ? '<span class="chip">' + formatBytes(asset.size) + '</span>' : '') +
+                    (asset ? '<span class="chip">' + asset.download_count + ' downloads</span>' : '') +
+                    '</div>' +
+                    '<div class="latest-notes">' +
+                    '  <h4>Changelog</h4>' +
+                    '  <div class="md-body">' + renderNotes(latest.body) + '</div>' +
+                    '</div>';
+
+                const historyList = document.getElementById('history-list');
+                const rest = list.slice(1);
+                if (!rest.length) {
+                    historyList.innerHTML = '<p class="history-status">This is the only release so far &mdash; check back soon.</p>';
+                    return;
+                }
+                historyList.innerHTML = '';
+                rest.forEach(r => {
+                    const a = (r.assets || []).find(as => /\.(apk|zip|exe)$/i.test(as.name));
+                    const row = document.createElement('div');
+                    row.className = 'history-row';
+                    const excerpt = (r.body || '').split('\n').find(l => l.trim().length) || 'No release notes provided.';
+                    row.innerHTML =
+                        '<div class="history-head"><span class="tag">' + r.tag_name + '</span><span class="date">' + formatDate(r.published_at) + '</span></div>' +
+                        '<p class="history-excerpt">' + escapeHtml(excerpt.replace(/^#+\s*/, '')).slice(0, 180) + '</p>' +
+                        '<div class="history-links">' +
+                        (a ? '<a href="' + a.browser_download_url + '">Download</a>' : '') +
+                        '<a href="' + r.html_url + '" target="_blank" rel="noopener">View release</a>' +
+                        '</div>';
+                    historyList.appendChild(row);
+                });
+            }).catch(() => {
+                document.getElementById('latest-card').innerHTML =
+                    '<p class="latest-skeleton">Couldn\'t load release info right now &mdash; <a href="' + releasesUrl + '" target="_blank" rel="noopener" style="color:var(--accent-bright)">view releases on GitHub</a> instead.</p>';
+                document.getElementById('history-list').innerHTML =
+                    '<p class="history-status">Couldn\'t load release history &mdash; <a href="' + releasesUrl + '" target="_blank" rel="noopener">view on GitHub</a>.</p>';
+            });
+        })();
+    </script>
+</body>
+</html>
