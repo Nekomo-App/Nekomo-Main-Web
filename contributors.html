@@ -8,11 +8,12 @@
     <meta property="og:title" content="Contributors — Nekomo">
     <meta property="og:description" content="The people behind Nekomo, Shiro, and Kuro No.">
     <meta name="theme-color" content="#8d2249" />
-    <link rel="icon" href="/Images/nekomo-logo.png" type="image/png">
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="gate.js" defer></script>
+    <script src="theme.js" defer></script>
     <style>
         :root {
             --bg: #0c0508;
@@ -70,7 +71,7 @@
             text-decoration: none;
             color: var(--text);
         }
-        .nav-logo img { width: 34px; height: 34px; image-rendering: pixelated; }
+        .nav-logo img { width: 34px; height: 34px; border-radius: 8px; }
         .logo-text {
             font-size: 1.3rem;
             font-weight: 700;
@@ -96,8 +97,44 @@
             font-weight: 600;
         }
         .nav-cta:hover { filter: brightness(1.15); }
-        @media (max-width: 640px) {
-            .nav-links a:not(.nav-cta) { display: none; }
+        .nav-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+        }
+        .nav-toggle svg { width: 20px; height: 20px; }
+        @media (max-width: 860px) {
+            .nav-toggle { display: flex; }
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: 12px;
+                right: 12px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 12px;
+                border-radius: 16px;
+                border: 1px solid rgba(255, 92, 122, 0.12);
+                background: rgba(12, 5, 8, 0.97);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                transform: translateY(-12px);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .nav-links.nk-nav-open { transform: none; opacity: 1; pointer-events: auto; }
+            .nav-links a { padding: 12px 14px; }
         }
 
         /* ---------- Content ---------- */
@@ -263,6 +300,44 @@
         .repo-card p { margin-top: 8px; font-size: 0.86rem; color: var(--text-muted); }
         .repo-card .repo-meta { margin-top: 10px; display: flex; gap: 14px; font-size: 0.78rem; color: var(--text-muted); }
 
+        /* ---------- Alternatives ---------- */
+        .alt-intro { margin-top: 14px; color: var(--text-muted); font-size: 0.92rem; max-width: 640px; }
+        .alt-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+        .alt-card {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 18px 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        a.alt-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 92, 122, 0.4);
+            box-shadow: 0 12px 40px rgba(229, 57, 95, 0.12);
+        }
+        .alt-card h3 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .alt-card p { font-size: 0.8rem; color: var(--text-muted); }
+        .alt-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+            color: var(--text-muted);
+        }
+
         /* ---------- Contributors ---------- */
         .contrib-grid {
             margin-top: 24px;
@@ -320,7 +395,7 @@
             gap: 16px;
         }
         .footer-brand { display: flex; align-items: center; gap: 10px; }
-        .footer-brand img { width: 36px; image-rendering: pixelated; }
+        .footer-brand img { width: 36px; border-radius: 8px; }
         .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
         .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         .footer-links a:hover { color: var(--accent-bright); }
@@ -339,9 +414,12 @@
 
     <nav>
         <a href="index.html" class="nav-logo">
-            <img src="/Images/nekomo-logo.png" alt="Nekomo cat">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
             <span class="logo-text">Nekomo</span>
         </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <div class="nav-links">
             <a href="index.html#features">Features</a>
             <a href="index.html#download">Download</a>
@@ -456,6 +534,43 @@
             </a>
         </div>
 
+        <h2 class="section-heading">Resources &amp; Alternatives <small>Related projects, forks, and other anime apps from the community</small></h2>
+        <p class="alt-intro">Nekomo doesn't fit everyone's needs. Here are other apps built or maintained by people in this community, plus a few well-known alternatives worth trying.</p>
+        <div class="alt-grid">
+            <a class="alt-card" href="https://dantotsu.app/" target="_blank" rel="noopener">
+                <h3>Dantotsu</h3>
+                <p>Cross-platform anime &amp; manga tracker with a built-in player.</p>
+            </a>
+            <a class="alt-card" href="https://github.com/recloudstream/cloudstream" target="_blank" rel="noopener">
+                <h3>Cloudstream</h3>
+                <p>The extractor framework Nekomo's streaming lineage is related to.</p>
+            </a>
+            <a class="alt-card" href="https://anilab.to/" target="_blank" rel="noopener">
+                <h3>Anilab</h3>
+                <p>Web-based anime streaming alternative — no install required.</p>
+            </a>
+            <div class="alt-card">
+                <h3>Miru</h3>
+                <p>Community anime streaming client.</p>
+            </div>
+            <div class="alt-card">
+                <h3>Kitsune</h3>
+                <p>Community anime streaming client.</p>
+            </div>
+            <div class="alt-card">
+                <h3>AnimeTV</h3>
+                <p>Community anime streaming client.</p>
+            </div>
+            <div class="alt-card">
+                <h3>Kamyroll</h3>
+                <p>Community anime streaming client.</p>
+            </div>
+            <div class="alt-card">
+                <h3>HDO PRO <span class="alt-tag">Private</span></h3>
+                <p>Private community anime hub — invite-only.</p>
+            </div>
+        </div>
+
         <h2 class="section-heading">Repository Contributors <small>Live from GitHub — everyone who has committed to Nekomo</small></h2>
         <div class="contrib-grid" id="contrib-grid">
             <p class="contrib-status">Loading contributors&hellip;</p>
@@ -465,7 +580,7 @@
     <footer>
         <div class="footer-inner">
             <div class="footer-brand">
-                <img src="/Images/nekomo-logo.png" alt="Nekomo cat loaf">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
                 <span class="logo-text">Nekomo</span>
             </div>
             <div class="footer-links">
@@ -474,6 +589,7 @@
                 <a href="dmca.html">DMCA / Disclaimer</a>
                 <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
                 <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
             </div>
             <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
         </div>

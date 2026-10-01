@@ -8,11 +8,12 @@
     <meta property="og:title" content="DMCA &amp; Disclaimer — Nekomo">
     <meta property="og:description" content="Legal disclaimer for the Nekomo project.">
     <meta name="theme-color" content="#8d2249" />
-    <link rel="icon" href="/Images/nekomo-logo.png" type="image/png">
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="gate.js" defer></script>
+    <script src="theme.js" defer></script>
     <style>
         :root {
             --bg: #0c0508;
@@ -69,7 +70,7 @@
             text-decoration: none;
             color: var(--text);
         }
-        .nav-logo img { width: 34px; height: 34px; image-rendering: pixelated; }
+        .nav-logo img { width: 34px; height: 34px; border-radius: 8px; }
         .logo-text {
             font-size: 1.3rem;
             font-weight: 700;
@@ -95,8 +96,44 @@
             font-weight: 600;
         }
         .nav-cta:hover { filter: brightness(1.15); }
-        @media (max-width: 640px) {
-            .nav-links a:not(.nav-cta) { display: none; }
+        .nav-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+        }
+        .nav-toggle svg { width: 20px; height: 20px; }
+        @media (max-width: 860px) {
+            .nav-toggle { display: flex; }
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: 12px;
+                right: 12px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 12px;
+                border-radius: 16px;
+                border: 1px solid rgba(255, 92, 122, 0.12);
+                background: rgba(12, 5, 8, 0.97);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                transform: translateY(-12px);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .nav-links.nk-nav-open { transform: none; opacity: 1; pointer-events: auto; }
+            .nav-links a { padding: 12px 14px; }
         }
 
         /* ---------- Content ---------- */
@@ -153,7 +190,7 @@
             gap: 16px;
         }
         .footer-brand { display: flex; align-items: center; gap: 10px; }
-        .footer-brand img { width: 36px; image-rendering: pixelated; }
+        .footer-brand img { width: 36px; border-radius: 8px; }
         .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
         .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         .footer-links a:hover { color: var(--accent-bright); }
@@ -172,9 +209,12 @@
 
     <nav>
         <a href="index.html" class="nav-logo">
-            <img src="/Images/nekomo-logo.png" alt="Nekomo cat">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
             <span class="logo-text">Nekomo</span>
         </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <div class="nav-links">
             <a href="index.html#features">Features</a>
             <a href="index.html#download">Download</a>
@@ -226,7 +266,7 @@
         <div class="legal-section">
             <h2>Copyright Concerns &amp; Takedowns</h2>
             <p>If you believe that content infringes your rights, please contact the relevant source, provider, or website hosting that content directly. Nekomo cannot remove, alter, or manage content it does not host, own, operate, or control.</p>
-            <p>For questions about the project itself, reach out via <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a> or the <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord community</a>.</p>
+            <p>For questions about the project itself, reach out via <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>, the <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord community</a>, or <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>.</p>
         </div>
 
         <div class="legal-section">
@@ -238,7 +278,7 @@
     <footer>
         <div class="footer-inner">
             <div class="footer-brand">
-                <img src="/Images/nekomo-logo.png" alt="Nekomo cat loaf">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
                 <span class="logo-text">Nekomo</span>
             </div>
             <div class="footer-links">
@@ -248,6 +288,7 @@
                 <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
                 <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">Repository</a>
                 <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
             </div>
             <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
         </div>

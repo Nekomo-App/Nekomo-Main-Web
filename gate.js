@@ -9,14 +9,15 @@
         '.nk-gate-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,3,6,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}',
         '.nk-gate-card{width:100%;max-width:440px;background:#150910;border:1px solid rgba(255,92,122,0.25);border-radius:20px;padding:36px 32px;text-align:center;color:#f7ecf0;font-family:Inter,system-ui,sans-serif;box-shadow:0 24px 80px rgba(0,0,0,0.6),0 0 60px rgba(229,57,95,0.12);animation:nk-pop .35s ease;}',
         '@keyframes nk-pop{from{opacity:0;transform:scale(.94) translateY(10px)}to{opacity:1;transform:none}}',
-        '.nk-gate-card img{width:84px;image-rendering:pixelated;filter:drop-shadow(0 0 18px rgba(255,92,122,.35));}',
+        '.nk-gate-card img{width:84px;border-radius:16px;filter:drop-shadow(0 0 18px rgba(255,92,122,.35));}',
         '.nk-gate-card h2{font-family:Outfit,Inter,sans-serif;font-size:1.5rem;font-weight:700;margin-top:16px;letter-spacing:-.01em;}',
         '.nk-gate-card p{font-size:.9rem;color:#b9929f;margin-top:8px;line-height:1.6;}',
-        '.nk-puzzle-q{font-family:Outfit,sans-serif;font-size:1.6rem;font-weight:700;color:#ff5c7a;margin:20px 0 14px;letter-spacing:.05em;}',
-        '.nk-puzzle-row{display:flex;gap:10px;margin-top:6px;}',
-        '.nk-puzzle-input{flex:1;min-width:0;background:rgba(255,92,122,.06);border:1px solid rgba(255,92,122,.2);border-radius:12px;padding:12px 16px;color:#f7ecf0;font-size:1.05rem;font-family:Outfit,sans-serif;font-weight:600;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s;}',
-        '.nk-puzzle-input:focus{border-color:#ff5c7a;box-shadow:0 0 0 3px rgba(255,92,122,.15);}',
-        '.nk-puzzle-input::placeholder{color:#b9929f;font-weight:400;}',
+        '.nk-puzzle-q{font-family:Outfit,sans-serif;font-size:1.05rem;font-weight:600;color:#f7ecf0;margin:18px 0 16px;}',
+        '.nk-puzzle-q b{color:#ff5c7a;}',
+        '.nk-puzzle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}',
+        '.nk-puzzle-opt{font-size:1.9rem;line-height:1;padding:16px 0;background:rgba(255,92,122,.06);border:1px solid rgba(255,92,122,.2);border-radius:14px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s;}',
+        '.nk-puzzle-opt:hover{background:rgba(255,92,122,.14);border-color:rgba(255,92,122,.4);}',
+        '.nk-puzzle-opt:active{transform:scale(.93);}',
         '.nk-gate-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#ff5c7a,#8d2249);color:#fff;border:none;border-radius:12px;padding:12px 24px;font-family:Outfit,sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:filter .2s,transform .15s;}',
         '.nk-gate-btn:hover{filter:brightness(1.15);}',
         '.nk-gate-btn:active{transform:scale(.97);}',
@@ -33,7 +34,8 @@
         '.nk-disclaimer-scroll::-webkit-scrollbar-thumb{background:rgba(255,92,122,.25);border-radius:4px;}',
         '.nk-disclaimer-actions{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;}',
         '.nk-gate-btn-ghost{background:rgba(255,92,122,.07);border:1px solid rgba(255,92,122,.2);color:#f7ecf0;text-decoration:none;}',
-        '.nk-gate-btn-ghost:hover{background:rgba(255,92,122,.14);filter:none;}'
+        '.nk-gate-btn-ghost:hover{background:rgba(255,92,122,.14);filter:none;}',
+        '@media (max-width:420px){.nk-gate-card{padding:28px 18px;}.nk-puzzle-opt{font-size:1.6rem;padding:12px 0;}}'
     ].join('\n');
 
     function injectStyles() {
@@ -63,44 +65,61 @@
     }
 
     /* ---------- Verification puzzle ---------- */
+    var PUZZLE_DISTRACTORS = ['🐾', '🍡', '🎋', '🍜', '⭐', '🌙', '🎮', '🍵', '🐟', '🧋'];
+    var PUZZLE_TARGET = { emoji: '🌸', name: 'cherry blossom' };
+
+    function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+    }
+
+    function buildPuzzleOptions() {
+        var pool = shuffle(PUZZLE_DISTRACTORS.slice()).slice(0, 5);
+        return shuffle(pool.concat([PUZZLE_TARGET.emoji]));
+    }
+
     function showGate(onPass) {
         var g = makeOverlay();
-        var a = 1 + Math.floor(Math.random() * 5); // 1-5
-        var b = 1 + Math.floor(Math.random() * 5);
 
         g.card.innerHTML =
-            '<img src="/Images/nekomo-logo.png" alt="Nekomo cat">' +
+            '<img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">' +
             '<h2>Quick check</h2>' +
-            '<p>Answer this to prove you\'re human (or at least a smart cat).</p>' +
-            '<div class="nk-puzzle-q">' + a + ' + ' + b + ' = ?</div>' +
-            '<form class="nk-puzzle-row">' +
-            '  <input class="nk-puzzle-input" type="text" inputmode="numeric" autocomplete="off" placeholder="Answer" aria-label="Puzzle answer">' +
-            '  <button class="nk-gate-btn" type="submit">Verify</button>' +
-            '</form>' +
+            '<p>Just a quick click to prove you\'re not a bot.</p>' +
+            '<div class="nk-puzzle-q">Click the <b>' + PUZZLE_TARGET.name + '</b> ' + PUZZLE_TARGET.emoji + '</div>' +
+            '<div class="nk-puzzle-grid" role="group" aria-label="Puzzle options"></div>' +
             '<div class="nk-gate-error" role="alert"></div>';
 
-        var input = g.card.querySelector('.nk-puzzle-input');
+        var grid = g.card.querySelector('.nk-puzzle-grid');
         var err = g.card.querySelector('.nk-gate-error');
-        input.focus();
 
-        g.card.querySelector('form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (parseInt(input.value.trim(), 10) === a + b) {
-                removeOverlay(g.overlay);
-                onPass();
-            } else {
-                err.textContent = 'Not quite — try again.';
-                g.card.classList.remove('nk-shake');
-                void g.card.offsetWidth; // restart animation
-                g.card.classList.add('nk-shake');
-                input.value = '';
-                input.focus();
-                // new numbers each failed attempt
-                a = 1 + Math.floor(Math.random() * 5);
-                b = 1 + Math.floor(Math.random() * 5);
-                g.card.querySelector('.nk-puzzle-q').textContent = a + ' + ' + b + ' = ?';
-            }
-        });
+        function render() {
+            grid.innerHTML = '';
+            buildPuzzleOptions().forEach(function (emoji) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'nk-puzzle-opt';
+                btn.textContent = emoji;
+                btn.setAttribute('aria-label', emoji === PUZZLE_TARGET.emoji ? PUZZLE_TARGET.name : 'option');
+                btn.addEventListener('click', function () {
+                    if (emoji === PUZZLE_TARGET.emoji) {
+                        removeOverlay(g.overlay);
+                        onPass();
+                    } else {
+                        err.textContent = 'Not quite — try again.';
+                        g.card.classList.remove('nk-shake');
+                        void g.card.offsetWidth; // restart animation
+                        g.card.classList.add('nk-shake');
+                        render();
+                    }
+                });
+                grid.appendChild(btn);
+            });
+        }
+
+        render();
     }
 
     /* ---------- DMCA / disclaimer modal ---------- */

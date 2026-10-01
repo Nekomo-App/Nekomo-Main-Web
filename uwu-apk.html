@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preparing your download — Nekomo</title>
     <meta name="theme-color" content="#8d2249" />
-    <link rel="icon" href="/Images/nekomo-logo.png" type="image/png">
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="theme.js" defer></script>
     <style>
         :root {
             --bg: #0c0508;
@@ -42,7 +43,7 @@
             padding: 40px 32px;
             box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
         }
-        .card img { width: 88px; image-rendering: pixelated; filter: drop-shadow(0 0 20px rgba(255, 92, 122, 0.35)); animation: float 3s ease-in-out infinite; }
+        .card img { width: 88px; border-radius: 18px; filter: drop-shadow(0 0 20px rgba(255, 92, 122, 0.35)); animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         h1 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 700; margin-top: 18px; }
         .version {
@@ -67,7 +68,8 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         p.hint { margin-top: 16px; font-size: 0.86rem; color: var(--text-muted); }
-        .manual-link { display: none; margin-top: 20px; }
+        .manual-link { display: none; margin-top: 20px; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .manual-link.nk-visible { display: flex; }
         .manual-link a {
             display: inline-flex;
             align-items: center;
@@ -81,6 +83,12 @@
             font-weight: 600;
             font-size: 0.92rem;
         }
+        .manual-link a.ghost {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--text);
+        }
+        .platform-note { margin-top: 14px; font-size: 0.78rem; color: var(--text-muted); }
         .changelog-link { display: block; margin-top: 18px; font-size: 0.82rem; }
         .changelog-link a { color: var(--accent-bright); text-decoration: none; }
         .changelog-link a:hover { text-decoration: underline; }
@@ -88,58 +96,74 @@
 </head>
 <body>
     <div class="card">
-        <img src="/Images/nekomo-logo.png" alt="Nekomo cat">
-        <h1>Preparing your download&hellip;</h1>
-        <div class="version"><span class="spinner"></span> <span id="version-text">Checking latest release</span></div>
+        <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+        <h1 id="title">Preparing your download&hellip;</h1>
+        <div class="version"><span class="spinner" id="spinner"></span> <span id="version-text">Checking latest release</span></div>
         <p class="hint" id="hint">Fetching the newest official build from GitHub — this only takes a second.</p>
         <div class="manual-link" id="manual-link">
             <a id="manual-btn" href="https://github.com/Nekomo-App/Nekomo/releases">Continue manually</a>
         </div>
+        <p class="platform-note">📱🖥️ Android &amp; Android TV only — not available on iOS/Apple devices.</p>
         <p class="changelog-link"><a href="updates.html">View full changelog &amp; release history</a></p>
     </div>
 
+    <script src="releases.js"></script>
     <script>
-        (function () {
-            // All Nekomo releases are marked "prerelease", so /releases/latest 404s.
-            // Fetch the releases list and use the newest non-draft entry instead.
-            const apiUrl = 'https://api.github.com/repos/Nekomo-App/Nekomo/releases';
-            const releasesUrl = 'https://github.com/Nekomo-App/Nekomo/releases';
+        (async function () {
+            const PLATFORM_LABELS = { mobile: 'Mobile', tv: 'Android TV' };
+            const CHANNEL_LABELS = { stable: 'stable', beta: 'beta/debug' };
+            const VALID_TYPES = ['mobile-stable', 'mobile-beta', 'tv-stable', 'tv-beta'];
+
+            const params = new URLSearchParams(window.location.search);
+            const requested = (params.get('type') || 'mobile-stable').toLowerCase();
+            const type = VALID_TYPES.includes(requested) ? requested : 'mobile-stable';
+            const [platform, channel] = type.split('-');
+            const buildLabel = PLATFORM_LABELS[platform] + ' ' + CHANNEL_LABELS[channel];
+
+            const title = document.getElementById('title');
+            const spinner = document.getElementById('spinner');
             const versionText = document.getElementById('version-text');
             const hint = document.getElementById('hint');
             const manualLink = document.getElementById('manual-link');
             const manualBtn = document.getElementById('manual-btn');
 
-            function startDownload(url) {
+            title.textContent = 'Preparing your ' + buildLabel + ' download\u2026';
+
+            function showUnavailable(message) {
+                spinner.style.display = 'none';
+                versionText.textContent = 'Not available right now';
+                hint.textContent = message;
+                manualLink.innerHTML =
+                    '<a href="' + NekomoReleases.releasesUrl + '" target="_blank" rel="noopener">View all releases</a>' +
+                    '<a class="ghost" href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Ask on Discord</a>';
+                manualLink.classList.add('nk-visible');
+            }
+
+            function startDownload(url, tagName) {
+                versionText.textContent = tagName ? 'Downloading ' + tagName : 'Starting download\u2026';
+                hint.textContent = 'Your download should start automatically.';
+                manualBtn.textContent = 'Continue manually';
                 manualBtn.href = url;
-                manualLink.style.display = 'block';
+                manualBtn.removeAttribute('target');
+                manualBtn.removeAttribute('rel');
+                manualLink.classList.add('nk-visible');
                 window.location.href = url;
             }
 
-            async function fetchLatestRelease() {
-                try {
-                    const response = await fetch(apiUrl);
-                    const releases = await response.json();
-                    const data = Array.isArray(releases) ? releases.find(r => !r.draft) : null;
-                    const asset = data && data.assets.find(asset => /\.(apk|zip|exe)$/i.test(asset.name));
+            try {
+                const { matrix, hasReleases } = await NekomoReleases.fetchMatrix();
+                const entry = matrix[platform] && matrix[platform][channel];
 
-                    if (data && data.tag_name) {
-                        versionText.textContent = 'Downloading ' + data.tag_name;
-                    }
-
-                    if (asset) {
-                        hint.textContent = 'Your download should start automatically.';
-                        startDownload(asset.browser_download_url);
-                    } else {
-                        hint.textContent = "Couldn't find a build asset — taking you to the releases page.";
-                        startDownload(releasesUrl);
-                    }
-                } catch (error) {
-                    hint.textContent = "Couldn't reach GitHub — taking you to the releases page.";
-                    startDownload(releasesUrl);
+                if (!hasReleases) {
+                    showUnavailable('No Nekomo builds have been published yet — check back soon.');
+                } else if (entry) {
+                    startDownload(entry.asset.browser_download_url, entry.release.tag_name);
+                } else {
+                    showUnavailable('No ' + buildLabel + ' build is available right now.');
                 }
+            } catch (error) {
+                showUnavailable("Couldn't reach GitHub to check build availability. Please try again shortly.");
             }
-
-            fetchLatestRelease();
         })();
     </script>
 </body>

@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="Images/nekomo-logo-sakura.jpg" alt="Nekomo logo" width="200">
+
 # 🌐 Nekomo Website
 
 ### The open-source source code for the official Nekomo website

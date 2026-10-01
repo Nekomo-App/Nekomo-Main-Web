@@ -8,11 +8,12 @@
     <meta property="og:title" content="Releases &amp; Updates — Nekomo">
     <meta property="og:description" content="Latest build, changelog history, and auto-update options for the official Nekomo app.">
     <meta name="theme-color" content="#8d2249" />
-    <link rel="icon" href="/Images/nekomo-logo.png" type="image/png">
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="gate.js" defer></script>
+    <script src="theme.js" defer></script>
     <style>
         :root {
             --bg: #0c0508;
@@ -70,7 +71,7 @@
             text-decoration: none;
             color: var(--text);
         }
-        .nav-logo img { width: 34px; height: 34px; image-rendering: pixelated; }
+        .nav-logo img { width: 34px; height: 34px; border-radius: 8px; }
         .logo-text {
             font-size: 1.3rem;
             font-weight: 700;
@@ -96,8 +97,44 @@
             font-weight: 600;
         }
         .nav-cta:hover { filter: brightness(1.15); }
-        @media (max-width: 640px) {
-            .nav-links a:not(.nav-cta) { display: none; }
+        .nav-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+        }
+        .nav-toggle svg { width: 20px; height: 20px; }
+        @media (max-width: 860px) {
+            .nav-toggle { display: flex; }
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: 12px;
+                right: 12px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 12px;
+                border-radius: 16px;
+                border: 1px solid rgba(255, 92, 122, 0.12);
+                background: rgba(12, 5, 8, 0.97);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                transform: translateY(-12px);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .nav-links.nk-nav-open { transform: none; opacity: 1; pointer-events: auto; }
+            .nav-links a { padding: 12px 14px; }
         }
 
         /* ---------- Content ---------- */
@@ -330,7 +367,7 @@
             gap: 16px;
         }
         .footer-brand { display: flex; align-items: center; gap: 10px; }
-        .footer-brand img { width: 36px; image-rendering: pixelated; }
+        .footer-brand img { width: 36px; border-radius: 8px; }
         .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
         .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
         .footer-links a:hover { color: var(--accent-bright); }
@@ -349,9 +386,12 @@
 
     <nav>
         <a href="index.html" class="nav-logo">
-            <img src="/Images/nekomo-logo.png" alt="Nekomo cat">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
             <span class="logo-text">Nekomo</span>
         </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <div class="nav-links">
             <a href="index.html#features">Features</a>
             <a href="index.html#download">Download</a>
@@ -365,7 +405,7 @@
     <main>
         <p class="page-label"><span class="live-dot"></span> Release Tracker</p>
         <h1>Releases &amp; Updates</h1>
-        <p class="page-sub">Live, straight from GitHub. This page always reflects the official Nekomo build — current version, full changelog history, and how to get automatic update notifications.</p>
+        <p class="page-sub">Live, straight from GitHub. This page always reflects the official Nekomo build — current version, full changelog history, and how to get automatic update notifications. 📱🖥️ Android &amp; Android TV only — not available on iOS/Apple devices.</p>
 
         <div class="latest-card" id="latest-card">
             <p class="latest-skeleton">Fetching the latest release&hellip;</p>
@@ -407,6 +447,17 @@
                     Join Discord
                 </a>
             </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 3.52a1.5 1.5 0 0 0-1.55-.23L2.6 10.56a1.4 1.4 0 0 0 .07 2.63l4.6 1.5 1.76 5.66a1.28 1.28 0 0 0 1.2.9h.03a1.28 1.28 0 0 0 1.16-.75l2.4-4.7 4.76 3.5a1.5 1.5 0 0 0 2.37-.9l2.5-13.1a1.5 1.5 0 0 0-.51-1.28zM9.4 15.97l-.63 2.98-1.1-3.56 10.6-6.95-8.87 7.53z"/></svg>
+                </div>
+                <h3>Telegram Announcements</h3>
+                <p>Follow along on Telegram for build announcements and community chat.</p>
+                <a class="btn btn-ghost" href="https://t.me/nekomoapp" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 10 12 15 17 10"/></svg>
+                    Join Telegram
+                </a>
+            </div>
         </div>
 
         <h2 class="section-heading">Release history <small>Every official Nekomo build, newest first &mdash; pulled live from GitHub</small></h2>
@@ -418,13 +469,14 @@
     <footer>
         <div class="footer-inner">
             <div class="footer-brand">
-                <img src="/Images/nekomo-logo.png" alt="Nekomo cat loaf">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
                 <span class="logo-text">Nekomo</span>
             </div>
             <div class="footer-links">
                 <a href="index.html">Home</a>
                 <a href="contributors.html">Contributors</a>
                 <a href="https://github.com/Nekomo-App/Nekomo/releases" target="_blank" rel="noopener">GitHub Releases</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
                 <a href="dmca.html">DMCA / Disclaimer</a>
             </div>
             <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
@@ -483,7 +535,11 @@
                 return res.json();
             }).then(releases => {
                 const list = (releases || []).filter(r => !r.draft);
-                if (!list.length) throw new Error('No releases');
+                if (!list.length) {
+                    const err = new Error('No releases published yet');
+                    err.noReleases = true;
+                    throw err;
+                }
 
                 const latest = list[0];
                 const asset = (latest.assets || []).find(a => /\.(apk|zip|exe)$/i.test(a.name));
@@ -534,11 +590,22 @@
                         '</div>';
                     historyList.appendChild(row);
                 });
-            }).catch(() => {
+            }).catch(err => {
+                if (err && err.noReleases) {
+                    document.getElementById('latest-card').innerHTML =
+                        '<p class="latest-skeleton">⚠️ No downloads are available right now — no Nekomo builds have been published yet. Check back soon or join the <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" style="color:var(--accent-bright)">Discord</a> for status updates.</p>';
+                    document.getElementById('history-list').innerHTML =
+                        '<p class="history-status">No release history yet &mdash; this page updates automatically the moment the first build goes live.</p>';
+                    return;
+                }
                 document.getElementById('latest-card').innerHTML =
-                    '<p class="latest-skeleton">Couldn\'t load release info right now &mdash; <a href="' + releasesUrl + '" target="_blank" rel="noopener" style="color:var(--accent-bright)">view releases on GitHub</a> instead.</p>';
+                    '<p class="latest-skeleton">Couldn\'t reach the GitHub API right now &mdash; <a href="' + releasesUrl + '" target="_blank" rel="noopener" style="color:var(--accent-bright)">view releases on GitHub</a>, or catch the announcement on ' +
+                    '<a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" style="color:var(--accent-bright)">Discord</a> / ' +
+                    '<a href="https://t.me/nekomoapp" target="_blank" rel="noopener" style="color:var(--accent-bright)">Telegram</a> instead.</p>';
                 document.getElementById('history-list').innerHTML =
-                    '<p class="history-status">Couldn\'t load release history &mdash; <a href="' + releasesUrl + '" target="_blank" rel="noopener">view on GitHub</a>.</p>';
+                    '<p class="history-status">Couldn\'t load release history &mdash; <a href="' + releasesUrl + '" target="_blank" rel="noopener">view on GitHub</a> or check ' +
+                    '<a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a> / ' +
+                    '<a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>.</p>';
             });
         })();
     </script>
