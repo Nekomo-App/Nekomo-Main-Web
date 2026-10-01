@@ -398,14 +398,15 @@
         .downloads-grid {
             margin-top: 28px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 16px;
         }
         .download-tile {
             display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 22px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 24px;
             border-radius: var(--radius);
             border: 1px solid var(--surface-border);
             background: var(--surface);
@@ -417,8 +418,9 @@
             border-color: rgba(255, 92, 122, 0.35);
             box-shadow: 0 12px 40px rgba(229, 57, 95, 0.12);
         }
+        .tile-top { display: flex; align-items: center; gap: 10px; }
         .download-tile-icon {
-            width: 46px; height: 46px;
+            width: 42px; height: 42px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -428,39 +430,29 @@
             border: 1px solid rgba(255, 92, 122, 0.22);
             color: var(--accent-bright);
         }
-        .download-tile-icon svg { width: 22px; height: 22px; }
-        .download-tile-info { flex: 1; min-width: 0; }
-        .download-tile-info h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .download-tile-icon svg { width: 20px; height: 20px; }
         .tile-channel {
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             font-weight: 700;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            padding: 2px 8px;
+            padding: 3px 9px;
             border-radius: 999px;
             background: rgba(255, 92, 122, 0.12);
             color: var(--accent-bright);
             border: 1px solid rgba(255, 92, 122, 0.25);
+            white-space: nowrap;
         }
         .download-tile[data-type$="-beta"] .tile-channel {
             background: rgba(250, 204, 21, 0.12);
             color: #facc15;
             border-color: rgba(250, 204, 21, 0.3);
         }
+        .download-tile-info { width: 100%; }
+        .download-tile-info h3 { font-size: 1rem; font-weight: 600; }
         .tile-meta { margin-top: 4px; font-size: 0.82rem; color: var(--text-muted); }
         .download-tile.nk-unavailable .tile-meta { color: #e2a3ae; }
-        .tile-btn { flex-shrink: 0; padding: 10px 16px; font-size: 0.86rem; }
-        @media (max-width: 480px) {
-            .download-tile { flex-wrap: wrap; }
-            .tile-btn { width: 100%; justify-content: center; }
-        }
+        .tile-btn { width: 100%; justify-content: center; padding: 10px 16px; font-size: 0.86rem; }
         .status-note { margin-top: 26px; font-size: 0.82rem; color: var(--text-muted); opacity: 0.8; text-align: center; }
         .status-note a { color: var(--accent-bright); text-decoration: none; }
         .status-note a:hover { text-decoration: underline; }
@@ -692,41 +684,53 @@
 
             <div class="downloads-grid reveal">
                 <div class="download-tile nk-unavailable" data-type="mobile-stable">
-                    <div class="download-tile-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        </div>
+                        <span class="tile-channel">Stable</span>
                     </div>
                     <div class="download-tile-info">
-                        <h3>Mobile <span class="tile-channel">Stable</span></h3>
+                        <h3>Mobile</h3>
                         <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
                     </div>
                     <a class="btn btn-primary tile-btn" data-field="btn" href="uwu-apk.html?type=mobile-stable">Download</a>
                 </div>
                 <div class="download-tile nk-unavailable" data-type="mobile-beta">
-                    <div class="download-tile-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        </div>
+                        <span class="tile-channel">Beta / Debug</span>
                     </div>
                     <div class="download-tile-info">
-                        <h3>Mobile <span class="tile-channel">Beta / Debug</span></h3>
+                        <h3>Mobile</h3>
                         <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
                     </div>
                     <a class="btn btn-ghost tile-btn" data-field="btn" href="uwu-apk.html?type=mobile-beta">Download</a>
                 </div>
                 <div class="download-tile nk-unavailable" data-type="tv-stable">
-                    <div class="download-tile-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <span class="tile-channel">Stable</span>
                     </div>
                     <div class="download-tile-info">
-                        <h3>Android TV <span class="tile-channel">Stable</span></h3>
+                        <h3>Android TV</h3>
                         <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
                     </div>
                     <a class="btn btn-primary tile-btn" data-field="btn" href="uwu-apk.html?type=tv-stable">Download</a>
                 </div>
                 <div class="download-tile nk-unavailable" data-type="tv-beta">
-                    <div class="download-tile-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <span class="tile-channel">Beta / Debug</span>
                     </div>
                     <div class="download-tile-info">
-                        <h3>Android TV <span class="tile-channel">Beta / Debug</span></h3>
+                        <h3>Android TV</h3>
                         <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
                     </div>
                     <a class="btn btn-ghost tile-btn" data-field="btn" href="uwu-apk.html?type=tv-beta">Download</a>
