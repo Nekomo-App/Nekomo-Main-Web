@@ -6,15 +6,40 @@
 
 ### The open-source source code for the official Nekomo website
 
+[![GitHub Stars](https://img.shields.io/github/stars/Nekomo-App/nekomo-main-web?style=flat-square&logo=github&color=f5c542)](https://github.com/Nekomo-App/nekomo-main-web/stargazers)
+[![Discord](https://img.shields.io/discord/111111111111111111?style=flat-square&logo=discord&logoColor=white&label=Discord&color=5865F2)](https://discord.com/invite/E4Ezmgg7Ka)
+[![Telegram](https://img.shields.io/badge/Telegram-Join-26A5E4?style=flat-square&logo=telegram&logoColor=white)](https://t.me/nekomoapp)
+[![Website](https://img.shields.io/badge/Live-nekomoapp.netlify.app-ff5c7a?style=flat-square&logo=netlify&logoColor=white)](https://nekomoapp.netlify.app)
+
 <p>
   <a href="https://nekomoapp.netlify.app">🌍 Live Website</a>
   ·
   <a href="https://github.com/Nekomo-App/Nekomo">🐱 Main Project</a>
   ·
   <a href="https://github.com/Nekomo-App/Nekomo/releases">📦 App Releases</a>
+  ·
+  <a href="https://discord.com/invite/E4Ezmgg7Ka">💬 Discord</a>
+  ·
+  <a href="https://t.me/nekomoapp">✈️ Telegram</a>
 </p>
 
 </div>
+
+> 📱 **Nekomo is an Android & Android TV app** — not available on iOS/Apple devices. This repo is for the *website* only.
+
+---
+
+<details>
+<summary><strong>📋 Table of Contents</strong></summary>
+
+- [📖 About](#-about)
+- [🔗 Quick Links](#-quick-links)
+- [🌐 Socials](#-socials)
+- [⚠️ Repository Scope](#-repository-scope)
+- [🛠️ Development](#-development)
+- [⚖️ DMCA & Legal Disclaimer](#-dmca--legal-disclaimer)
+
+</details>
 
 ---
 
@@ -25,7 +50,7 @@ This repository contains the source code, assets, and configuration files used t
 The website acts as a central hub for:
 
 - Project information
-- App downloads
+- App downloads (Mobile & Android TV, Stable & Beta/Debug channels)
 - Community links
 - Announcements
 - Documentation
@@ -40,7 +65,19 @@ The website acts as a central hub for:
 |---|---|
 | 🌍 Official Website | [nekomoapp.netlify.app](https://nekomoapp.netlify.app) |
 | 🐱 Main Nekomo Repository | [Nekomo-App/Nekomo](https://github.com/Nekomo-App/Nekomo) |
+| 📄 App Source Code | [Nekomo-App/neko-source](https://github.com/Nekomo-App/neko-source) |
 | 📦 App Releases | [Latest Releases](https://github.com/Nekomo-App/Nekomo/releases) |
+| 👥 Contributors | [Meet the team](https://github.com/Nekomo-App/Nekomo/graphs/contributors) |
+
+---
+
+## 🌐 Socials
+
+| | Link |
+|---|---|
+| 💬 Discord | [discord.com/invite/E4Ezmgg7Ka](https://discord.com/invite/E4Ezmgg7Ka) |
+| ✈️ Telegram | [t.me/nekomoapp](https://t.me/nekomoapp) |
+| 🐙 GitHub org | [Nekomo-App](https://github.com/Nekomo-App) |
 
 ---
 

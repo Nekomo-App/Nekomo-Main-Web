@@ -28,13 +28,16 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
 
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
+            overflow-x: hidden;
+            max-width: 100vw;
+            overflow-wrap: break-word;
         }
 
         h1, h2, h3, .logo-text { font-family: 'Outfit', 'Inter', sans-serif; }
@@ -57,6 +60,9 @@
             opacity: 0.07;
             mask-image: linear-gradient(to bottom, black 0%, transparent 45%);
             -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 45%);
+        }
+        @media (max-width: 700px) {
+            .bg-fx::after { background-position: 60% center; }
         }
 
         /* ---------- Nav ---------- */
@@ -186,7 +192,7 @@
         .legacy-grid {
             margin-top: 24px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
             gap: 18px;
         }
         .dev-card {
@@ -270,7 +276,7 @@
         .repo-grid {
             margin-top: 24px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
             gap: 16px;
         }
         .repo-card {
@@ -314,7 +320,7 @@
         .alt-grid {
             margin-top: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
             gap: 14px;
         }
         .alt-card {
@@ -351,7 +357,7 @@
         .contrib-grid {
             margin-top: 24px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
             gap: 14px;
         }
         .contrib-card {
