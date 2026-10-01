@@ -33,7 +33,22 @@
         '.nk-switch input:checked + span::before{transform:translateX(16px);}',
         '@media (max-width:480px){.nk-settings-panel{right:14px;width:calc(100vw - 28px);}.nk-settings-btn{right:14px;}}',
         '@media (max-width:640px){footer{padding-bottom:92px;}}',
-        '.nk-reduced-motion *,.nk-reduced-motion *::before,.nk-reduced-motion *::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}'
+        '.nk-reduced-motion *,.nk-reduced-motion *::before,.nk-reduced-motion *::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}',
+        '.nk-wallpaper-overlay{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;padding:28px;background:rgba(8,3,6,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .2s;}',
+        '.nk-wallpaper-overlay.nk-open{opacity:1;pointer-events:auto;}',
+        '.nk-wallpaper-card{position:relative;max-width:min(1100px,92vw);display:flex;flex-direction:column;align-items:center;gap:16px;}',
+        '.nk-wallpaper-card img{max-width:100%;max-height:70vh;border-radius:16px;border:1px solid rgba(255,92,122,.25);box-shadow:0 24px 80px rgba(0,0,0,.6);object-fit:contain;}',
+        '.nk-wallpaper-caption{font-family:Inter,system-ui,sans-serif;font-size:.85rem;color:#b9929f;text-align:center;}',
+        '.nk-wallpaper-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}',
+        '.nk-wallpaper-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:12px;font-family:Outfit,sans-serif;font-size:.9rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:filter .2s;}',
+        '.nk-wallpaper-btn svg{width:18px;height:18px;}',
+        '.nk-wallpaper-btn.nk-primary{background:linear-gradient(135deg,#ff5c7a,#8d2249);color:#fff;}',
+        '.nk-wallpaper-btn.nk-primary:hover{filter:brightness(1.12);}',
+        '.nk-wallpaper-btn.nk-ghost{background:rgba(255,92,122,.08);border:1px solid rgba(255,92,122,.25);color:#f7ecf0;}',
+        '.nk-wallpaper-btn.nk-ghost:hover{background:rgba(255,92,122,.15);}',
+        '.nk-wallpaper-close{position:absolute;top:-18px;right:-18px;width:36px;height:36px;border-radius:50%;background:#150910;border:1px solid rgba(255,92,122,.3);color:#f7ecf0;display:flex;align-items:center;justify-content:center;cursor:pointer;}',
+        '.nk-wallpaper-close svg{width:16px;height:16px;}',
+        '@media (max-width:480px){.nk-wallpaper-close{top:-14px;right:4px;}}'
     ].join('\n');
 
     function injectStyles() {
@@ -141,6 +156,53 @@
         });
     }
 
+    /* ---------- Wallpaper viewer ---------- */
+    var WALLPAPER_SRC = '/Images/nekomo-wallpaper.jpg';
+    var WALLPAPER_NAME = 'nekomo-wallpaper.jpg';
+
+    function initWallpaperViewer() {
+        var triggers = document.querySelectorAll('[data-wallpaper-trigger]');
+        if (!triggers.length) return;
+
+        var overlay = document.createElement('div');
+        overlay.className = 'nk-wallpaper-overlay';
+        overlay.innerHTML =
+            '<div class="nk-wallpaper-card">' +
+            '  <button type="button" class="nk-wallpaper-close" aria-label="Close">' +
+            '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+            '  </button>' +
+            '  <img src="' + WALLPAPER_SRC + '" alt="Nekomo wallpaper">' +
+            '  <div class="nk-wallpaper-actions">' +
+            '    <a class="nk-wallpaper-btn nk-primary" href="' + WALLPAPER_SRC + '" download="' + WALLPAPER_NAME + '">' +
+            '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+            '      Save wallpaper' +
+            '    </a>' +
+            '    <a class="nk-wallpaper-btn nk-ghost" href="' + WALLPAPER_SRC + '" target="_blank" rel="noopener">Open full size</a>' +
+            '  </div>' +
+            '  <p class="nk-wallpaper-caption">Free to use as your own wallpaper &mdash; part of the Nekomo site theme.</p>' +
+            '</div>';
+        document.body.appendChild(overlay);
+
+        function open(e) {
+            if (e) e.preventDefault();
+            overlay.classList.add('nk-open');
+            document.body.style.overflow = 'hidden';
+        }
+        function close() {
+            overlay.classList.remove('nk-open');
+            document.body.style.overflow = '';
+        }
+
+        triggers.forEach(function (el) { el.addEventListener('click', open); });
+        overlay.querySelector('.nk-wallpaper-close').addEventListener('click', close);
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) close();
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') close();
+        });
+    }
+
     /* ---------- Mobile nav toggle ---------- */
     function initNavToggle() {
         var toggle = document.querySelector('.nav-toggle');
@@ -173,6 +235,7 @@
         injectStyles();
         buildSettings();
         initNavToggle();
+        initWallpaperViewer();
     }
 
     if (document.readyState === 'loading') {
