@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta &amp; Alpha Testing — Nekomo</title>
+    <meta name="description" content="Download Nekomo beta, alpha, and debug APKs straight from the official Nekomo-App GitHub repository.">
+    <meta property="og:title" content="Beta &amp; Alpha Testing — Nekomo">
+    <meta property="og:description" content="Download Nekomo beta, alpha, and debug APKs straight from the official Nekomo-App GitHub repository.">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js" defer></script>
+    <script src="/theme.js" defer></script>
+    <style>
+        .warn-grid { margin-top: 24px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+        .warn-card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius); padding: 18px 20px; }
+        .warn-card h3 { font-size: 0.95rem; font-weight: 600; }
+        .warn-card p { margin-top: 6px; font-size: 0.85rem; color: var(--text-muted); }
+        .toolbar { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+        .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            font: inherit; font-size: 0.85rem; font-weight: 500; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+            border: 1px solid var(--surface-border); background: var(--surface); color: var(--text-muted);
+            transition: color 0.2s, background 0.2s, border-color 0.2s;
+        }
+        .chip:hover { color: var(--text); }
+        .chip[aria-pressed="true"] { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--accent-bright), var(--accent-deep)); }
+        .status { font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 8px; }
+        .spinner { width: 14px; height: 14px; border: 2px solid rgba(255, 92, 122, 0.25); border-top-color: var(--accent-bright); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .apk-list { margin-top: 18px; display: grid; gap: 12px; }
+        .apk {
+            display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+            background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius); padding: 16px 20px;
+        }
+        .apk-main { min-width: 0; flex: 1 1 280px; }
+        .apk-name { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1rem; word-break: break-all; }
+        .apk-meta { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.78rem; color: var(--text-muted); }
+        .tag { padding: 2px 9px; border-radius: 999px; border: 1px solid var(--surface-border); background: rgba(255, 92, 122, 0.06); }
+        .tag.hot { color: #ffb3c2; border-color: rgba(255, 92, 122, 0.4); }
+        .empty { margin-top: 18px; padding: 28px; text-align: center; border: 1px dashed var(--surface-border); border-radius: var(--radius); color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/#download">Download</a>
+            <a href="/beta" class="nk-current">Beta</a>
+            <a href="/rules">Rules</a>
+            <a href="/support">Support</a>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main class="wide">
+        <p class="page-label">Testing</p>
+        <h1>Beta &amp; Alpha Builds</h1>
+        <p class="page-sub">Help test upcoming Nekomo changes. Every APK in the Nekomo-App/Neko-Source repository and its releases is listed here automatically.</p>
+        
+        <div class="callout"><strong>Heads up:</strong> these are unfinished test builds for people who want to help find bugs. They can crash, break, or lose app data. Do not rely on them as your main app, and read the <a href="/terms#beta">Terms</a> first. For the stable app, use the <a href="/#download">main download</a>.</div>
+
+        <div class="warn-grid">
+            <div class="warn-card"><h3>Install with care</h3><p>Allow &ldquo;Install unknown apps&rdquo; for your browser or file manager. Debug, beta, and release builds are separate apps with different signatures.</p></div>
+            <div class="warn-card"><h3>Official source only</h3><p>This list is pulled live from <a href="https://github.com/Nekomo-App/Neko-Source" target="_blank" rel="noopener" style="color:var(--accent-bright)">Nekomo-App/Neko-Source</a>. Never install copies from elsewhere.</p></div>
+            <div class="warn-card"><h3>Report what you find</h3><p>Open a <a href="https://github.com/Nekomo-App/Neko-Source/issues/new" target="_blank" rel="noopener" style="color:var(--accent-bright)">GitHub issue</a> with your version, device, and the in-app error log.</p></div>
+        </div>
+
+        <div class="toolbar">
+            <div class="chips" id="platform-chips" role="group" aria-label="Filter by device">
+                <button class="chip" type="button" data-platform="all" aria-pressed="true">All devices</button>
+                <button class="chip" type="button" data-platform="phone" aria-pressed="false">Phone</button>
+                <button class="chip" type="button" data-platform="tv" aria-pressed="false">Android TV</button>
+            </div>
+            <div class="chips" id="channel-chips" role="group" aria-label="Filter by channel">
+                <button class="chip" type="button" data-channel="all" aria-pressed="true">All channels</button>
+                <button class="chip" type="button" data-channel="debug" aria-pressed="false">Debug / Alpha</button>
+                <button class="chip" type="button" data-channel="beta" aria-pressed="false">Beta</button>
+                <button class="chip" type="button" data-channel="release" aria-pressed="false">Release</button>
+            </div>
+        </div>
+        <p class="status" id="status" style="margin-top:14px"><span class="spinner"></span> <span id="status-text">Fetching builds from GitHub&hellip;</span></p>
+
+        <div class="apk-list" id="apk-list" aria-live="polite"></div>
+        <div class="btn-row">
+            <a class="btn ghost" href="https://github.com/Nekomo-App/Neko-Source" target="_blank" rel="noopener">View repository</a>
+            <a class="btn ghost" href="https://github.com/Nekomo-App/Neko-Source/releases" target="_blank" rel="noopener">View releases</a>
+            <a class="btn ghost" href="/support">Get help</a>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+                <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+    <script>
+    (function () {
+        var REPO = 'Nekomo-App/Neko-Source';
+        var API = 'https://api.github.com/repos/' + REPO;
+        var listEl = document.getElementById('apk-list');
+        var statusEl = document.getElementById('status');
+        var statusText = document.getElementById('status-text');
+        var state = { platform: 'all', channel: 'all', items: [] };
+
+        function classify(name) {
+            var n = (name || '').toLowerCase();
+            var platform = /(^|[^a-z])tv([^a-z]|$)|leanback|androidtv/.test(n) ? 'tv' : 'phone';
+            var channel = /debug|alpha|nightly|dev/.test(n) ? 'debug' : /beta|rc|preview/.test(n) ? 'beta' : 'release';
+            return { platform: platform, channel: channel };
+        }
+        function fmtSize(b) {
+            if (!b) return '';
+            var mb = b / 1048576;
+            return mb >= 1 ? mb.toFixed(1) + ' MB' : Math.round(b / 1024) + ' KB';
+        }
+        function fmtDate(s) {
+            if (!s) return '';
+            var d = new Date(s);
+            return isNaN(d) ? '' : d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        function el(tag, cls, text) {
+            var e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (text) e.textContent = text;
+            return e;
+        }
+        function isApk(name) { return /\.apk$/i.test(name || ''); }
+        function json(url) {
+            return fetch(url, { headers: { Accept: 'application/vnd.github+json' } }).then(function (r) {
+                if (!r.ok) { var e = new Error('GitHub API ' + r.status); e.status = r.status; throw e; }
+                return r.json();
+            });
+        }
+
+        function fromReleases() {
+            return json(API + '/releases?per_page=100').then(function (releases) {
+                var out = [];
+                releases.filter(function (r) { return !r.draft; }).forEach(function (r) {
+                    (r.assets || []).forEach(function (a) {
+                        if (!isApk(a.name)) return;
+                        out.push({ name: a.name, size: a.size, url: a.browser_download_url, date: a.updated_at || r.published_at,
+                                   source: 'Release ' + (r.name || r.tag_name), prerelease: r.prerelease, downloads: a.download_count });
+                    });
+                });
+                return out;
+            });
+        }
+        function fromRepoFiles() {
+            return json(API).then(function (repo) {
+                var branch = repo.default_branch || 'main';
+                return json(API + '/git/trees/' + encodeURIComponent(branch) + '?recursive=1').then(function (tree) {
+                    return (tree.tree || []).filter(function (t) { return t.type === 'blob' && isApk(t.path); }).map(function (t) {
+                        var file = t.path.split('/').pop();
+                        return { name: file, size: t.size, date: null, source: 'Repo: ' + t.path, path: t.path,
+                                 url: 'https://raw.githubusercontent.com/' + REPO + '/' + encodeURIComponent(branch) + '/' + t.path.split('/').map(encodeURIComponent).join('/') };
+                    });
+                });
+            });
+        }
+
+        function render() {
+            listEl.textContent = '';
+            var shown = state.items.filter(function (i) {
+                return (state.platform === 'all' || i.platform === state.platform) &&
+                       (state.channel === 'all' || i.channel === state.channel);
+            });
+            if (!shown.length) {
+                listEl.appendChild(el('div', 'empty', state.items.length ? 'No builds match these filters.' : 'No APKs found in the repository or its releases yet.'));
+                return;
+            }
+            shown.forEach(function (i) {
+                var row = el('div', 'apk');
+                var main = el('div', 'apk-main');
+                main.appendChild(el('div', 'apk-name', i.name));
+                var meta = el('div', 'apk-meta');
+                meta.appendChild(el('span', 'tag', i.platform === 'tv' ? 'Android TV' : 'Phone'));
+                meta.appendChild(el('span', 'tag' + (i.channel !== 'release' ? ' hot' : ''), i.channel === 'debug' ? 'Debug / Alpha' : i.channel === 'beta' ? 'Beta' : 'Release'));
+                if (i.size) meta.appendChild(el('span', 'tag', fmtSize(i.size)));
+                if (i.date) meta.appendChild(el('span', 'tag', fmtDate(i.date)));
+                if (i.downloads) meta.appendChild(el('span', 'tag', i.downloads + ' downloads'));
+                meta.appendChild(el('span', 'tag', i.source));
+                main.appendChild(meta);
+                var a = el('a', 'btn', 'Download APK');
+                a.href = i.url;
+                a.rel = 'noopener';
+                a.setAttribute('download', i.name);
+                row.appendChild(main);
+                row.appendChild(a);
+                listEl.appendChild(row);
+            });
+        }
+
+        function bindChips(id, key) {
+            document.querySelectorAll('#' + id + ' .chip').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    state[key] = btn.dataset[key];
+                    document.querySelectorAll('#' + id + ' .chip').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+                    render();
+                });
+            });
+        }
+        bindChips('platform-chips', 'platform');
+        bindChips('channel-chips', 'channel');
+
+        Promise.allSettled([fromReleases(), fromRepoFiles()]).then(function (results) {
+            var items = [], failed = 0, rateLimited = false;
+            results.forEach(function (r) {
+                if (r.status === 'fulfilled') items = items.concat(r.value);
+                else { failed++; if (r.reason && (r.reason.status === 403 || r.reason.status === 429)) rateLimited = true; }
+            });
+            var seen = {};
+            items = items.filter(function (i) {
+                var k = i.name + '|' + i.size;
+                if (seen[k]) return false;
+                seen[k] = true;
+                return true;
+            });
+            items.forEach(function (i) { var c = classify(i.name); i.platform = c.platform; i.channel = c.channel; });
+            items.sort(function (a, b) { return (b.date ? Date.parse(b.date) : 0) - (a.date ? Date.parse(a.date) : 0) || a.name.localeCompare(b.name); });
+            state.items = items;
+
+            statusEl.querySelector('.spinner').remove();
+            if (failed === 2) {
+                statusText.textContent = rateLimited ? 'GitHub rate limit reached. Try again in a few minutes, or browse the repository directly.' : "Couldn't reach GitHub. Try again shortly, or browse the repository directly.";
+            } else {
+                statusText.textContent = items.length + ' APK' + (items.length === 1 ? '' : 's') + ' found' + (failed ? ' (some sources could not be loaded)' : '') + '.';
+            }
+            render();
+        });
+    })();
+    </script>
+</body>
+</html>

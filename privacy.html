@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — Nekomo</title>
+    <meta name="description" content="Privacy Policy for the Nekomo app and website.">
+    <meta property="og:title" content="Privacy Policy — Nekomo">
+    <meta property="og:description" content="Privacy Policy for the Nekomo app and website.">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js" defer></script>
+    <script src="/theme.js" defer></script>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/#download">Download</a>
+            <a href="/beta">Beta</a>
+            <a href="/rules">Rules</a>
+            <a href="/support">Support</a>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main>
+        <p class="page-label">Legal</p>
+        <h1>Privacy Policy</h1>
+        <p class="page-sub">What Nekomo does and does not do with your data. Short version: we don't collect it.</p>
+        <p class="updated">Last updated: October 15, 2026</p>
+        <div class="toc"><h2>Contents</h2><ol><li><a href="#summary">Summary</a></li><li><a href="#collect">What we collect</a></li><li><a href="#device">Data stored on your device</a></li><li><a href="#thirdparty">Third-party services</a></li><li><a href="#logs">Error logs</a></li><li><a href="#network">Network &amp; DNS</a></li><li><a href="#website">This website</a></li><li><a href="#sharing">Sharing &amp; selling</a></li><li><a href="#retention">Retention &amp; deletion</a></li><li><a href="#security">Security</a></li><li><a href="#children">Children</a></li><li><a href="#rights">Your rights</a></li><li><a href="#changes">Changes</a></li><li><a href="#contact">Contact</a></li></ol></div>
+        <section class="legal-section" id="summary">
+            <h2>1. Summary</h2>
+            <p>Nekomo is an open-source client app. <strong>We do not run a backend that collects your personal data</strong>, we do not sell data, and the app is not built to include advertising or analytics SDKs. Most data stays on your device or is exchanged directly between your device and the third-party services you choose to use.</p>
+            <p>Because the code is public, you can verify this at <a href="https://github.com/Nekomo-App/Neko-Source" target="_blank" rel="noopener">Nekomo-App/Neko-Source</a>.</p>
+        </section>
+        <section class="legal-section" id="collect">
+            <h2>2. What we collect</h2>
+            <p>The Nekomo maintainers do not receive an account, name, email address, or location from the app. We do not operate servers that store your watch history or lists.</p>
+            <p>If you contact us (GitHub issue, Discord, Telegram), we see whatever information you choose to send us, handled under those platforms&rsquo; policies.</p>
+        </section>
+        <section class="legal-section" id="device">
+            <h2>3. Data stored on your device</h2>
+            <p>The app stores the following locally in app-private storage:</p>
+            <ul>
+                <li>preferences and settings (theme, player options, DNS-over-HTTPS provider, etc.);</li>
+                <li>watch history, bookmarks, favorites, and download records;</li>
+                <li>access tokens for any AniList, MyAnimeList, or Kitsu account you sign in with;</li>
+                <li>installed extensions, extension repositories, and their settings;</li>
+                <li>a rolling error log (see below).</li>
+            </ul>
+            <p>Uninstalling the app or clearing its storage removes this data. Android backups may include some of it depending on your device settings.</p>
+        </section>
+        <section class="legal-section" id="thirdparty">
+            <h2>4. Third-party services</h2>
+            <p>When you use a feature that talks to another service, your device connects to it directly and that service may receive your IP address, device/user-agent details, and the data needed for the request:</p>
+            <ul>
+                <li><strong>AniList, MyAnimeList, Kitsu</strong> &mdash; sign-in, list syncing, and metadata. Governed by their privacy policies.</li>
+                <li><strong>Metadata and artwork providers</strong> &mdash; titles, images, and descriptions.</li>
+                <li><strong>Streaming sources and extensions</strong> &mdash; any provider reached through content sources or user-installed extensions. Nekomo does not control these, and they may log requests or track you. Extensions are third-party code; install only ones you trust.</li>
+                <li><strong>GitHub</strong> &mdash; used for update checks and extension downloads.</li>
+                <li><strong>DNS-over-HTTPS providers</strong> (optional) &mdash; Cloudflare, Google, AdGuard, or Quad9 if you enable them.</li>
+            </ul>
+            <p>We are not responsible for the privacy practices of these services. Review their policies before using them.</p>
+        </section>
+        <section class="legal-section" id="logs">
+            <h2>5. Error logs</h2>
+            <p>Nekomo keeps a rolling crash/error log in app-private storage. It stays on your device unless <strong>you</strong> choose to copy, save, share, or attach it to a GitHub issue (Settings &rarr; History &rarr; Error log). Logs may contain technical details such as stack traces, URLs, and device model, so review them before sharing publicly. You can clear the log at any time.</p>
+        </section>
+        <section class="legal-section" id="network">
+            <h2>6. Network &amp; DNS</h2>
+            <p>By default the app uses your system DNS. In Settings &rarr; General you can choose a DNS-over-HTTPS provider for the app&rsquo;s own API and scraping requests. This does not cover the video connections made by the player.</p>
+        </section>
+        <section class="legal-section" id="website">
+            <h2>7. This website</h2>
+            <p>The Nekomo website is a static site hosted on Netlify. We do not use advertising trackers or analytics cookies. The site stores a few preferences in your browser&rsquo;s local/session storage (for example, the verification check, disclaimer acknowledgement, and petal/motion settings). Our hosting provider and GitHub (when the Beta/Releases pages query the GitHub API) may process standard connection data such as your IP address in their logs.</p>
+        </section>
+        <section class="legal-section" id="sharing">
+            <h2>8. Sharing &amp; selling</h2>
+            <p>We do not sell, rent, or trade personal data, because we do not collect it. Nothing is shared with advertisers.</p>
+        </section>
+        <section class="legal-section" id="retention">
+            <h2>9. Retention &amp; deletion</h2>
+            <p>Data on your device is kept until you delete it. To remove it: clear the app&rsquo;s storage, sign out of the linked services, or uninstall. To delete data held by AniList, MyAnimeList, or Kitsu, use those services&rsquo; own account tools.</p>
+        </section>
+        <section class="legal-section" id="security">
+            <h2>10. Security</h2>
+            <p>We rely on Android&rsquo;s app sandboxing and HTTPS for network traffic where the remote service supports it. No method of storage or transmission is perfectly secure, and beta/debug builds may be less hardened. Only download Nekomo from official Nekomo-App sources.</p>
+        </section>
+        <section class="legal-section" id="children">
+            <h2>11. Children</h2>
+            <p>Nekomo is not directed to children under 13 (or the higher age required in your region) and we do not knowingly collect their personal data. Linked third-party accounts must meet those services&rsquo; age requirements.</p>
+        </section>
+        <section class="legal-section" id="rights">
+            <h2>12. Your rights</h2>
+            <p>Depending on where you live (for example under GDPR or CCPA), you may have rights to access, correct, delete, or port personal data. Because we do not hold personal data about you, such requests generally have to be directed at the third-party services above. If you believe we hold data about you, contact us and we will help.</p>
+        </section>
+        <section class="legal-section" id="changes">
+            <h2>13. Changes</h2>
+            <p>We may update this policy. The &ldquo;Last updated&rdquo; date reflects the latest revision. Material changes will be announced on the website or community channels.</p>
+        </section>
+        <section class="legal-section" id="contact">
+            <h2>14. Contact</h2>
+            <p>Privacy questions or requests? See the <a href="/support">Support page</a>, open a <a href="https://github.com/Nekomo-App/Neko-Source/issues/new" target="_blank" rel="noopener">GitHub issue</a> (do not post sensitive data publicly), or message the team on <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>.</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+                <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+</body>
+</html>

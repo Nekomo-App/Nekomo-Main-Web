@@ -4,226 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DMCA &amp; Disclaimer — Nekomo</title>
-    <meta name="description" content="DMCA and legal disclaimer for the Nekomo project.">
+    <meta name="description" content="DMCA notice procedure and legal disclaimer for the Nekomo project.">
     <meta property="og:title" content="DMCA &amp; Disclaimer — Nekomo">
-    <meta property="og:description" content="Legal disclaimer for the Nekomo project.">
+    <meta property="og:description" content="DMCA notice procedure and legal disclaimer for the Nekomo project.">
     <meta name="theme-color" content="#8d2249" />
     <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="gate.js" defer></script>
-    <script src="theme.js" defer></script>
-    <style>
-        :root {
-            --bg: #0c0508;
-            --surface: rgba(255, 92, 122, 0.05);
-            --surface-border: rgba(255, 92, 122, 0.14);
-            --accent: #e5395f;
-            --accent-bright: #ff5c7a;
-            --accent-deep: #8d2249;
-            --text: #f7ecf0;
-            --text-muted: #b9929f;
-            --radius: 16px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; overflow-x: hidden; }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-            max-width: 100vw;
-            overflow-wrap: break-word;
-        }
-
-        h1, h2, h3, .logo-text { font-family: 'Outfit', 'Inter', sans-serif; }
-        ::selection { background: var(--accent); color: #fff; }
-
-        .bg-fx {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background:
-                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(229, 57, 95, 0.15), transparent 60%),
-                var(--bg);
-        }
-        .bg-fx::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: url('/Images/nekomo-wallpaper.jpg') center 25% / cover no-repeat;
-            opacity: 0.07;
-            mask-image: linear-gradient(to bottom, black 0%, transparent 45%);
-            -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 45%);
-        }
-        @media (max-width: 700px) {
-            .bg-fx::after { background-position: 60% center; }
-        }
-
-        /* ---------- Nav ---------- */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 28px;
-            background: rgba(12, 5, 8, 0.7);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-bottom: 1px solid rgba(255, 92, 122, 0.08);
-        }
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text);
-        }
-        .nav-logo img { width: 34px; height: 34px; border-radius: 8px; }
-        .logo-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            background: linear-gradient(120deg, #ff7a95, var(--accent-bright) 50%, var(--accent-deep));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .nav-links { display: flex; align-items: center; gap: 6px; }
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.92rem;
-            font-weight: 500;
-            padding: 8px 14px;
-            border-radius: 10px;
-            transition: color 0.2s, background 0.2s;
-        }
-        .nav-links a:hover { color: var(--text); background: rgba(255, 92, 122, 0.08); }
-        .nav-cta {
-            background: linear-gradient(135deg, var(--accent-bright), var(--accent-deep));
-            color: #fff !important;
-            font-weight: 600;
-        }
-        .nav-cta:hover { filter: brightness(1.15); }
-        .nav-toggle {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            flex-shrink: 0;
-            border-radius: 10px;
-            border: 1px solid var(--surface-border);
-            background: var(--surface);
-            color: var(--text);
-            cursor: pointer;
-        }
-        .nav-toggle svg { width: 20px; height: 20px; }
-        @media (max-width: 860px) {
-            .nav-toggle { display: flex; }
-            .nav-links {
-                position: fixed;
-                top: 64px;
-                left: 12px;
-                right: 12px;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 4px;
-                padding: 12px;
-                border-radius: 16px;
-                border: 1px solid rgba(255, 92, 122, 0.12);
-                background: rgba(12, 5, 8, 0.97);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-                transform: translateY(-12px);
-                opacity: 0;
-                pointer-events: none;
-                transition: transform 0.25s ease, opacity 0.25s ease;
-            }
-            .nav-links.nk-nav-open { transform: none; opacity: 1; pointer-events: auto; }
-            .nav-links a { padding: 12px 14px; }
-        }
-
-        /* ---------- Content ---------- */
-        main {
-            max-width: 780px;
-            margin: 0 auto;
-            padding: 140px 24px 90px;
-        }
-        .page-label {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--accent-bright);
-        }
-        h1 {
-            margin-top: 10px;
-            font-size: clamp(2rem, 5vw, 2.8rem);
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            background: linear-gradient(120deg, #fff 20%, #ffb3c2 55%, var(--accent-bright));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .page-sub { margin-top: 14px; color: var(--text-muted); max-width: 560px; }
-
-        .legal-section {
-            margin-top: 36px;
-            background: var(--surface);
-            border: 1px solid var(--surface-border);
-            border-radius: var(--radius);
-            padding: 28px;
-        }
-        .legal-section h2 { font-size: 1.15rem; font-weight: 600; color: var(--text); }
-        .legal-section p, .legal-section li { margin-top: 10px; font-size: 0.92rem; color: var(--text-muted); }
-        .legal-section ul { margin: 10px 0 0 20px; }
-        .legal-section a { color: var(--accent-bright); text-decoration: none; }
-        .legal-section a:hover { text-decoration: underline; }
-
-        /* ---------- Footer ---------- */
-        footer {
-            border-top: 1px solid rgba(255, 92, 122, 0.1);
-            padding: 40px 24px;
-        }
-        .footer-inner {
-            max-width: 780px;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-        }
-        .footer-brand { display: flex; align-items: center; gap: 10px; }
-        .footer-brand img { width: 36px; border-radius: 8px; }
-        .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
-        .footer-links a:hover { color: var(--accent-bright); }
-        .copyright {
-            width: 100%;
-            margin-top: 16px;
-            text-align: center;
-            font-size: 0.82rem;
-            color: var(--text-muted);
-        }
-        .copyright span { color: var(--accent-bright); }
-    </style>
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js" defer></script>
+    <script src="/theme.js" defer></script>
 </head>
 <body>
     <div class="bg-fx"></div>
 
     <nav>
-        <a href="index.html" class="nav-logo">
+        <a href="/" class="nav-logo">
             <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
             <span class="logo-text">Nekomo</span>
         </a>
@@ -231,13 +28,13 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
         <div class="nav-links">
-            <a href="index.html#features">Features</a>
-            <a href="index.html#download">Download</a>
-            <a href="updates.html">Releases</a>
-            <a href="index.html#community">Community</a>
-            <a href="contributors.html">Contributors</a>
+            <a href="/">Home</a>
+            <a href="/#download">Download</a>
+            <a href="/beta">Beta</a>
+            <a href="/rules">Rules</a>
+            <a href="/support">Support</a>
             <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
-            <a href="index.html" class="nav-cta">Home</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
         </div>
     </nav>
 
@@ -245,49 +42,98 @@
         <p class="page-label">Legal</p>
         <h1>DMCA &amp; Disclaimer</h1>
         <p class="page-sub">Please read this page carefully before downloading, using, contributing to, or discussing Nekomo.</p>
-
-        <div class="legal-section">
+        <p class="updated">Last updated: October 15, 2026</p>
+        <div class="callout"><strong>Important:</strong> Nekomo does not host, store, upload, stream, or distribute any media. We have no ability to remove content from third-party sites. If you are a rights holder, read the <a href="#notice">notice procedure</a> below to see what we can and cannot act on.</div>
+        <div class="toc"><h2>Contents</h2><ol><li><a href="#overview">Open-source project</a></li><li><a href="#noservers">No servers or sources</a></li><li><a href="#thirdparty">Third-party data</a></li><li><a href="#affiliation">No affiliation</a></li><li><a href="#responsibility">User responsibility</a></li><li><a href="#extensions">Extensions</a></li><li><a href="#notice">DMCA notice procedure</a></li><li><a href="#counter">Counter-notice</a></li><li><a href="#repeat">Repeat infringers</a></li><li><a href="#abuse">Misrepresentations</a></li><li><a href="#trademarks">Trademarks</a></li><li><a href="#liability">Disclaimer of liability</a></li><li><a href="#status">Project status</a></li></ol></div>
+        <section class="legal-section" id="overview">
             <h2>Open-Source Project</h2>
-            <p>Nekomo is an open-source project maintained by its community. It does <strong>not</strong> host, store, upload, or distribute media content of any kind.</p>
-        </div>
-
-        <div class="legal-section">
+            <p>Nekomo is an open-source project maintained by its community. It does <strong>not</strong> host, store, upload, or distribute media content of any kind. The project consists of an Android / Android TV client application and this informational website.</p>
+        </section>
+        <section class="legal-section" id="noservers">
             <h2>No Servers or Sources</h2>
             <p>Nekomo does not operate, own, maintain, or control:</p>
             <ul>
-                <li>Streaming servers</li>
-                <li>Content providers or streaming sources</li>
-                <li>Download providers</li>
-                <li>Third-party hosted content of any kind</li>
+                <li>streaming servers;</li>
+                <li>content providers or streaming sources;</li>
+                <li>download providers;</li>
+                <li>third-party hosted content of any kind.</li>
             </ul>
-        </div>
-
-        <div class="legal-section">
+            <p>The app does not ship with any catalogue of copyrighted works. Any media a user watches is delivered from third-party services that the user (or an extension the user installed) connects to.</p>
+        </section>
+        <section class="legal-section" id="thirdparty">
             <h2>Third-Party Data</h2>
             <p>Any metadata, images, artwork, descriptions, or other information displayed through Nekomo-related applications may originate from third-party APIs or external services. Nekomo does not control and is not responsible for this content.</p>
-        </div>
-
-        <div class="legal-section">
+        </section>
+        <section class="legal-section" id="affiliation">
             <h2>No Affiliation</h2>
-            <p>Nekomo is <strong>not</strong> affiliated with, endorsed by, sponsored by, or officially connected to AniList, MyAnimeList, Kitsu, TMDb, or any other content provider unless explicitly stated otherwise.</p>
+            <p>Nekomo is <strong>not</strong> affiliated with, endorsed by, sponsored by, or officially connected to AniList, MyAnimeList, Kitsu, TMDb, CloudStream, or any other content provider, service, or extension author unless explicitly stated otherwise.</p>
             <p>All content, trademarks, copyrights, logos, names, and other intellectual property belong to their respective owners.</p>
-        </div>
-
-        <div class="legal-section">
+        </section>
+        <section class="legal-section" id="responsibility">
             <h2>User Responsibility</h2>
-            <p>Users are responsible for how they use the software and for complying with all applicable laws and regulations in their jurisdiction.</p>
-        </div>
-
-        <div class="legal-section">
-            <h2>Copyright Concerns &amp; Takedowns</h2>
-            <p>If you believe that content infringes your rights, please contact the relevant source, provider, or website hosting that content directly. Nekomo cannot remove, alter, or manage content it does not host, own, operate, or control.</p>
-            <p>For questions about the project itself, reach out via <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>, the <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord community</a>, or <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>.</p>
-        </div>
-
-        <div class="legal-section">
+            <p>Users are responsible for how they use the software and for complying with all applicable laws and regulations in their jurisdiction, including copyright law. Do not use Nekomo to access content you do not have the right to access.</p>
+        </section>
+        <section class="legal-section" id="extensions">
+            <h2>Extensions &amp; Third-Party Plugins</h2>
+            <p>Nekomo can load optional extensions written by independent developers. Nekomo does not author, review, host, or endorse these extensions, and is not responsible for the content or sites they access. Concerns about a specific extension or the site it reaches should be directed to that extension&rsquo;s author and to the website actually hosting the material.</p>
+        </section>
+        <section class="legal-section" id="notice">
+            <h2>DMCA Notice Procedure</h2>
+            <p>Nekomo respects intellectual property rights and responds to valid notices relating to materials that <strong>Nekomo actually hosts</strong>. That is limited to this website, its images, and files in the <a href="https://github.com/Nekomo-App/Neko-Source" target="_blank" rel="noopener">Nekomo-App GitHub repositories</a>.</p>
+            <p><strong>Content on third-party sites cannot be removed by us.</strong> If your work is hosted somewhere else, please send your notice to the host or provider of that site, or to the search engine or platform that links to it. We cannot take down what we do not host, own, or control.</p>
+            <h3>What to include in a notice</h3>
+            <p>To be valid under 17 U.S.C. &sect; 512(c)(3), a notice must be written and include:</p>
+            <ol>
+                <li>a physical or electronic signature of the copyright owner or a person authorized to act on their behalf;</li>
+                <li>identification of the copyrighted work claimed to have been infringed (or a representative list if multiple works);</li>
+                <li>identification of the material claimed to be infringing and information reasonably sufficient for us to locate it &mdash; <strong>for example, the exact URL on this website or the exact file/path in our repository</strong>;</li>
+                <li>your name, mailing address, telephone number, and email address;</li>
+                <li>a statement that you have a good-faith belief that the use is not authorized by the copyright owner, its agent, or the law;</li>
+                <li>a statement, made under penalty of perjury, that the information in the notice is accurate and that you are authorized to act on behalf of the owner of the exclusive right allegedly infringed.</li>
+            </ol>
+            <h3>Where to send it</h3>
+            <p>Contact a maintainer through one of these channels. To protect your privacy, please <strong>do not post personal details publicly</strong>; ask for a private channel first and send the full notice there.</p>
+            <ul>
+                <li><a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a> &mdash; message a server admin or open a ticket, and mention &ldquo;DMCA notice&rdquo;.</li>
+                <li><a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a> &mdash; message a group admin and mention &ldquo;DMCA notice&rdquo;.</li>
+                <li><a href="https://github.com/Nekomo-App/Neko-Source/issues/new" target="_blank" rel="noopener">GitHub issue</a> &mdash; open an issue titled &ldquo;DMCA notice&rdquo; with the URLs concerned only, and ask for a private channel to send the remainder. You can also use GitHub&rsquo;s own <a href="https://github.com/contact/dmca" target="_blank" rel="noopener">DMCA process</a> for repository content.</li>
+            </ul>
+            <h3>What happens next</h3>
+            <p>We review notices in good faith. If a valid notice relates to material we host, we will promptly remove or disable access to it and may forward the notice (with your details) to the person who posted it. Incomplete notices or notices about content we do not host may receive no action beyond a reply explaining why.</p>
+        </section>
+        <section class="legal-section" id="counter">
+            <h2>Counter-Notice</h2>
+            <p>If material you posted was removed and you believe that was a mistake or misidentification, you may send a counter-notice through the same channels containing:</p>
+            <ol>
+                <li>your physical or electronic signature;</li>
+                <li>identification of the material removed and where it appeared before removal;</li>
+                <li>a statement under penalty of perjury that you have a good-faith belief the material was removed by mistake or misidentification;</li>
+                <li>your name, address, and phone number, and a statement that you consent to the jurisdiction of the federal court for your district (or, if outside the United States, any judicial district in which we may be found) and will accept service of process from the person who submitted the original notice.</li>
+            </ol>
+            <p>We may forward the counter-notice to the original complainant. If they do not notify us within 10&ndash;14 business days that they have filed a court action, we may restore the material.</p>
+        </section>
+        <section class="legal-section" id="repeat">
+            <h2>Repeat Infringers</h2>
+            <p>In appropriate circumstances, we will restrict or ban users of our community spaces and contributors who are repeat infringers.</p>
+        </section>
+        <section class="legal-section" id="abuse">
+            <h2>Misrepresentations</h2>
+            <p>Under 17 U.S.C. &sect; 512(f), anyone who knowingly materially misrepresents that material is infringing, or that it was removed by mistake, may be liable for damages. Please make sure your notice is accurate before sending it.</p>
+        </section>
+        <section class="legal-section" id="trademarks">
+            <h2>Trademarks &amp; Brand Concerns</h2>
+            <p>Names, logos, and artwork of anime, studios, publishers, and services referenced in the app or on this site belong to their respective owners and are used only for identification. If you believe a trademark or image is used improperly on this website, use the notice process above and we will look into it.</p>
+        </section>
+        <section class="legal-section" id="liability">
+            <h2>Disclaimer of Liability</h2>
+            <p>Nekomo and its contributors provide the software &ldquo;as is&rdquo; and accept no responsibility for how third parties use it, for any content reachable through third-party sources or extensions, or for any loss or damage arising from its use. See also the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
+            <p>This page is provided for general information and is not legal advice.</p>
+        </section>
+        <section class="legal-section" id="status">
             <h2>Project Status</h2>
             <p>Nekomo is currently maintained as a community project and is not under guaranteed active development. The application may be buggy or unreliable, and future releases are not guaranteed.</p>
-        </div>
+        </section>
+
     </main>
 
     <footer>
@@ -297,14 +143,17 @@
                 <span class="logo-text">Nekomo</span>
             </div>
             <div class="footer-links">
-                <a href="index.html">Home</a>
-                <a href="updates.html">Releases &amp; Changelog</a>
-                <a href="contributors.html">Contributors</a>
-                <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
-                <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">Repository</a>
+                <a href="/">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
                 <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
                 <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
-                <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
+                <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
             </div>
             <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
         </div>
