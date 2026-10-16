@@ -48,7 +48,16 @@
         '.nk-wallpaper-btn.nk-ghost:hover{background:rgba(255,92,122,.15);}',
         '.nk-wallpaper-close{position:absolute;top:-18px;right:-18px;width:36px;height:36px;border-radius:50%;background:#150910;border:1px solid rgba(255,92,122,.3);color:#f7ecf0;display:flex;align-items:center;justify-content:center;cursor:pointer;}',
         '.nk-wallpaper-close svg{width:16px;height:16px;}',
-        '@media (max-width:480px){.nk-wallpaper-close{top:-14px;right:4px;}}'
+        '@media (max-width:480px){.nk-wallpaper-close{top:-14px;right:4px;}}',
+        '.nav-links a{white-space:nowrap;}',
+        '.nav-links a.nk-current,.nk-dd-btn.nk-current{color:#f7ecf0;background:rgba(255,92,122,.12);}',
+        '.nk-dd{position:relative;}',
+        '.nk-dd-btn{font:inherit;font-size:.92rem;font-weight:500;color:#b9929f;background:none;border:none;cursor:pointer;padding:8px 14px;border-radius:10px;white-space:nowrap;transition:color .2s,background .2s;}',
+        '.nk-dd-btn:hover,.nk-dd.nk-open .nk-dd-btn{color:#f7ecf0;background:rgba(255,92,122,.08);}',
+        '.nk-dd-menu{position:absolute;top:100%;right:0;min-width:210px;padding:8px;margin-top:6px;display:none;flex-direction:column;gap:2px;background:rgba(12,5,8,.97);border:1px solid rgba(255,92,122,.14);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.5);}',
+        '.nk-dd-menu::before{content:"";position:absolute;left:0;right:0;top:-8px;height:8px;}',
+        '.nk-dd:hover .nk-dd-menu,.nk-dd:focus-within .nk-dd-menu,.nk-dd.nk-open .nk-dd-menu{display:flex;}',
+        '@media (max-width:1100px){.nk-dd-btn{display:none;}.nk-dd-menu{position:static;display:flex;margin:0;padding:0;border:none;box-shadow:none;background:none;}.nk-dd-menu::before{display:none;}}'
     ].join('\n');
 
     function injectStyles() {
@@ -229,6 +238,19 @@
             if (!links.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) close();
         });
         window.addEventListener('resize', close);
+
+        document.querySelectorAll('.nk-dd').forEach(function (dd) {
+            var btn = dd.querySelector('.nk-dd-btn');
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var open = dd.classList.toggle('nk-open');
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+            document.addEventListener('click', function () {
+                dd.classList.remove('nk-open');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        });
     }
 
     function init() {
