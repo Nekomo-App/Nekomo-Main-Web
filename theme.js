@@ -50,6 +50,8 @@
         '.nk-wallpaper-close svg{width:16px;height:16px;}',
         '@media (max-width:480px){.nk-wallpaper-close{top:-14px;right:4px;}}',
         '.nav-links a{white-space:nowrap;}',
+        '.nav-links a.nav-cta{background:linear-gradient(135deg,#ff5c7a,#8d2249);color:#fff;font-weight:600;}',
+        '.nav-links a.nav-cta:hover{filter:brightness(1.15);}',
         '.nav-links a.nk-current,.nk-dd-btn.nk-current{color:#f7ecf0;background:rgba(255,92,122,.12);}',
         '.nk-dd{position:relative;}',
         '.nk-dd-btn{font:inherit;font-size:.92rem;font-weight:500;color:#b9929f;background:none;border:none;cursor:pointer;padding:8px 14px;border-radius:10px;white-space:nowrap;transition:color .2s,background .2s;}',
@@ -57,7 +59,8 @@
         '.nk-dd-menu{position:absolute;top:100%;right:0;min-width:210px;padding:8px;margin-top:6px;display:none;flex-direction:column;gap:2px;background:rgba(12,5,8,.97);border:1px solid rgba(255,92,122,.14);border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.5);}',
         '.nk-dd-menu::before{content:"";position:absolute;left:0;right:0;top:-8px;height:8px;}',
         '.nk-dd:hover .nk-dd-menu,.nk-dd:focus-within .nk-dd-menu,.nk-dd.nk-open .nk-dd-menu{display:flex;}',
-        '@media (max-width:1100px){.nk-dd-btn{display:none;}.nk-dd-menu{position:static;display:flex;margin:0;padding:0;border:none;box-shadow:none;background:none;}.nk-dd-menu::before{display:none;}}'
+        '@media (max-width:1240px){.nk-dd-btn{display:none;}.nk-dd-menu{position:static;display:flex;margin:0;padding:0;border:none;box-shadow:none;background:none;}.nk-dd-menu::before{display:none;}}',
+        '@media (max-width:1240px){.nav-links{background:#110609;max-height:calc(100vh - 84px);max-height:calc(100dvh - 84px);overflow-y:auto;overscroll-behavior:contain;gap:2px;}.nav-links a{padding:10px 14px;}.nk-dd{margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,92,122,.12);}.nav-links .nav-cta{margin-top:6px;text-align:center;}}'
     ].join('\n');
 
     function injectStyles() {
