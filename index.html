@@ -459,6 +459,11 @@
         .download-tile-info h3 { font-size: 1rem; font-weight: 600; }
         .tile-meta { margin-top: 4px; font-size: 0.82rem; color: var(--text-muted); }
         .download-tile.nk-unavailable .tile-meta { color: #e2a3ae; }
+        .download-notice { margin: 24px auto 0; max-width: 680px; padding: 14px 20px; border-radius: var(--radius); border: 1px solid rgba(250, 204, 21, 0.3); background: rgba(250, 204, 21, 0.07); font-size: 0.88rem; color: var(--text-muted); text-align: center; }
+        .download-notice strong { color: var(--text); }
+        .download-notice a { color: var(--accent-bright); text-decoration: none; }
+        .download-notice a:hover { text-decoration: underline; }
+        .tile-btn.nk-disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
         .tile-btn { width: 100%; justify-content: center; padding: 10px 16px; font-size: 0.86rem; }
         .status-note { margin-top: 26px; font-size: 0.82rem; color: var(--text-muted); opacity: 0.8; text-align: center; }
         .status-note a { color: var(--accent-bright); text-decoration: none; }
@@ -606,9 +611,9 @@
         <h1>Nekomo</h1>
         <p class="tagline">A community-driven <b>anime client</b> built from the legacy <b>Shiro</b> and <b>Kuro</b> projects. Discover anime, follow your watchlist, and explore community resources — all in one place.</p>
         <div class="hero-buttons">
-            <a class="btn btn-primary" href="uwu-apk.html?type=mobile-stable" id="hero-download">
+            <a class="btn btn-primary" href="/beta" id="hero-download">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                <span id="hero-download-label">Download for Android</span>
+                <span id="hero-download-label">Get the Beta</span>
             </a>
             <a class="btn btn-ghost" href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
@@ -624,7 +629,7 @@
             </a>
         </div>
         <p class="platform-note">📱🖥️ Android &amp; Android TV only — not available on iOS/Apple devices.</p>
-        <p class="version-tag" id="version-tag"></p>
+        <p class="version-tag" id="version-tag">Public downloads aren&rsquo;t available yet &mdash; Nekomo is in testing. Builds are only available on the <a href="/beta">Beta page</a>.</p>
         <div class="scroll-hint">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </div>
@@ -688,15 +693,19 @@
         <div class="section-inner">
             <p class="section-label reveal">Get Nekomo</p>
             <h2 class="section-title reveal">Ready to dive in?</h2>
-            <p class="section-sub reveal">📱🖥️ Android &amp; Android TV only — not available for iOS/Apple. Pick the build that fits your device below.</p>
+            <p class="section-sub reveal">📱🖥️ Android &amp; Android TV only — not available for iOS/Apple.</p>
 
-            <div class="downloads-status reveal" id="downloads-status">
+            <div class="downloads-status nk-partial reveal" id="downloads-status">
                 <span class="dot-status" id="downloads-status-dot"></span>
-                <span id="downloads-status-text">Checking build availability&hellip;</span>
+                <span id="downloads-status-text">Public downloads are not available yet &mdash; beta testing only.</span>
                 <span class="chip" id="stars-chip" style="display:none;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                     <span id="stars-text"></span>
                 </span>
+            </div>
+
+            <div class="download-notice reveal" role="note">
+                <strong>Heads up:</strong> Nekomo isn&rsquo;t publicly released yet. Right now the only way to get the app is through the <a href="/beta">Beta / Alpha testing page</a>. Beta builds are unfinished and may crash or lose data &mdash; read the <a href="/terms#beta">terms</a> first.
             </div>
 
             <div class="downloads-grid reveal">
@@ -709,11 +718,11 @@
                     </div>
                     <div class="download-tile-info">
                         <h3>Mobile</h3>
-                        <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
+                        <p class="tile-meta" data-field="meta">Not available yet</p>
                     </div>
-                    <a class="btn btn-primary tile-btn" data-field="btn" href="uwu-apk.html?type=mobile-stable">Download</a>
+                    <span class="btn btn-ghost tile-btn nk-disabled" data-field="btn" role="link" aria-disabled="true">Coming soon</span>
                 </div>
-                <div class="download-tile nk-unavailable" data-type="mobile-beta">
+                <div class="download-tile" data-type="mobile-beta">
                     <div class="tile-top">
                         <div class="download-tile-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
@@ -722,9 +731,9 @@
                     </div>
                     <div class="download-tile-info">
                         <h3>Mobile</h3>
-                        <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
+                        <p class="tile-meta" data-field="meta">Available on the Beta page</p>
                     </div>
-                    <a class="btn btn-ghost tile-btn" data-field="btn" href="uwu-apk.html?type=mobile-beta">Download</a>
+                    <a class="btn btn-primary tile-btn" data-field="btn" href="/beta">Get the beta</a>
                 </div>
                 <div class="download-tile nk-unavailable" data-type="tv-stable">
                     <div class="tile-top">
@@ -735,11 +744,11 @@
                     </div>
                     <div class="download-tile-info">
                         <h3>Android TV</h3>
-                        <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
+                        <p class="tile-meta" data-field="meta">Not available yet</p>
                     </div>
-                    <a class="btn btn-primary tile-btn" data-field="btn" href="uwu-apk.html?type=tv-stable">Download</a>
+                    <span class="btn btn-ghost tile-btn nk-disabled" data-field="btn" role="link" aria-disabled="true">Coming soon</span>
                 </div>
-                <div class="download-tile nk-unavailable" data-type="tv-beta">
+                <div class="download-tile" data-type="tv-beta">
                     <div class="tile-top">
                         <div class="download-tile-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
@@ -748,9 +757,9 @@
                     </div>
                     <div class="download-tile-info">
                         <h3>Android TV</h3>
-                        <p class="tile-meta" data-field="meta">Checking availability&hellip;</p>
+                        <p class="tile-meta" data-field="meta">Available on the Beta page</p>
                     </div>
-                    <a class="btn btn-ghost tile-btn" data-field="btn" href="uwu-apk.html?type=tv-beta">Download</a>
+                    <a class="btn btn-primary tile-btn" data-field="btn" href="/beta">Get the beta</a>
                 </div>
             </div>
 
@@ -849,65 +858,8 @@
         </div>
     </footer>
 
-    <script src="releases.js"></script>
     <script>
-        // Fetch GitHub releases, sort assets into a mobile/TV x stable/beta
-        // matrix, and reflect real-time availability in the download tiles.
-        // Note: all releases are marked as prerelease, so /releases/latest 404s — use the list instead
         (async function () {
-            const releasesUrl = NekomoReleases.releasesUrl;
-            const tiles = Array.from(document.querySelectorAll('.download-tile'));
-            const statusEl = document.getElementById('downloads-status');
-            const statusText = document.getElementById('downloads-status-text');
-            const heroLabel = document.getElementById('hero-download-label');
-
-            function applyTile(tile, entry) {
-                const meta = tile.querySelector('[data-field="meta"]');
-                const btn = tile.querySelector('[data-field="btn"]');
-                if (entry) {
-                    tile.classList.remove('nk-unavailable');
-                    const size = NekomoReleases.formatBytes(entry.asset.size);
-                    meta.textContent = entry.release.tag_name + (size ? ' · ' + size : '');
-                    btn.textContent = 'Download';
-                } else {
-                    tile.classList.add('nk-unavailable');
-                    meta.textContent = 'Not available right now';
-                    btn.textContent = 'View releases';
-                }
-            }
-
-            try {
-                const { matrix, hasReleases } = await NekomoReleases.fetchMatrix();
-
-                tiles.forEach(tile => {
-                    const [platform, channel] = tile.dataset.type.split('-');
-                    applyTile(tile, matrix[platform] && matrix[platform][channel]);
-                });
-
-                const available = tiles.filter(t => !t.classList.contains('nk-unavailable')).length;
-                if (!hasReleases || available === 0) {
-                    statusEl.className = 'downloads-status nk-none';
-                    statusText.textContent = 'No downloads are available right now — check back soon or ask in Discord.';
-                } else if (available < tiles.length) {
-                    statusEl.className = 'downloads-status nk-partial';
-                    statusText.textContent = available + ' of ' + tiles.length + ' builds currently available.';
-                } else {
-                    statusEl.className = 'downloads-status nk-ok';
-                    statusText.textContent = 'All builds currently available.';
-                }
-
-                const mobileStable = matrix.mobile && matrix.mobile.stable;
-                if (mobileStable) {
-                    heroLabel.textContent = 'Download ' + mobileStable.release.tag_name;
-                    document.getElementById('version-tag').innerHTML =
-                        'Latest release: <a href="' + mobileStable.release.html_url + '" target="_blank" rel="noopener">' + mobileStable.release.tag_name + '</a>';
-                }
-            } catch (e) {
-                statusEl.className = 'downloads-status nk-none';
-                statusText.innerHTML = 'Couldn\'t check build availability — <a href="' + releasesUrl + '" target="_blank" rel="noopener" style="color:var(--accent-bright)">view releases on GitHub</a> instead.';
-                tiles.forEach(tile => applyTile(tile, null));
-            }
-
             // Stars count (non-critical)
             try {
                 const repo = await (await fetch('https://api.github.com/repos/Nekomo-App/Nekomo')).json();

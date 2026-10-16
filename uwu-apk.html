@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Preparing your download — Nekomo</title>
+    <title>Downloads — Nekomo</title>
     <meta name="theme-color" content="#8d2249" />
+    <meta name="robots" content="noindex">
     <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,64 +111,14 @@
         <p class="changelog-link"><a href="updates.html">View full changelog &amp; release history</a></p>
     </div>
 
-    <script src="releases.js"></script>
     <script>
-        (async function () {
-            const PLATFORM_LABELS = { mobile: 'Mobile', tv: 'Android TV' };
-            const CHANNEL_LABELS = { stable: 'stable', beta: 'beta/debug' };
-            const VALID_TYPES = ['mobile-stable', 'mobile-beta', 'tv-stable', 'tv-beta'];
-
-            const params = new URLSearchParams(window.location.search);
-            const requested = (params.get('type') || 'mobile-stable').toLowerCase();
-            const type = VALID_TYPES.includes(requested) ? requested : 'mobile-stable';
-            const [platform, channel] = type.split('-');
-            const buildLabel = PLATFORM_LABELS[platform] + ' ' + CHANNEL_LABELS[channel];
-
-            const title = document.getElementById('title');
-            const spinner = document.getElementById('spinner');
-            const versionText = document.getElementById('version-text');
-            const hint = document.getElementById('hint');
-            const manualLink = document.getElementById('manual-link');
-            const manualBtn = document.getElementById('manual-btn');
-
-            title.textContent = 'Preparing your ' + buildLabel + ' download\u2026';
-
-            function showUnavailable(message) {
-                spinner.style.display = 'none';
-                versionText.textContent = 'Not available right now';
-                hint.textContent = message;
-                manualLink.innerHTML =
-                    '<a href="' + NekomoReleases.releasesUrl + '" target="_blank" rel="noopener">View all releases</a>' +
-                    '<a class="ghost" href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Ask on Discord</a>';
-                manualLink.classList.add('nk-visible');
-            }
-
-            function startDownload(url, tagName) {
-                versionText.textContent = tagName ? 'Downloading ' + tagName : 'Starting download\u2026';
-                hint.textContent = 'Your download should start automatically.';
-                manualBtn.textContent = 'Continue manually';
-                manualBtn.href = url;
-                manualBtn.removeAttribute('target');
-                manualBtn.removeAttribute('rel');
-                manualLink.classList.add('nk-visible');
-                window.location.href = url;
-            }
-
-            try {
-                const { matrix, hasReleases } = await NekomoReleases.fetchMatrix();
-                const entry = matrix[platform] && matrix[platform][channel];
-
-                if (!hasReleases) {
-                    showUnavailable('No Nekomo builds have been published yet — check back soon.');
-                } else if (entry) {
-                    startDownload(entry.asset.browser_download_url, entry.release.tag_name);
-                } else {
-                    showUnavailable('No ' + buildLabel + ' build is available right now.');
-                }
-            } catch (error) {
-                showUnavailable("Couldn't reach GitHub to check build availability. Please try again shortly.");
-            }
-        })();
+        document.getElementById('title').textContent = 'Downloads aren’t available yet';
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('version-text').textContent = 'Beta testing only';
+        document.getElementById('hint').textContent = 'Nekomo isn’t publicly released yet. Test builds are only available through the Beta page.';
+        var manual = document.getElementById('manual-link');
+        manual.innerHTML = '<a href="/beta">Go to the Beta page</a><a class="ghost" href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Ask on Discord</a>';
+        manual.classList.add('nk-visible');
     </script>
 </body>
 </html>
