@@ -16,8 +16,14 @@
 
     var css = [
         '.nk-petal-layer{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden;}',
-        '.nk-petal{position:absolute;top:-5vh;font-size:1.1rem;opacity:.75;will-change:transform;animation:nk-fall linear forwards;filter:drop-shadow(0 0 4px rgba(255,92,122,.3));}',
-        '@keyframes nk-fall{to{transform:translate(var(--nk-drift),112vh) rotate(var(--nk-spin));}}',
+        '.nk-petal{position:absolute;top:-5vh;font-size:1.1rem;opacity:.75;will-change:transform,opacity;animation:nk-fall ease-in-out forwards;filter:drop-shadow(0 0 4px rgba(255,92,122,.3));cursor:pointer;pointer-events:auto;transition:filter .15s,transform .15s;}',
+        '.nk-petal:hover{filter:drop-shadow(0 0 10px rgba(255,92,122,.7)) brightness(1.25);transform:scale(1.25) rotate(var(--nk-spin));}',
+        '.nk-petal.nk-popped{animation:none !important;transition:transform .28s cubic-bezier(.2,.8,.4,1.4),opacity .28s ease;transform:scale(1.8) rotate(45deg) !important;opacity:0 !important;pointer-events:none;}',
+        '@keyframes nk-fall{0%{transform:translate(0,0) rotate(0deg);}20%{transform:translate(var(--nk-drift-a),20vh) rotate(calc(var(--nk-spin) * .2));}45%{transform:translate(var(--nk-drift-b),45vh) rotate(calc(var(--nk-spin) * .45));}70%{transform:translate(var(--nk-drift-a),70vh) rotate(calc(var(--nk-spin) * .7));}100%{transform:translate(var(--nk-drift-c),112vh) rotate(var(--nk-spin));}}',
+        '.nk-burst-particle{position:fixed;z-index:3;pointer-events:none;will-change:transform,opacity;animation:nk-burst .55s cubic-bezier(.2,.7,.3,1) forwards;}',
+        '@keyframes nk-burst{0%{transform:translate(0,0) scale(1) rotate(0deg);opacity:1;}100%{transform:translate(var(--nk-bx),var(--nk-by)) scale(.35) rotate(var(--nk-br));opacity:0;}}',
+        '.nk-skip-link{position:fixed;top:-60px;left:12px;z-index:10000;background:#150910;color:#f7ecf0;padding:10px 18px;border-radius:10px;border:1px solid rgba(255,92,122,.3);text-decoration:none;font-family:Inter,system-ui,sans-serif;font-size:.85rem;font-weight:600;transition:top .2s;}',
+        '.nk-skip-link:focus{top:12px;outline:none;}',
         '.nk-settings-btn{position:fixed;bottom:22px;right:22px;z-index:200;width:48px;height:48px;border-radius:50%;background:#150910;border:1px solid rgba(255,92,122,.3);color:#ff5c7a;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s,border-color .2s;}',
         '.nk-settings-btn:hover{border-color:rgba(255,92,122,.6);transform:rotate(35deg);}',
         '.nk-settings-btn svg{width:22px;height:22px;}',
@@ -72,23 +78,59 @@
     /* ---------- Falling petals ---------- */
     var petalLayer, petalTimer;
     var PETAL_EMOJI = ['🌸', '🌸', '🌸', '🌺'];
+    var MAX_PETALS = 28; // safety cap so long-lived/background tabs can't accumulate nodes forever
+
+    function burstPetal(petal) {
+        if (petal.classList.contains('nk-popped')) return;
+        var rect = petal.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        petal.classList.add('nk-popped');
+        setTimeout(function () { petal.remove(); }, 300);
+
+        var count = 5 + Math.floor(Math.random() * 3);
+        for (var i = 0; i < count; i++) {
+            var p = document.createElement('span');
+            p.className = 'nk-burst-particle';
+            p.textContent = PETAL_EMOJI[Math.floor(Math.random() * PETAL_EMOJI.length)];
+            p.style.left = cx + 'px';
+            p.style.top = cy + 'px';
+            p.style.fontSize = (0.5 + Math.random() * 0.5).toFixed(2) + 'rem';
+            var angle = (Math.PI * 2 * i) / count + Math.random() * 0.6;
+            var dist = 28 + Math.random() * 46;
+            p.style.setProperty('--nk-bx', (Math.cos(angle) * dist).toFixed(0) + 'px');
+            p.style.setProperty('--nk-by', (Math.sin(angle) * dist).toFixed(0) + 'px');
+            p.style.setProperty('--nk-br', (Math.random() * 360 - 180).toFixed(0) + 'deg');
+            document.body.appendChild(p);
+            (function (particle) { setTimeout(function () { particle.remove(); }, 600); })(p);
+        }
+    }
 
     function spawnPetal() {
         if (!petalLayer) return;
+        if (petalLayer.childElementCount >= MAX_PETALS) return;
         var petal = document.createElement('span');
         petal.className = 'nk-petal';
         petal.textContent = PETAL_EMOJI[Math.floor(Math.random() * PETAL_EMOJI.length)];
         var startX = Math.random() * 100;
-        var drift = (Math.random() * 160 - 80).toFixed(0) + 'px';
+        var driftA = (Math.random() * 90 - 45).toFixed(0) + 'px';
+        var driftB = (Math.random() * 140 - 70).toFixed(0) + 'px';
+        var driftC = (Math.random() * 180 - 90).toFixed(0) + 'px';
         var spin = (Math.random() * 540 - 270).toFixed(0) + 'deg';
-        var duration = (9 + Math.random() * 7).toFixed(1) + 's';
+        var duration = (10 + Math.random() * 8).toFixed(1) + 's';
         petal.style.left = startX + 'vw';
         petal.style.fontSize = (0.8 + Math.random() * 0.9).toFixed(2) + 'rem';
-        petal.style.setProperty('--nk-drift', drift);
+        petal.style.setProperty('--nk-drift-a', driftA);
+        petal.style.setProperty('--nk-drift-b', driftB);
+        petal.style.setProperty('--nk-drift-c', driftC);
         petal.style.setProperty('--nk-spin', spin);
         petal.style.animationDuration = duration;
+        petal.title = 'Click me!';
+        petal.addEventListener('click', function () { burstPetal(petal); });
         petalLayer.appendChild(petal);
-        setTimeout(function () { petal.remove(); }, parseFloat(duration) * 1000 + 200);
+        setTimeout(function () {
+            if (petal.isConnected && !petal.classList.contains('nk-popped')) petal.remove();
+        }, parseFloat(duration) * 1000 + 200);
     }
 
     function startPetals() {
@@ -215,6 +257,25 @@
         });
     }
 
+    /* ---------- Skip to content (a11y) ---------- */
+    function initSkipLink() {
+        var nav = document.querySelector('nav');
+        var target = document.querySelector('main') || document.querySelector('header.hero') ||
+            (nav && nav.nextElementSibling);
+        if (!target) return;
+        if (!target.id) target.id = 'nk-main-content';
+        target.setAttribute('tabindex', '-1');
+
+        var link = document.createElement('a');
+        link.href = '#' + target.id;
+        link.className = 'nk-skip-link';
+        link.textContent = 'Skip to content';
+        link.addEventListener('click', function () {
+            setTimeout(function () { target.focus(); }, 0);
+        });
+        document.body.insertBefore(link, document.body.firstChild);
+    }
+
     /* ---------- Mobile nav toggle ---------- */
     function initNavToggle() {
         var toggle = document.querySelector('.nav-toggle');
@@ -258,6 +319,7 @@
 
     function init() {
         injectStyles();
+        initSkipLink();
         buildSettings();
         initNavToggle();
         initWallpaperViewer();

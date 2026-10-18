@@ -1,9 +1,11 @@
 /* Nekomo site gate — verification puzzle + DMCA/disclaimer notice.
-   Shows once per browser session (sessionStorage). Include with:
+   Shows once per browser (localStorage) — not re-shown every visit/session. Include with:
    <script src="gate.js" defer></script> */
 (function () {
-    var VERIFIED_KEY = 'nekomo_verified';
-    var ACK_KEY = 'nekomo_disclaimer_ack';
+    // Bump the _v suffix on these if the puzzle or disclaimer content changes
+    // materially and returning visitors need to see/accept it again.
+    var VERIFIED_KEY = 'nekomo_verified_v1';
+    var ACK_KEY = 'nekomo_disclaimer_ack_v1';
 
     var css = [
         '.nk-gate-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(8,3,6,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}',
@@ -152,18 +154,18 @@
     }
 
     function maybeDisclaimer() {
-        if (!sessionStorage.getItem(ACK_KEY)) {
+        if (!localStorage.getItem(ACK_KEY)) {
             showDisclaimer(function () {
-                sessionStorage.setItem(ACK_KEY, '1');
+                localStorage.setItem(ACK_KEY, '1');
             });
         }
     }
 
     function init() {
         injectStyles();
-        if (!sessionStorage.getItem(VERIFIED_KEY)) {
+        if (!localStorage.getItem(VERIFIED_KEY)) {
             showGate(function () {
-                sessionStorage.setItem(VERIFIED_KEY, '1');
+                localStorage.setItem(VERIFIED_KEY, '1');
                 maybeDisclaimer();
             });
         } else {
