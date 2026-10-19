@@ -97,7 +97,32 @@
         '.nk-dd-menu::before{content:"";position:absolute;left:0;right:0;top:-8px;height:8px;}',
         '.nk-dd:hover .nk-dd-menu,.nk-dd:focus-within .nk-dd-menu,.nk-dd.nk-open .nk-dd-menu{display:flex;}',
         '@media (max-width:1240px){.nk-dd-btn{display:none;}.nk-dd-menu{position:static;display:flex;margin:0;padding:0;border:none;box-shadow:none;background:none;}.nk-dd-menu::before{display:none;}}',
-        '@media (max-width:1240px){.nav-links{background:#110609;max-height:calc(100vh - 84px);max-height:calc(100dvh - 84px);overflow-y:auto;overscroll-behavior:contain;gap:2px;}.nav-links a{padding:10px 14px;}.nk-dd{margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,92,122,.12);}.nav-links .nav-cta{margin-top:6px;text-align:center;}}'
+        '@media (max-width:1240px){.nav-links{background:#110609;max-height:calc(100vh - 84px);max-height:calc(100dvh - 84px);overflow-y:auto;overscroll-behavior:contain;gap:2px;}.nav-links a{padding:10px 14px;}.nk-dd{margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,92,122,.12);}.nav-links .nav-cta{margin-top:6px;text-align:center;}}',
+        '.nk-search-btn{position:fixed;bottom:22px;right:84px;z-index:200;width:48px;height:48px;border-radius:50%;background:#150910;border:1px solid rgba(255,92,122,.3);color:#ff5c7a;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s,border-color .2s;}',
+        '.nk-search-btn:hover{border-color:rgba(255,92,122,.6);transform:scale(1.06);}',
+        '.nk-search-btn svg{width:20px;height:20px;}',
+        '@media (max-width:480px){.nk-search-btn{right:14px;bottom:80px;}.nk-settings-btn{right:14px;}}',
+        '.nk-search-overlay{position:fixed;inset:0;z-index:9997;display:flex;align-items:flex-start;justify-content:center;padding:14vh 20px 20px;background:rgba(8,3,6,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;pointer-events:none;transition:opacity .18s;}',
+        '.nk-search-overlay.nk-open{opacity:1;pointer-events:auto;}',
+        '.nk-search-card{width:100%;max-width:560px;max-height:70vh;display:flex;flex-direction:column;background:#150910;border:1px solid rgba(255,92,122,.25);border-radius:18px;box-shadow:0 24px 80px rgba(0,0,0,.6);overflow:hidden;transform:translateY(-10px) scale(.98);transition:transform .18s;}',
+        '.nk-search-overlay.nk-open .nk-search-card{transform:none;}',
+        '.nk-search-input-row{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,92,122,.12);}',
+        '.nk-search-input-row svg{width:18px;height:18px;color:#ff5c7a;flex-shrink:0;}',
+        '.nk-search-input-row input{flex:1;min-width:0;background:none;border:none;color:#f7ecf0;font-size:1rem;font-family:Inter,system-ui,sans-serif;}',
+        '.nk-search-input-row input:focus{outline:none;}',
+        '.nk-search-input-row kbd{font-size:.72rem;color:#b9929f;border:1px solid rgba(255,92,122,.25);border-radius:6px;padding:2px 6px;font-family:inherit;}',
+        '.nk-search-chips{display:flex;gap:6px;padding:10px 18px;flex-wrap:wrap;border-bottom:1px solid rgba(255,92,122,.1);}',
+        '.nk-search-chip{font:inherit;font-size:.74rem;font-weight:500;padding:5px 11px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,92,122,.2);background:rgba(255,92,122,.06);color:#b9929f;transition:background .15s,color .15s,border-color .15s;}',
+        '.nk-search-chip:hover{color:#f7ecf0;}',
+        '.nk-search-chip[aria-pressed=true]{color:#fff;border-color:transparent;background:linear-gradient(135deg,#ff5c7a,#8d2249);}',
+        '.nk-search-results{overflow-y:auto;padding:8px;}',
+        '.nk-search-result{display:block;padding:12px 14px;border-radius:12px;text-decoration:none;color:#f7ecf0;cursor:pointer;}',
+        '.nk-search-result.nk-active,.nk-search-result:hover{background:rgba(255,92,122,.12);}',
+        '.nk-search-result .nk-sr-title{font-family:Outfit,sans-serif;font-size:.92rem;font-weight:600;display:flex;align-items:center;gap:8px;}',
+        '.nk-search-result .nk-sr-cat{font-size:.65rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#ff5c7a;background:rgba(255,92,122,.1);border:1px solid rgba(255,92,122,.25);border-radius:999px;padding:1px 8px;flex-shrink:0;}',
+        '.nk-search-result .nk-sr-desc{margin-top:3px;font-size:.8rem;color:#b9929f;}',
+        '.nk-search-result mark{background:rgba(255,92,122,.35);color:#fff;border-radius:3px;padding:0 1px;}',
+        '.nk-search-empty{padding:28px 18px;text-align:center;color:#b9929f;font-size:.88rem;}'
     ].join('\n');
 
     function injectStyles() {
@@ -258,6 +283,182 @@
 
     function pauseMusic() {
         if (ytPlayer) { try { ytPlayer.pauseVideo(); } catch (e) { /* ignore */ } }
+    }
+
+    /* ---------- Advanced site search ---------- */
+    var SEARCH_INDEX = [
+        { title: 'Home', desc: 'Nekomo — community-driven anime client overview', url: '/', cat: 'Pages' },
+        { title: 'Features', desc: 'AniList discovery, streaming, downloads, watchlist & tracking', url: '/#features', cat: 'Pages' },
+        { title: 'Download Nekomo', desc: 'Get the app — mobile & Android TV, stable & beta channels', url: '/#download', cat: 'Pages' },
+        { title: 'Community', desc: 'Discord, Telegram, GitHub org and repositories', url: '/#community', cat: 'Pages' },
+        { title: 'Beta & Alpha Testing', desc: 'Download Nekomo beta, alpha and debug APKs, filter by device/channel', url: '/beta', cat: 'Pages' },
+        { title: 'Releases & Updates', desc: 'Latest build, full changelog history, auto-update methods', url: '/updates.html', cat: 'Pages' },
+        { title: 'Contributors', desc: 'Project history, repositories, developers, alternatives', url: '/contributors.html', cat: 'Pages' },
+        { title: 'Community Rules', desc: 'Rules for the app, Discord, Telegram and GitHub', url: '/rules', cat: 'Pages' },
+        { title: 'Support & Contact', desc: 'Help, FAQ, bug reports, and contact options', url: '/support', cat: 'Pages' },
+
+        { title: 'About this website', desc: 'What nekomoapp.netlify.app is and who runs it', url: '/support#about', cat: 'FAQ' },
+        { title: 'Is Nekomo available on iOS?', desc: 'No — Android and Android TV only', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Where do I download Nekomo?', desc: 'Only official builds on the Beta page for now', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Does Nekomo host videos?', desc: 'No, Nekomo hosts nothing and runs no streaming servers', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Why do I have to sign in?', desc: 'AniList, MyAnimeList, or Kitsu — Nekomo has no accounts of its own', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Can you add a streaming source?', desc: 'No sources ship by default; you install them yourself', url: '/support#faq', cat: 'FAQ' },
+        { title: 'What is the background music?', desc: 'Optional, off by default — play/pause, volume, custom link', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Report a bug', desc: 'What to include in a GitHub issue', url: '/support#report', cat: 'FAQ' },
+        { title: 'Install & update help', desc: 'Troubleshooting installs and updates', url: '/support#install', cat: 'FAQ' },
+        { title: 'Sign-in problems', desc: 'Troubleshooting AniList/MAL/Kitsu login', url: '/support#login', cat: 'FAQ' },
+        { title: 'Playback problems', desc: 'Troubleshooting sources and the player', url: '/support#playback', cat: 'FAQ' },
+        { title: 'Extensions help', desc: 'Installing and troubleshooting third-party extensions', url: '/support#ext', cat: 'FAQ' },
+
+        { title: 'Terms of Service', desc: 'Rules governing use of the Nekomo app and website', url: '/terms', cat: 'Legal' },
+        { title: 'No hosted content', desc: 'Nekomo does not host or distribute media', url: '/terms#content', cat: 'Legal' },
+        { title: 'Extensions & third-party sources', desc: 'Only install extensions you trust', url: '/terms#extensions', cat: 'Legal' },
+        { title: 'Beta and test builds', desc: 'Unfinished software — use at your own risk', url: '/terms#beta', cat: 'Legal' },
+        { title: 'Privacy Policy', desc: 'What Nekomo does and does not do with your data', url: '/privacy', cat: 'Legal' },
+        { title: 'Data stored on your device', desc: 'Preferences, history, tokens, extensions, error logs', url: '/privacy#device', cat: 'Legal' },
+        { title: 'Third-party services', desc: 'AniList, MyAnimeList, Kitsu, streaming sources, DNS providers', url: '/privacy#thirdparty', cat: 'Legal' },
+        { title: 'This website (privacy)', desc: 'Local storage usage: verification, petals, music prefs', url: '/privacy#website', cat: 'Legal' },
+        { title: 'DMCA & Disclaimer', desc: 'Copyright notice procedure and project disclaimers', url: '/dmca.html', cat: 'Legal' },
+        { title: 'No servers or sources', desc: 'Nekomo does not operate streaming servers or providers', url: '/dmca.html#noservers', cat: 'Legal' },
+        { title: 'Background music & external links', desc: 'Music licensing responsibility and third-party link disclaimer', url: '/dmca.html#media', cat: 'Legal' },
+        { title: 'DMCA notice procedure', desc: 'How to file a valid copyright notice', url: '/dmca.html#notice', cat: 'Legal' },
+        { title: 'Be respectful (Rule 1)', desc: 'Community conduct expectations', url: '/rules#r1', cat: 'Legal' },
+        { title: 'No piracy distribution (Rule 5)', desc: 'No pirated links or source/extension requests', url: '/rules#r5', cat: 'Legal' },
+        { title: 'Reporting (Rule 9)', desc: 'How to report rule-breaking or copyright issues', url: '/rules#r9', cat: 'Legal' },
+
+        { title: 'Project history', desc: 'Shiro → Kuro No → Nekomo lineage', url: '/contributors.html', cat: 'Contributors' },
+        { title: 'MarshMeadow', desc: 'Head Developer & Project Lead', url: '/contributors.html', cat: 'Contributors' },
+        { title: 'Resources & Alternatives', desc: 'Dantotsu, Cloudstream, Miru, Kitsune, AnimeTV, Kamyroll', url: '/contributors.html', cat: 'Contributors' },
+        { title: 'Project repositories', desc: 'Nekomo, Neko-Source, og-kuro-no-source, website repos', url: '/contributors.html', cat: 'Contributors' }
+    ];
+    var SEARCH_CATEGORIES = ['All', 'Pages', 'FAQ', 'Legal', 'Contributors'];
+
+    function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+    function highlight(text, query) {
+        var safe = escapeHtml(text);
+        if (!query) return safe;
+        var safeQuery = escapeHtml(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return safe.replace(new RegExp('(' + safeQuery + ')', 'ig'), '<mark>$1</mark>');
+    }
+
+    function initSiteSearch() {
+        var btn = document.createElement('button');
+        btn.className = 'nk-search-btn';
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Search Nekomo');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+
+        var overlay = document.createElement('div');
+        overlay.className = 'nk-search-overlay';
+        overlay.innerHTML =
+            '<div class="nk-search-card" role="dialog" aria-modal="true" aria-label="Site search">' +
+            '  <div class="nk-search-input-row">' +
+            '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+            '    <input type="text" id="nk-search-input" placeholder="Search FAQ, legal, releases, contributors&hellip;" autocomplete="off" spellcheck="false">' +
+            '    <kbd>Esc</kbd>' +
+            '  </div>' +
+            '  <div class="nk-search-chips" id="nk-search-chips"></div>' +
+            '  <div class="nk-search-results" id="nk-search-results"></div>' +
+            '</div>';
+
+        document.body.appendChild(overlay);
+        document.body.appendChild(btn);
+
+        var input = overlay.querySelector('#nk-search-input');
+        var resultsEl = overlay.querySelector('#nk-search-results');
+        var chipsEl = overlay.querySelector('#nk-search-chips');
+        var state = { category: 'All', results: [], active: -1 };
+
+        SEARCH_CATEGORIES.forEach(function (cat) {
+            var chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'nk-search-chip';
+            chip.textContent = cat;
+            chip.setAttribute('aria-pressed', String(cat === 'All'));
+            chip.addEventListener('click', function () {
+                state.category = cat;
+                chipsEl.querySelectorAll('.nk-search-chip').forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+                runSearch();
+            });
+            chipsEl.appendChild(chip);
+        });
+
+        function matches(entry, query) {
+            var haystack = (entry.title + ' ' + entry.desc + ' ' + entry.cat).toLowerCase();
+            return haystack.indexOf(query) !== -1;
+        }
+
+        function render() {
+            resultsEl.innerHTML = '';
+            if (!state.results.length) {
+                resultsEl.innerHTML = '<div class="nk-search-empty">No matches. Try a different word, or ask on <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" style="color:#ff5c7a">Discord</a>.</div>';
+                return;
+            }
+            var query = input.value.trim();
+            state.results.forEach(function (entry, i) {
+                var a = document.createElement('a');
+                a.className = 'nk-search-result' + (i === state.active ? ' nk-active' : '');
+                a.href = entry.url;
+                a.innerHTML =
+                    '<div class="nk-sr-title"><span class="nk-sr-cat">' + entry.cat + '</span>' + highlight(entry.title, query) + '</div>' +
+                    '<div class="nk-sr-desc">' + highlight(entry.desc, query) + '</div>';
+                a.addEventListener('mouseenter', function () { state.active = i; render(); });
+                resultsEl.appendChild(a);
+            });
+        }
+
+        function runSearch() {
+            var query = input.value.trim().toLowerCase();
+            var pool = state.category === 'All' ? SEARCH_INDEX : SEARCH_INDEX.filter(function (e) { return e.cat === state.category; });
+            state.results = query ? pool.filter(function (e) { return matches(e, query); }) : pool;
+            state.active = state.results.length ? 0 : -1;
+            render();
+        }
+
+        function open() {
+            overlay.classList.add('nk-open');
+            document.body.style.overflow = 'hidden';
+            runSearch();
+            setTimeout(function () { input.focus(); }, 20);
+        }
+        function close() {
+            overlay.classList.remove('nk-open');
+            document.body.style.overflow = '';
+        }
+
+        btn.addEventListener('click', open);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+        input.addEventListener('input', runSearch);
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { close(); return; }
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (state.results.length) { state.active = (state.active + 1) % state.results.length; render(); }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (state.results.length) { state.active = (state.active - 1 + state.results.length) % state.results.length; render(); }
+            } else if (e.key === 'Enter') {
+                if (state.active >= 0 && state.results[state.active]) {
+                    e.preventDefault();
+                    window.location.href = state.results[state.active].url;
+                }
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (overlay.classList.contains('nk-open')) return;
+            var tag = (e.target && e.target.tagName) || '';
+            var typing = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable);
+            if (typing) return;
+            if (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k')) {
+                e.preventDefault();
+                open();
+            }
+        });
     }
 
     /* ---------- Settings panel ---------- */
@@ -489,6 +690,7 @@
         injectStyles();
         initSkipLink();
         buildSettings();
+        initSiteSearch();
         initNavToggle();
         initWallpaperViewer();
     }

@@ -1,7 +1,7 @@
 /* Nekomo releases helper — fetches GitHub releases and sorts assets into a
-   mobile/TV x stable/beta matrix. Shared by index.html, uwu-apk.html, and
-   updates.html. Load this (non-deferred) before any inline script that uses
-   window.NekomoReleases. */
+   mobile/TV x stable/beta matrix. Used by index.html to light up the Stable
+   download tiles automatically once a real stable build exists. Load this
+   (non-deferred) before any inline script that uses window.NekomoReleases. */
 (function (global) {
     var REPO = 'Nekomo-App/Nekomo';
     var API_URL = 'https://api.github.com/repos/' + REPO + '/releases?per_page=30';

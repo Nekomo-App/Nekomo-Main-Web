@@ -20,8 +20,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="gate.js" defer></script>
-    <script src="theme.js" defer></script>
+    <script src="/gate.js" defer></script>
+    <script src="/theme.js" defer></script>
     <style>
         :root {
             --bg: #0c0508;
@@ -773,7 +773,7 @@
                 </div>
             </div>
 
-            <p class="status-note">Nekomo is a community project and is not under guaranteed active development. Join the <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a> for status updates and alternatives. See the <a href="updates.html">release tracker</a> for full changelogs and auto-update options.</p>
+            <p class="status-note">Nekomo is a community project and is not under guaranteed active development. Join the <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a> for status updates and alternatives. See the <a href="/updates.html">release tracker</a> for full changelogs and auto-update options.</p>
         </div>
     </section>
 
@@ -848,17 +848,17 @@
                 <div class="footer-links">
                     <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
                     <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">Repository</a>
-                    <a href="updates.html">Releases &amp; Changelog</a>
+                    <a href="/updates.html">Releases &amp; Changelog</a>
                     <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
                     <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
-                    <a href="contributors.html">Contributors</a>
+                    <a href="/contributors.html">Contributors</a>
                     <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
                     <a href="/beta">Beta Testing</a>
                     <a href="/rules">Rules</a>
                     <a href="/terms">Terms</a>
                     <a href="/privacy">Privacy</a>
                     <a href="/support">Support</a>
-                    <a href="dmca.html">DMCA / Disclaimer</a>
+                    <a href="/dmca.html">DMCA / Disclaimer</a>
                 </div>
             </div>
             <div class="disclaimer">
@@ -868,6 +868,7 @@
         </div>
     </footer>
 
+    <script src="/releases.js"></script>
     <script>
         (async function () {
             // Stars count (non-critical)
@@ -888,6 +889,29 @@
                     document.getElementById('discord-stats').hidden = false;
                 }
             } catch (e) { /* ignore */ }
+
+            // Stable download tiles: these stay as the static "Not available yet"
+            // copy until a real stable (non-prerelease-only) build exists, then
+            // swap themselves live instead of needing a manual edit here.
+            try {
+                const { matrix } = await window.NekomoReleases.fetchMatrix();
+                ['mobile-stable', 'tv-stable'].forEach(type => {
+                    const platform = type.split('-')[0];
+                    const entry = matrix[platform].stable;
+                    if (!entry) return;
+                    const tile = document.querySelector('.download-tile[data-type="' + type + '"]');
+                    if (!tile) return;
+                    tile.classList.remove('nk-unavailable');
+                    tile.querySelector('[data-field="meta"]').textContent = entry.release.tag_name;
+                    const oldBtn = tile.querySelector('[data-field="btn"]');
+                    const newBtn = document.createElement('a');
+                    newBtn.className = 'btn btn-primary tile-btn';
+                    newBtn.setAttribute('data-field', 'btn');
+                    newBtn.href = entry.asset.browser_download_url;
+                    newBtn.textContent = 'Download';
+                    oldBtn.replaceWith(newBtn);
+                });
+            } catch (e) { /* keep the static fallback copy */ }
         })();
 
         // Scroll reveal animations

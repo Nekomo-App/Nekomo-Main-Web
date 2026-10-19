@@ -140,11 +140,11 @@
             '  <p>Nekomo is not affiliated with, endorsed by, sponsored by, or officially connected to AniList, MyAnimeList, Kitsu, TMDb, or any other content provider unless explicitly stated otherwise.</p>' +
             '  <h3>Your responsibility</h3>' +
             '  <p>All trademarks, copyrights, logos, and names belong to their respective owners. You are responsible for how you use the software and for complying with all applicable laws in your jurisdiction.</p>' +
-            '  <p>Full details are on the <a href="dmca.html" style="color:#ff5c7a">DMCA &amp; Disclaimer page</a>.</p>' +
+            '  <p>Full details are on the <a href="/dmca.html" style="color:#ff5c7a">DMCA &amp; Disclaimer page</a>.</p>' +
             '</div>' +
             '<div class="nk-disclaimer-actions">' +
             '  <button class="nk-gate-btn" type="button">I Understand</button>' +
-            '  <a class="nk-gate-btn nk-gate-btn-ghost" href="dmca.html">Read Full Disclaimer</a>' +
+            '  <a class="nk-gate-btn nk-gate-btn-ghost" href="/dmca.html">Read Full Disclaimer</a>' +
             '</div>';
 
         g.card.querySelector('button').addEventListener('click', function () {
