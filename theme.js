@@ -14,6 +14,24 @@
         return v === null ? prefersReducedMotion : v === '1';
     }
 
+    /* ---------- Background music prefs (off by default) ---------- */
+    var MUSIC_ENABLED_KEY = 'nekomo_music_enabled';
+    var MUSIC_VOLUME_KEY = 'nekomo_music_volume';
+    var MUSIC_URL_KEY = 'nekomo_music_url';
+    var DEFAULT_MUSIC_URL = 'https://www.youtube.com/watch?v=I-AyVc3Vi9Y';
+
+    function getMusicEnabled() { return localStorage.getItem(MUSIC_ENABLED_KEY) === '1'; }
+    function getMusicVolume() {
+        var v = parseInt(localStorage.getItem(MUSIC_VOLUME_KEY), 10);
+        return isNaN(v) ? 40 : Math.min(100, Math.max(0, v));
+    }
+    function getMusicUrl() { return localStorage.getItem(MUSIC_URL_KEY) || DEFAULT_MUSIC_URL; }
+    function extractYouTubeId(url) {
+        if (!url) return null;
+        var m = String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|[?&]v=)([a-zA-Z0-9_-]{11})/);
+        return m ? m[1] : null;
+    }
+
     var css = [
         '.nk-petal-layer{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden;}',
         '.nk-petal{position:absolute;top:-5vh;font-size:1.1rem;opacity:.75;will-change:transform,opacity;animation:nk-fall ease-in-out forwards;filter:drop-shadow(0 0 4px rgba(255,92,122,.3));cursor:pointer;pointer-events:auto;transition:filter .15s,transform .15s;}',
@@ -37,6 +55,19 @@
         '.nk-switch span::before{content:"";position:absolute;width:16px;height:16px;left:2px;top:2px;background:#f7ecf0;border-radius:50%;transition:transform .2s;}',
         '.nk-switch input:checked + span{background:linear-gradient(135deg,#ff5c7a,#8d2249);border-color:transparent;}',
         '.nk-switch input:checked + span::before{transform:translateX(16px);}',
+        '.nk-music-controls{margin-top:4px;padding-top:10px;border-top:1px solid rgba(255,92,122,.12);display:flex;flex-direction:column;gap:10px;}',
+        '.nk-music-row{display:flex;align-items:center;gap:10px;}',
+        '.nk-music-btn{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,92,122,.3);background:rgba(255,92,122,.08);color:#ff5c7a;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;}',
+        '.nk-music-btn:hover{background:rgba(255,92,122,.18);}',
+        '.nk-music-btn svg{width:15px;height:15px;}',
+        '.nk-music-row input[type=range]{flex:1;accent-color:#ff5c7a;}',
+        '.nk-music-url-row{display:flex;gap:8px;}',
+        '.nk-music-url-row input[type=text]{flex:1;min-width:0;background:rgba(255,92,122,.06);border:1px solid rgba(255,92,122,.2);border-radius:8px;padding:7px 10px;color:#f7ecf0;font-size:.76rem;font-family:inherit;}',
+        '.nk-music-url-row input[type=text]:focus{outline:none;border-color:rgba(255,92,122,.5);}',
+        '.nk-music-apply{flex-shrink:0;padding:0 12px;border-radius:8px;border:none;background:linear-gradient(135deg,#ff5c7a,#8d2249);color:#fff;font-size:.76rem;font-weight:600;cursor:pointer;}',
+        '.nk-music-note{font-size:.68rem;color:#b9929f;line-height:1.5;}',
+        '.nk-music-note a{color:#ff5c7a;}',
+        '.nk-music-status{font-size:.7rem;color:#ff7a95;min-height:1em;}',
         '@media (max-width:480px){.nk-settings-panel{right:14px;width:calc(100vw - 28px);}.nk-settings-btn{right:14px;}}',
         '@media (max-width:640px){footer{padding-bottom:92px;}}',
         '.nk-reduced-motion *,.nk-reduced-motion *::before,.nk-reduced-motion *::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}',
@@ -153,6 +184,82 @@
         document.documentElement.classList.toggle('nk-reduced-motion', reduced);
     }
 
+    /* ---------- Background music player (hidden YouTube embed) ---------- */
+    var PLAY_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+    var PAUSE_ICON = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+    var ytApiPromise = null;
+    var ytPlayer = null;
+    var musicState = { playing: false };
+
+    function loadYouTubeApi() {
+        if (ytApiPromise) return ytApiPromise;
+        ytApiPromise = new Promise(function (resolve) {
+            if (window.YT && window.YT.Player) { resolve(window.YT); return; }
+            var prev = window.onYouTubeIframeAPIReady;
+            window.onYouTubeIframeAPIReady = function () {
+                if (typeof prev === 'function') prev();
+                resolve(window.YT);
+            };
+            var tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(tag);
+        });
+        return ytApiPromise;
+    }
+
+    function musicHost() {
+        var host = document.getElementById('nk-music-host');
+        if (!host) {
+            host = document.createElement('div');
+            host.id = 'nk-music-host';
+            host.style.cssText = 'position:fixed;bottom:0;left:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;';
+            document.body.appendChild(host);
+        }
+        return host;
+    }
+
+    function updateMusicUi() {
+        var btn = document.getElementById('nk-music-playpause');
+        if (btn) btn.innerHTML = musicState.playing ? PAUSE_ICON : PLAY_ICON;
+    }
+
+    function destroyMusicPlayer() {
+        if (ytPlayer) { try { ytPlayer.destroy(); } catch (e) { /* ignore */ } ytPlayer = null; }
+        musicState.playing = false;
+        updateMusicUi();
+    }
+
+    function playMusic() {
+        var id = extractYouTubeId(getMusicUrl()) || extractYouTubeId(DEFAULT_MUSIC_URL);
+        if (!id) return;
+        if (ytPlayer) { ytPlayer.playVideo(); return; }
+        loadYouTubeApi().then(function (YT) {
+            if (ytPlayer) { ytPlayer.playVideo(); return; }
+            var host = musicHost();
+            host.innerHTML = '';
+            var mount = document.createElement('div');
+            host.appendChild(mount);
+            ytPlayer = new YT.Player(mount, {
+                videoId: id,
+                playerVars: { autoplay: 1, controls: 0, disablekb: 1, loop: 1, playlist: id, playsinline: 1 },
+                events: {
+                    onReady: function () {
+                        ytPlayer.setVolume(getMusicVolume());
+                        ytPlayer.playVideo();
+                    },
+                    onStateChange: function (e) {
+                        musicState.playing = e.data === 1;
+                        updateMusicUi();
+                    }
+                }
+            });
+        });
+    }
+
+    function pauseMusic() {
+        if (ytPlayer) { try { ytPlayer.pauseVideo(); } catch (e) { /* ignore */ } }
+    }
+
     /* ---------- Settings panel ---------- */
     function buildSettings() {
         var btn = document.createElement('button');
@@ -172,6 +279,22 @@
             '<div class="nk-settings-row">' +
             '  <span>Reduce motion</span>' +
             '  <label class="nk-switch"><input type="checkbox" id="nk-toggle-motion"><span></span></label>' +
+            '</div>' +
+            '<div class="nk-settings-row">' +
+            '  <span>Background music</span>' +
+            '  <label class="nk-switch"><input type="checkbox" id="nk-toggle-music"><span></span></label>' +
+            '</div>' +
+            '<div class="nk-music-controls" id="nk-music-controls" hidden>' +
+            '  <div class="nk-music-row">' +
+            '    <button type="button" class="nk-music-btn" id="nk-music-playpause" aria-label="Play or pause music">' + PLAY_ICON + '</button>' +
+            '    <input type="range" id="nk-music-volume" min="0" max="100" aria-label="Music volume">' +
+            '  </div>' +
+            '  <div class="nk-music-url-row">' +
+            '    <input type="text" id="nk-music-url" placeholder="Paste your own YouTube link&hellip;">' +
+            '    <button type="button" class="nk-music-apply" id="nk-music-apply">Set</button>' +
+            '  </div>' +
+            '  <p class="nk-music-status" id="nk-music-status" aria-live="polite"></p>' +
+            '  <p class="nk-music-note">Music plays via YouTube and is off by default. Make sure you have permission to use any link you add &mdash; licenses vary by track. <a href="/dmca.html#media" target="_blank" rel="noopener">Learn more</a></p>' +
             '</div>';
 
         document.body.appendChild(panel);
@@ -198,6 +321,51 @@
             localStorage.setItem(MOTION_KEY, motionToggle.checked ? '1' : '0');
             applyMotionPref(motionToggle.checked);
             syncPetals();
+        });
+
+        /* Background music controls */
+        var musicToggle = panel.querySelector('#nk-toggle-music');
+        var musicControls = panel.querySelector('#nk-music-controls');
+        var musicPlayPause = panel.querySelector('#nk-music-playpause');
+        var musicVolume = panel.querySelector('#nk-music-volume');
+        var musicUrlInput = panel.querySelector('#nk-music-url');
+        var musicApply = panel.querySelector('#nk-music-apply');
+        var musicStatus = panel.querySelector('#nk-music-status');
+
+        musicToggle.checked = getMusicEnabled();
+        musicControls.hidden = !musicToggle.checked;
+        musicVolume.value = String(getMusicVolume());
+        if (getMusicUrl() !== DEFAULT_MUSIC_URL) musicUrlInput.value = getMusicUrl();
+
+        if (musicToggle.checked) playMusic();
+
+        musicToggle.addEventListener('change', function () {
+            localStorage.setItem(MUSIC_ENABLED_KEY, musicToggle.checked ? '1' : '0');
+            musicControls.hidden = !musicToggle.checked;
+            if (musicToggle.checked) playMusic(); else pauseMusic();
+        });
+        musicPlayPause.addEventListener('click', function () {
+            if (musicState.playing) pauseMusic(); else playMusic();
+        });
+        musicVolume.addEventListener('input', function () {
+            var v = parseInt(musicVolume.value, 10);
+            localStorage.setItem(MUSIC_VOLUME_KEY, String(v));
+            if (ytPlayer && ytPlayer.setVolume) ytPlayer.setVolume(v);
+        });
+        musicApply.addEventListener('click', function () {
+            var raw = musicUrlInput.value.trim();
+            if (!raw) {
+                localStorage.removeItem(MUSIC_URL_KEY);
+                musicStatus.textContent = 'Reset to the default track.';
+            } else if (!extractYouTubeId(raw)) {
+                musicStatus.textContent = "That doesn't look like a valid YouTube link.";
+                return;
+            } else {
+                localStorage.setItem(MUSIC_URL_KEY, raw);
+                musicStatus.textContent = 'Track updated.';
+            }
+            destroyMusicPlayer();
+            if (musicToggle.checked) playMusic();
         });
 
         btn.addEventListener('click', function () {
