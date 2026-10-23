@@ -122,7 +122,10 @@
         '.nk-search-result .nk-sr-cat{font-size:.65rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#ff5c7a;background:rgba(255,92,122,.1);border:1px solid rgba(255,92,122,.25);border-radius:999px;padding:1px 8px;flex-shrink:0;}',
         '.nk-search-result .nk-sr-desc{margin-top:3px;font-size:.8rem;color:#b9929f;}',
         '.nk-search-result mark{background:rgba(255,92,122,.35);color:#fff;border-radius:3px;padding:0 1px;}',
-        '.nk-search-empty{padding:28px 18px;text-align:center;color:#b9929f;font-size:.88rem;}'
+        '.nk-search-empty{padding:28px 18px;text-align:center;color:#b9929f;font-size:.88rem;}',
+        'body{-webkit-user-select:none;-moz-user-select:none;user-select:none;}',
+        'input,textarea,[contenteditable],[contenteditable] *,[data-allow-copy],[data-allow-copy] *{-webkit-user-select:text;-moz-user-select:text;user-select:text;}',
+        'img{-webkit-user-drag:none;user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-drag:none;}'
     ].join('\n');
 
     function injectStyles() {
@@ -296,6 +299,7 @@
         { title: 'Contributors', desc: 'Project history, repositories, developers, alternatives', url: '/contributors.html', cat: 'Pages' },
         { title: 'Community Rules', desc: 'Rules for the app, Discord, Telegram and GitHub', url: '/rules', cat: 'Pages' },
         { title: 'Sitemap', desc: 'Every page on the Nekomo website in one place', url: '/sitemap.html', cat: 'Pages' },
+        { title: 'Brand Assets', desc: 'Official logos, app icon, and usage rules', url: '/brand.html', cat: 'Legal' },
         { title: 'Support & Contact', desc: 'Help, FAQ, bug reports, and contact options', url: '/support', cat: 'Pages' },
 
         { title: 'About this website', desc: 'What nekomoapp.netlify.app is and who runs it', url: '/support#about', cat: 'FAQ' },
@@ -328,7 +332,7 @@
         { title: 'Reporting (Rule 9)', desc: 'How to report rule-breaking or copyright issues', url: '/rules#r9', cat: 'Legal' },
 
         { title: 'Project history', desc: 'Shiro → Kuro No → Nekomo lineage', url: '/contributors.html', cat: 'Contributors' },
-        { title: 'MarshMeadow', desc: 'Head Developer & Project Lead', url: '/contributors.html', cat: 'Contributors' },
+        { title: 'N3K0', desc: 'Head Developer & Project Lead', url: '/contributors.html', cat: 'Contributors' },
         { title: 'Resources & Alternatives', desc: 'Dantotsu, Cloudstream, Miru, Kitsune, AnimeTV, Kamyroll', url: '/contributors.html', cat: 'Contributors' },
         { title: 'Project repositories', desc: 'Nekomo, Neko-Source, og-kuro-no-source, website repos', url: '/contributors.html', cat: 'Contributors' }
     ];
@@ -687,9 +691,44 @@
         });
     }
 
+    /* ---------- Basic content protection ----------
+       Deterrents only — right-click, devtools shortcuts, text selection, and
+       image dragging are disabled to discourage casual copying. This is NOT
+       real security: anyone who wants the page source, devtools, or an image
+       can still get them (view-source, browser menu, etc). Form fields stay
+       fully usable so settings/search keep working normally. Elements can opt
+       out with [data-allow-copy] (used by the Brand Assets download buttons). */
+    function initContentProtection() {
+        function isExempt(el) {
+            return !!(el && el.closest && el.closest('input, textarea, [contenteditable], [data-allow-copy]'));
+        }
+        document.addEventListener('contextmenu', function (e) {
+            if (!isExempt(e.target)) e.preventDefault();
+        });
+        document.addEventListener('selectstart', function (e) {
+            if (!isExempt(e.target)) e.preventDefault();
+        });
+        document.addEventListener('copy', function (e) {
+            if (!isExempt(e.target)) e.preventDefault();
+        });
+        document.addEventListener('dragstart', function (e) {
+            if (e.target && e.target.tagName === 'IMG' && !isExempt(e.target)) e.preventDefault();
+        });
+        document.addEventListener('keydown', function (e) {
+            var k = e.key;
+            var mod = e.ctrlKey || e.metaKey;
+            var blocked =
+                k === 'F12' ||
+                (mod && e.shiftKey && /^[ijc]$/i.test(k)) || // devtools panels
+                (mod && /^[us]$/i.test(k)); // view-source / save page
+            if (blocked && !isExempt(e.target)) e.preventDefault();
+        });
+    }
+
     function init() {
         injectStyles();
         initSkipLink();
+        initContentProtection();
         buildSettings();
         initSiteSearch();
         initNavToggle();

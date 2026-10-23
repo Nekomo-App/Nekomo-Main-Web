@@ -24,6 +24,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
         body {
+            -webkit-user-select: none; user-select: none;
             font-family: 'Inter', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
@@ -104,6 +105,15 @@
         if (localStorage.getItem(VERIFIED_KEY)) {
             window.location.replace(DEST);
         }
+
+        // Basic deterrents (not real security — see theme.js on other pages for the full version)
+        document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+        document.addEventListener('keydown', function (e) {
+            var mod = e.ctrlKey || e.metaKey;
+            if (e.key === 'F12' || (mod && e.shiftKey && /^[ijc]$/i.test(e.key)) || (mod && /^[us]$/i.test(e.key))) {
+                e.preventDefault();
+            }
+        });
 
         function shuffle(arr) {
             for (var i = arr.length - 1; i > 0; i--) {

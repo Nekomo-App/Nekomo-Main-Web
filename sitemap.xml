@@ -40,4 +40,8 @@
         <loc>https://nekomoapp.netlify.app/sitemap.html</loc>
         <priority>0.3</priority>
     </url>
+    <url>
+        <loc>https://nekomoapp.netlify.app/brand.html</loc>
+        <priority>0.3</priority>
+    </url>
 </urlset>
