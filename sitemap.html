@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitemap — Nekomo</title>
+    <meta name="description" content="Every page on the Nekomo website in one place.">
+    <meta property="og:title" content="Sitemap — Nekomo">
+    <meta property="og:description" content="Every page on the Nekomo website in one place.">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js?v=2" defer></script>
+    <script src="/theme.js?v=2" defer></script>
+    <style>
+        .sitemap-grid { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px; }
+        .sitemap-group { padding: 24px; border-radius: var(--radius); border: 1px solid var(--surface-border); background: var(--surface); }
+        .sitemap-group h3 { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent-bright); }
+        .sitemap-group ul { margin-top: 14px; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .sitemap-group a { color: var(--text); text-decoration: none; font-size: 0.92rem; display: flex; align-items: center; gap: 8px; }
+        .sitemap-group a:hover { color: var(--accent-bright); }
+        .sitemap-group a svg { width: 14px; height: 14px; color: var(--text-muted); flex-shrink: 0; }
+        .sitemap-group .ext svg { color: var(--accent-bright); }
+    </style>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/home" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/home#features">Features</a>
+            <a href="/home#download">Download</a>
+            <a href="/updates.html">Releases</a>
+            <a href="/beta">Beta</a>
+            <a href="/home#community">Community</a>
+            <a href="/rules">Rules</a>
+            <a href="/support">Support</a>
+            <a href="/contributors.html">Contributors</a>
+            <div class="nk-dd"><button type="button" class="nk-dd-btn" aria-haspopup="true" aria-expanded="false">Legal <span aria-hidden="true">&#9662;</span></button>
+                <div class="nk-dd-menu">
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/dmca.html">DMCA &amp; Disclaimer</a>
+                </div></div>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main>
+        <p class="page-label">Navigate</p>
+        <h1>Sitemap</h1>
+        <p class="page-sub">Every page on the Nekomo website, grouped by topic. Looking for something specific? Press <code>/</code> anywhere on the site to search instead.</p>
+
+        <div class="sitemap-grid">
+            <div class="sitemap-group">
+                <h3>Main</h3>
+                <ul>
+                    <li><a href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Verify &amp; enter</a></li>
+                    <li><a href="/home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Home</a></li>
+                    <li><a href="/home#features"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Features</a></li>
+                    <li><a href="/home#download"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Download</a></li>
+                    <li><a href="/home#community"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Community</a></li>
+                </ul>
+            </div>
+            <div class="sitemap-group">
+                <h3>App &amp; Releases</h3>
+                <ul>
+                    <li><a href="/beta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Beta &amp; Alpha Testing</a></li>
+                    <li><a href="/updates.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Releases &amp; Updates</a></li>
+                    <li><a href="/contributors.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Contributors</a></li>
+                </ul>
+            </div>
+            <div class="sitemap-group">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="/support"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Support &amp; Contact</a></li>
+                    <li><a href="/support#about"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>About this website</a></li>
+                    <li><a href="/support#faq"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>FAQ</a></li>
+                    <li><a href="/rules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Community Rules</a></li>
+                </ul>
+            </div>
+            <div class="sitemap-group">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="/terms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Terms of Service</a></li>
+                    <li><a href="/privacy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>Privacy Policy</a></li>
+                    <li><a href="/dmca.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>DMCA &amp; Disclaimer</a></li>
+                </ul>
+            </div>
+            <div class="sitemap-group">
+                <h3>Community (external)</h3>
+                <ul>
+                    <li class="ext"><a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Discord</a></li>
+                    <li class="ext"><a href="https://t.me/nekomoapp" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Telegram</a></li>
+                    <li class="ext"><a href="https://github.com/Nekomo-App" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>GitHub Org</a></li>
+                    <li class="ext"><a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Main Repository</a></li>
+                    <li class="ext"><a href="https://github.com/Nekomo-App/neko-source" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>App Source Code</a></li>
+                </ul>
+            </div>
+            <div class="sitemap-group">
+                <h3>Direct Downloads <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;">(click = instant download)</span></h3>
+                <ul>
+                    <li><a href="/Nekomo-phone-release.apk" download="Nekomo-phone-release.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Nekomo-phone-release.apk</a></li>
+                    <li><a href="/Nekomo-phone-beta.apk" download="Nekomo-phone-beta.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Nekomo-phone-beta.apk</a></li>
+                    <li><a href="/Nekomo-phone-debug.apk" download="Nekomo-phone-debug.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Nekomo-phone-debug.apk</a></li>
+                    <li><a href="/Nekomo-tv-release.apk" download="Nekomo-tv-release.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Nekomo-tv-release.apk</a></li>
+                    <li><a href="/Nekomo-tv-beta.apk" download="Nekomo-tv-beta.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Nekomo-tv-beta.apk</a></li>
+                    <li><a href="/Nekomo-tv-debug.apk" download="Nekomo-tv-debug.apk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Nekomo-tv-debug.apk</a></li>
+                </ul>
+            </div>
+            <div class="sitemap-group">
+                <h3>Technical</h3>
+                <ul>
+                    <li><a href="/sitemap.xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>XML sitemap</a></li>
+                    <li><a href="/robots.txt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>robots.txt</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="/home">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
+                <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+</body>
+</html>

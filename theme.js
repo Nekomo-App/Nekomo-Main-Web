@@ -287,14 +287,15 @@
 
     /* ---------- Advanced site search ---------- */
     var SEARCH_INDEX = [
-        { title: 'Home', desc: 'Nekomo — community-driven anime client overview', url: '/', cat: 'Pages' },
-        { title: 'Features', desc: 'AniList discovery, streaming, downloads, watchlist & tracking', url: '/#features', cat: 'Pages' },
-        { title: 'Download Nekomo', desc: 'Get the app — mobile & Android TV, stable & beta channels', url: '/#download', cat: 'Pages' },
-        { title: 'Community', desc: 'Discord, Telegram, GitHub org and repositories', url: '/#community', cat: 'Pages' },
+        { title: 'Home', desc: 'Nekomo — community-driven anime client overview', url: '/home', cat: 'Pages' },
+        { title: 'Features', desc: 'AniList discovery, streaming, downloads, watchlist & tracking', url: '/home#features', cat: 'Pages' },
+        { title: 'Download Nekomo', desc: 'Get the app — mobile & Android TV, stable & beta channels', url: '/home#download', cat: 'Pages' },
+        { title: 'Community', desc: 'Discord, Telegram, GitHub org and repositories', url: '/home#community', cat: 'Pages' },
         { title: 'Beta & Alpha Testing', desc: 'Download Nekomo beta, alpha and debug APKs, filter by device/channel', url: '/beta', cat: 'Pages' },
         { title: 'Releases & Updates', desc: 'Latest build, full changelog history, auto-update methods', url: '/updates.html', cat: 'Pages' },
         { title: 'Contributors', desc: 'Project history, repositories, developers, alternatives', url: '/contributors.html', cat: 'Pages' },
         { title: 'Community Rules', desc: 'Rules for the app, Discord, Telegram and GitHub', url: '/rules', cat: 'Pages' },
+        { title: 'Sitemap', desc: 'Every page on the Nekomo website in one place', url: '/sitemap.html', cat: 'Pages' },
         { title: 'Support & Contact', desc: 'Help, FAQ, bug reports, and contact options', url: '/support', cat: 'Pages' },
 
         { title: 'About this website', desc: 'What nekomoapp.netlify.app is and who runs it', url: '/support#about', cat: 'FAQ' },

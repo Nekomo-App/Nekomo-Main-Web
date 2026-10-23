@@ -20,6 +20,7 @@
         .warn-card { background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius); padding: 18px 20px; }
         .warn-card h3 { font-size: 0.95rem; font-weight: 600; }
         .warn-card p { margin-top: 6px; font-size: 0.85rem; color: var(--text-muted); }
+        .warn-card code { font-size: 0.85em; padding: 2px 6px; border-radius: 6px; background: rgba(255, 92, 122, 0.1); color: var(--text); }
         .toolbar { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
         .chips { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip {
@@ -49,7 +50,7 @@
     <div class="bg-fx"></div>
 
     <nav>
-        <a href="/" class="nav-logo">
+        <a href="/home" class="nav-logo">
             <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
             <span class="logo-text">Nekomo</span>
         </a>
@@ -57,11 +58,11 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
         <div class="nav-links">
-            <a href="/#features">Features</a>
-            <a href="/#download">Download</a>
+            <a href="/home#features">Features</a>
+            <a href="/home#download">Download</a>
             <a href="/updates.html">Releases</a>
             <a href="/beta" class="nk-current">Beta</a>
-            <a href="/#community">Community</a>
+            <a href="/home#community">Community</a>
             <a href="/rules">Rules</a>
             <a href="/support">Support</a>
             <a href="/contributors.html">Contributors</a>
@@ -87,6 +88,7 @@
             <div class="warn-card"><h3>Install with care</h3><p>Allow &ldquo;Install unknown apps&rdquo; for your browser or file manager. Debug, beta, and release builds are separate apps with different signatures.</p></div>
             <div class="warn-card"><h3>Official source only</h3><p>This list is pulled live from the apks folder of <a href="https://github.com/Nekomo-App/Neko-Source" target="_blank" rel="noopener" style="color:var(--accent-bright)">Nekomo-App/Neko-Source</a>. Never install copies from elsewhere.</p></div>
             <div class="warn-card"><h3>Report what you find</h3><p>Open a <a href="https://github.com/Nekomo-App/Neko-Source/issues/new" target="_blank" rel="noopener" style="color:var(--accent-bright)">GitHub issue</a> with your version, device, and the in-app error log.</p></div>
+            <div class="warn-card"><h3>Direct links</h3><p>Every build also has a permanent short link, e.g. <code>nekomoapp.netlify.app/Nekomo-phone-release.apk</code> &mdash; visiting it downloads the APK immediately, no page in between.</p></div>
         </div>
 
         <div class="toolbar">
@@ -120,7 +122,7 @@
                 <span class="logo-text">Nekomo</span>
             </div>
             <div class="footer-links">
-                <a href="/">Home</a>
+                <a href="/home">Home</a>
                 <a href="/updates.html">Releases &amp; Changelog</a>
                 <a href="/beta">Beta Testing</a>
                 <a href="/rules">Rules</a>
@@ -128,6 +130,7 @@
                 <a href="/privacy">Privacy</a>
                 <a href="/support">Support</a>
                 <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="/sitemap.html">Sitemap</a>
                 <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
                 <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
                 <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
@@ -175,11 +178,20 @@
             });
         }
 
+        // Filenames with a matching rule in /_redirects — these get a short, permanent
+        // nekomoapp.netlify.app/<name> link instead of the raw GitHub URL. Keep this in
+        // sync with _redirects if apk filenames in the repo ever change.
+        var PRETTY_DOWNLOAD_NAMES = [
+            'Nekomo-phone-release.apk', 'Nekomo-phone-beta.apk', 'Nekomo-phone-debug.apk',
+            'Nekomo-tv-release.apk', 'Nekomo-tv-beta.apk', 'Nekomo-tv-debug.apk'
+        ];
+
         // Lists every .apk directly inside https://github.com/Nekomo-App/Neko-Source/tree/main/apks
         function fromApksFolder() {
             return json(API + '/contents/apks?ref=main').then(function (files) {
                 return files.filter(function (f) { return f.type === 'file' && isApk(f.name); }).map(function (f) {
-                    return { name: f.name, size: f.size, date: null, source: 'apks/' + f.name, url: f.download_url };
+                    var url = PRETTY_DOWNLOAD_NAMES.indexOf(f.name) !== -1 ? '/' + f.name : f.download_url;
+                    return { name: f.name, size: f.size, date: null, source: 'apks/' + f.name, url: url };
                 });
             });
         }

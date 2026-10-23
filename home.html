@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nekomo — Community-Driven Anime Client</title>
+    <meta name="description" content="Nekomo is a community-driven anime client built from the legacy Shiro and Kuro projects. Discover anime, track your watchlist, and join the community.">
+    <meta property="og:title" content="Nekomo — Community-Driven Anime Client">
+    <meta property="og:description" content="Discover anime, follow your watchlist, and explore community-driven resources.">
+    <meta property="og:image" content="https://nekomoapp.netlify.app/Images/nekomo-logo-sakura.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nekomoapp.netlify.app/home">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Nekomo — Community-Driven Anime Client">
+    <meta name="twitter:description" content="Discover anime, follow your watchlist, and explore community-driven resources.">
+    <meta name="twitter:image" content="https://nekomoapp.netlify.app/Images/nekomo-logo-sakura.jpg">
+    <link rel="canonical" href="https://nekomoapp.netlify.app/home">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="/gate.js?v=2" defer></script>
+    <script src="/theme.js?v=2" defer></script>
+    <style>
+        :root {
+            --bg: #0c0508;
+            --bg-soft: #150910;
+            --surface: rgba(255, 92, 122, 0.05);
+            --surface-border: rgba(255, 92, 122, 0.14);
+            --accent: #e5395f;
+            --accent-bright: #ff5c7a;
+            --accent-deep: #8d2249;
+            --text: #f7ecf0;
+            --text-muted: #b9929f;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            max-width: 100vw;
+            line-height: 1.6;
+            overflow-wrap: break-word;
+        }
+
+        h1, h2, h3, .logo-text { font-family: 'Outfit', 'Inter', sans-serif; }
+
+        ::selection { background: var(--accent); color: #fff; }
+
+        /* ---------- Background FX ---------- */
+        .bg-fx {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(229, 57, 95, 0.18), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 85% 60%, rgba(141, 34, 73, 0.12), transparent 60%),
+                radial-gradient(ellipse 40% 35% at 10% 85%, rgba(229, 57, 95, 0.08), transparent 60%),
+                var(--bg);
+        }
+        .bg-fx::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('/Images/nekomo-wallpaper.jpg') center 30% / cover no-repeat;
+            opacity: 0.16;
+            mask-image: linear-gradient(to bottom, black 0%, transparent 78%);
+            -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 78%);
+        }
+        @media (max-width: 700px) {
+            .bg-fx::after { background-position: 60% center; }
+        }
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image:
+                linear-gradient(rgba(255, 92, 122, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 92, 122, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black, transparent 80%);
+            pointer-events: none;
+        }
+
+        /* ---------- Nav ---------- */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 28px;
+            background: rgba(12, 5, 8, 0.7);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 92, 122, 0.08);
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+        }
+        .nav-logo img { width: 34px; height: 34px; border-radius: 8px; }
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #ff7a95, var(--accent-bright) 50%, var(--accent-deep));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-links { display: flex; align-items: center; gap: 6px; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 10px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); background: rgba(255, 92, 122, 0.08); }
+        .nav-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+        }
+        .nav-toggle svg { width: 20px; height: 20px; }
+        @media (max-width: 1240px) {
+            .nav-toggle { display: flex; }
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: 12px;
+                right: 12px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 12px;
+                border-radius: 16px;
+                border: 1px solid rgba(255, 92, 122, 0.12);
+                background: rgba(12, 5, 8, 0.97);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                transform: translateY(-12px);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.25s ease, opacity 0.25s ease;
+            }
+            .nav-links.nk-nav-open { transform: none; opacity: 1; pointer-events: auto; }
+            .nav-links a { padding: 12px 14px; }
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
+            max-width: 100vw;
+        }
+        .hero::before, .hero::after {
+            content: '🌸';
+            position: absolute;
+            font-size: 11rem;
+            line-height: 1;
+            opacity: 0.1;
+            filter: blur(1px);
+            pointer-events: none;
+        }
+        .hero::before { top: -2rem; left: -3rem; transform: rotate(-18deg); }
+        .hero::after { bottom: -2rem; right: -3rem; transform: rotate(160deg); }
+        @media (max-width: 720px) {
+            .hero::before, .hero::after { font-size: 7rem; }
+        }
+        .hero-cat {
+            width: 120px;
+            border-radius: 20px;
+            filter: drop-shadow(0 0 24px rgba(255, 92, 122, 0.35));
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 26px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+        }
+        .badge .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent-bright);
+            box-shadow: 0 0 10px var(--accent-bright);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .hero h1 {
+            margin-top: 22px;
+            font-size: clamp(3rem, 9vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            background: linear-gradient(120deg, #fff 20%, #ffb3c2 55%, var(--accent-bright));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero .tagline {
+            margin-top: 18px;
+            max-width: 560px;
+            font-size: clamp(1rem, 2.4vw, 1.2rem);
+            color: var(--text-muted);
+        }
+        .hero .tagline b { color: var(--text); font-weight: 600; }
+        .hero-buttons {
+            margin-top: 38px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent-deep));
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(229, 57, 95, 0.35);
+        }
+        .btn-primary:hover { filter: brightness(1.12); box-shadow: 0 8px 40px rgba(229, 57, 95, 0.5); }
+        .btn-ghost {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--text);
+        }
+        .btn-ghost:hover { background: rgba(255, 92, 122, 0.1); border-color: rgba(255, 92, 122, 0.3); }
+        .platform-note {
+            margin-top: 22px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 0.01em;
+        }
+        .version-tag {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            min-height: 1.4em;
+        }
+        .version-tag a { color: var(--accent-bright); text-decoration: none; }
+        .version-tag a:hover { text-decoration: underline; }
+        .scroll-hint {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-muted);
+            opacity: 0.6;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* ---------- Sections ---------- */
+        section { padding: 90px 24px; }
+        .section-inner { max-width: 1100px; margin: 0 auto; }
+        .section-label {
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent-bright);
+        }
+        .section-title {
+            text-align: center;
+            margin-top: 10px;
+            font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+        .section-sub {
+            text-align: center;
+            margin: 14px auto 0;
+            max-width: 540px;
+            color: var(--text-muted);
+        }
+
+        /* ---------- Features ---------- */
+        .features-grid {
+            margin-top: 56px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+            gap: 18px;
+        }
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 92, 122, 0.35);
+            box-shadow: 0 12px 40px rgba(229, 57, 95, 0.12);
+        }
+        .feature-icon {
+            width: 44px; height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 92, 122, 0.18), rgba(141, 34, 73, 0.18));
+            border: 1px solid rgba(255, 92, 122, 0.22);
+            color: var(--accent-bright);
+        }
+        .feature-icon svg { width: 22px; height: 22px; }
+        .feature-card h3 { margin-top: 18px; font-size: 1.15rem; font-weight: 600; }
+        .feature-card p { margin-top: 8px; font-size: 0.92rem; color: var(--text-muted); }
+
+        /* ---------- Download ---------- */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+            background: rgba(12, 5, 8, 0.5);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .chip svg { width: 14px; height: 14px; color: var(--accent-bright); }
+        .downloads-status {
+            margin: 32px auto 0;
+            max-width: 600px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .dot-status {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            box-shadow: 0 0 8px rgba(185, 146, 159, 0.4);
+            flex-shrink: 0;
+        }
+        .downloads-status.nk-ok .dot-status { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, 0.6); }
+        .downloads-status.nk-partial .dot-status { background: #facc15; box-shadow: 0 0 8px rgba(250, 204, 21, 0.6); }
+        .downloads-status.nk-none .dot-status { background: #ff5c7a; box-shadow: 0 0 8px rgba(255, 92, 122, 0.6); }
+        .downloads-grid {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+            gap: 16px;
+        }
+        .download-tile {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 24px;
+            border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            text-align: left;
+            transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+        }
+        .download-tile:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 92, 122, 0.35);
+            box-shadow: 0 12px 40px rgba(229, 57, 95, 0.12);
+        }
+        .tile-top { display: flex; align-items: center; gap: 10px; }
+        .download-tile-icon {
+            width: 42px; height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 92, 122, 0.18), rgba(141, 34, 73, 0.18));
+            border: 1px solid rgba(255, 92, 122, 0.22);
+            color: var(--accent-bright);
+        }
+        .download-tile-icon svg { width: 20px; height: 20px; }
+        .tile-channel {
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: rgba(255, 92, 122, 0.12);
+            color: var(--accent-bright);
+            border: 1px solid rgba(255, 92, 122, 0.25);
+            white-space: nowrap;
+        }
+        .download-tile[data-type$="-beta"] .tile-channel {
+            background: rgba(250, 204, 21, 0.12);
+            color: #facc15;
+            border-color: rgba(250, 204, 21, 0.3);
+        }
+        .download-tile-info { width: 100%; }
+        .download-tile-info h3 { font-size: 1rem; font-weight: 600; }
+        .tile-meta { margin-top: 4px; font-size: 0.82rem; color: var(--text-muted); }
+        .download-tile.nk-unavailable .tile-meta { color: #e2a3ae; }
+        .download-notice { margin: 24px auto 0; max-width: 680px; padding: 14px 20px; border-radius: var(--radius); border: 1px solid rgba(250, 204, 21, 0.3); background: rgba(250, 204, 21, 0.07); font-size: 0.88rem; color: var(--text-muted); text-align: center; }
+        .download-notice strong { color: var(--text); }
+        .download-notice a { color: var(--accent-bright); text-decoration: none; }
+        .download-notice a:hover { text-decoration: underline; }
+        .tile-btn.nk-disabled { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+        .tile-btn { width: 100%; justify-content: center; padding: 10px 16px; font-size: 0.86rem; }
+        .status-note { margin-top: 26px; font-size: 0.82rem; color: var(--text-muted); opacity: 0.8; text-align: center; }
+        .status-note a { color: var(--accent-bright); text-decoration: none; }
+        .status-note a:hover { text-decoration: underline; }
+
+        /* ---------- Community ---------- */
+        .community-grid {
+            margin-top: 48px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            gap: 18px;
+        }
+        .community-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 28px;
+            border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: var(--surface);
+            text-decoration: none;
+            color: var(--text);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .community-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 92, 122, 0.4);
+            box-shadow: 0 12px 40px rgba(229, 57, 95, 0.12);
+        }
+        .community-icon {
+            width: 52px; height: 52px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(255, 92, 122, 0.18), rgba(141, 34, 73, 0.18));
+            border: 1px solid rgba(255, 92, 122, 0.22);
+            color: var(--accent-bright);
+        }
+        .community-icon svg { width: 26px; height: 26px; }
+        .community-card h3 { font-size: 1.1rem; font-weight: 600; }
+        .community-card p { font-size: 0.88rem; color: var(--text-muted); margin-top: 2px; }
+        .discord-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .discord-stats span { display: inline-flex; align-items: center; gap: 6px; }
+        .discord-stats .dot-online {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+        }
+        .discord-stats .online { color: #4ade80; }
+        .discord-stats .members { color: var(--text-muted); }
+
+        /* ---------- Footer ---------- */
+        footer {
+            border-top: 1px solid rgba(255, 92, 122, 0.1);
+            padding: 56px 24px 40px;
+        }
+        .footer-inner { max-width: 1100px; margin: 0 auto; }
+        .footer-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+        .footer-brand { display: flex; align-items: center; gap: 10px; }
+        .footer-brand img { width: 36px; border-radius: 8px; }
+        .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--accent-bright); }
+        .disclaimer {
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 92, 122, 0.07);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+            line-height: 1.7;
+        }
+        .copyright {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .copyright span { color: var(--accent-bright); }
+
+        /* ---------- Reveal animation ---------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+            .hero-cat, .scroll-hint, .badge .dot { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-fx"></div>
+    <div class="bg-grid"></div>
+
+    <nav>
+        <a href="/home" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#download">Download</a>
+            <a href="/updates.html">Releases</a>
+            <a href="/beta">Beta</a>
+            <a href="#community">Community</a>
+            <a href="/rules">Rules</a>
+            <a href="/support">Support</a>
+            <a href="/contributors.html">Contributors</a>
+            <div class="nk-dd"><button type="button" class="nk-dd-btn" aria-haspopup="true" aria-expanded="false">Legal <span aria-hidden="true">&#9662;</span></button>
+                <div class="nk-dd-menu">
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/dmca.html">DMCA &amp; Disclaimer</a>
+                </div></div>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <img class="hero-cat" src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo pixel cat">
+        <div class="badge"><span class="dot"></span> Community-driven &middot; Open source</div>
+        <h1>Nekomo</h1>
+        <p class="tagline">A community-driven <b>anime client</b> built from the legacy <b>Shiro</b> and <b>Kuro</b> projects. Discover anime, follow your watchlist, and explore community resources — all in one place.</p>
+        <div class="hero-buttons">
+            <a class="btn btn-primary" href="/beta" id="hero-download">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span id="hero-download-label">Get the Beta</span>
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                GitHub
+            </a>
+            <a class="btn btn-ghost" href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 12.64 12.64 0 0 0-.64-1.28h-.05A19.74 19.74 0 0 0 3.64 4.37 19.9 19.9 0 0 0 .11 18.06a19.83 19.83 0 0 0 6.04 3.03c.46-.63.87-1.3 1.22-2a12.9 12.9 0 0 1-1.93-.92c.16-.12.32-.24.47-.37a14.2 14.2 0 0 0 12.18 0c.15.13.31.25.47.37-.61.36-1.26.67-1.93.92.35.7.76 1.37 1.22 2a19.78 19.78 0 0 0 6.04-3.03 19.84 19.84 0 0 0-3.57-13.69zM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42s.95-2.42 2.16-2.42c1.21 0 2.18 1.09 2.16 2.42 0 1.34-.95 2.42-2.16 2.42zm7.97 0c-1.18 0-2.16-1.08-2.16-2.42s.95-2.42 2.16-2.42c1.21 0 2.18 1.09 2.16 2.42 0 1.34-.95 2.42-2.16 2.42z"/></svg>
+                Discord
+            </a>
+            <a class="btn btn-ghost" href="https://t.me/nekomoapp" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 3.52a1.5 1.5 0 0 0-1.55-.23L2.6 10.56a1.4 1.4 0 0 0 .07 2.63l4.6 1.5 1.76 5.66a1.28 1.28 0 0 0 1.2.9h.03a1.28 1.28 0 0 0 1.16-.75l2.4-4.7 4.76 3.5a1.5 1.5 0 0 0 2.37-.9l2.5-13.1a1.5 1.5 0 0 0-.51-1.28zM9.4 15.97l-.63 2.98-1.1-3.56 10.6-6.95-8.87 7.53z"/></svg>
+                Telegram
+            </a>
+        </div>
+        <p class="platform-note">📱🖥️ Android &amp; Android TV only — not available on iOS/Apple devices.</p>
+        <p class="version-tag" id="version-tag">Public downloads aren&rsquo;t available yet &mdash; Nekomo is in testing. Builds are only available on the <a href="/beta">Beta page</a>.</p>
+        <div class="scroll-hint">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+    </header>
+
+    <!-- Features -->
+    <section id="features">
+        <div class="section-inner">
+            <p class="section-label reveal">What is Nekomo</p>
+            <h2 class="section-title reveal">Everything anime, in one app</h2>
+            <p class="section-sub reveal">Born from the ashes of Kuro No and Shiro, Nekomo keeps the spirit of those projects alive as a community-run anime client.</p>
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                    <h3>AniList Discovery</h3>
+                    <p>Browse, search, and discover anime with rich metadata powered by AniList — seasonal charts, trending titles, and detailed info pages.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <h3>Streaming</h3>
+                    <p>Watch episodes through community-maintained third-party sources, with a built-in player designed for anime. <strong>No sources or extensions are bundled with the app by default</strong> &mdash; you install them yourself after downloading Nekomo.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </div>
+                    <h3>Downloads</h3>
+                    <p>Save episodes for offline viewing and watch on the go — no connection required.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <h3>Watchlist &amp; Tracking</h3>
+                    <p>Keep track of what you're watching, plan to watch, and have finished with list syncing and progress tracking.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Community-Run</h3>
+                    <p>Maintained by the community, for the community. Suggest features, report bugs, and help shape the project's future on Discord.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                    </div>
+                    <h3>Fully Open Source</h3>
+                    <p>Every line of code is public on GitHub. Audit it, fork it, or contribute — Nekomo belongs to everyone.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download -->
+    <section id="download">
+        <div class="section-inner">
+            <p class="section-label reveal">Get Nekomo</p>
+            <h2 class="section-title reveal">Ready to dive in?</h2>
+            <p class="section-sub reveal">📱🖥️ Android &amp; Android TV only — not available for iOS/Apple.</p>
+
+            <div class="downloads-status nk-partial reveal" id="downloads-status">
+                <span class="dot-status" id="downloads-status-dot"></span>
+                <span id="downloads-status-text">Public downloads are not available yet &mdash; beta testing only.</span>
+                <span class="chip" id="stars-chip" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <span id="stars-text"></span>
+                </span>
+            </div>
+
+            <div class="download-notice reveal" role="note">
+                <strong>Heads up:</strong> Nekomo isn&rsquo;t publicly released yet. Right now the only way to get the app is through the <a href="/beta">Beta / Alpha testing page</a>. Beta builds are unfinished and may crash or lose data &mdash; read the <a href="/terms#beta">terms</a> first.
+            </div>
+            <div class="download-notice reveal" role="note">
+                <strong>No sources included:</strong> the app does not come with any streaming sources, repos, or extensions installed out of the box. You&rsquo;ll need to add them yourself from Settings &amp; Extensions &mdash; see the <a href="/terms#extensions">Terms</a> for details.
+            </div>
+
+            <div class="downloads-grid reveal">
+                <div class="download-tile nk-unavailable" data-type="mobile-stable">
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        </div>
+                        <span class="tile-channel">Stable</span>
+                    </div>
+                    <div class="download-tile-info">
+                        <h3>Mobile</h3>
+                        <p class="tile-meta" data-field="meta">Not available yet</p>
+                    </div>
+                    <span class="btn btn-ghost tile-btn nk-disabled" data-field="btn" role="link" aria-disabled="true">Coming soon</span>
+                </div>
+                <div class="download-tile" data-type="mobile-beta">
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        </div>
+                        <span class="tile-channel">Beta / Debug</span>
+                    </div>
+                    <div class="download-tile-info">
+                        <h3>Mobile</h3>
+                        <p class="tile-meta" data-field="meta">Available on the Beta page</p>
+                    </div>
+                    <a class="btn btn-primary tile-btn" data-field="btn" href="/beta">Get the beta</a>
+                </div>
+                <div class="download-tile nk-unavailable" data-type="tv-stable">
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <span class="tile-channel">Stable</span>
+                    </div>
+                    <div class="download-tile-info">
+                        <h3>Android TV</h3>
+                        <p class="tile-meta" data-field="meta">Not available yet</p>
+                    </div>
+                    <span class="btn btn-ghost tile-btn nk-disabled" data-field="btn" role="link" aria-disabled="true">Coming soon</span>
+                </div>
+                <div class="download-tile" data-type="tv-beta">
+                    <div class="tile-top">
+                        <div class="download-tile-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        </div>
+                        <span class="tile-channel">Beta / Debug</span>
+                    </div>
+                    <div class="download-tile-info">
+                        <h3>Android TV</h3>
+                        <p class="tile-meta" data-field="meta">Available on the Beta page</p>
+                    </div>
+                    <a class="btn btn-primary tile-btn" data-field="btn" href="/beta">Get the beta</a>
+                </div>
+            </div>
+
+            <p class="status-note">Nekomo is a community project and is not under guaranteed active development. Join the <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a> for status updates and alternatives. See the <a href="/updates.html">release tracker</a> for full changelogs and auto-update options.</p>
+        </div>
+    </section>
+
+    <!-- Community -->
+    <section id="community">
+        <div class="section-inner">
+            <p class="section-label reveal">Join Us</p>
+            <h2 class="section-title reveal">Be part of the community</h2>
+            <p class="section-sub reveal">Nekomo lives through its community — discuss anime, report bugs, suggest features, or contribute code.</p>
+            <div class="community-grid">
+                <a class="community-card reveal" href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">
+                    <div class="community-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.32 4.37a19.8 19.8 0 0 0-4.93-1.51 13.78 13.78 0 0 0-.64 1.28 18.27 18.27 0 0 0-5.5 0 12.64 12.64 0 0 0-.64-1.28h-.05A19.74 19.74 0 0 0 3.64 4.37 19.9 19.9 0 0 0 .11 18.06a19.83 19.83 0 0 0 6.04 3.03c.46-.63.87-1.3 1.22-2a12.9 12.9 0 0 1-1.93-.92c.16-.12.32-.24.47-.37a14.2 14.2 0 0 0 12.18 0c.15.13.31.25.47.37-.61.36-1.26.67-1.93.92.35.7.76 1.37 1.22 2a19.78 19.78 0 0 0 6.04-3.03 19.84 19.84 0 0 0-3.57-13.69zM8.02 15.33c-1.18 0-2.16-1.08-2.16-2.42s.95-2.42 2.16-2.42c1.21 0 2.18 1.09 2.16 2.42 0 1.34-.95 2.42-2.16 2.42zm7.97 0c-1.18 0-2.16-1.08-2.16-2.42s.95-2.42 2.16-2.42c1.21 0 2.18 1.09 2.16 2.42 0 1.34-.95 2.42-2.16 2.42z"/></svg>
+                    </div>
+                    <div>
+                        <h3>Discord Server</h3>
+                        <p>Chat, get support, and hear announcements first</p>
+                        <div class="discord-stats" id="discord-stats" hidden>
+                            <span class="online"><span class="dot-online"></span><span id="discord-online"></span> online</span>
+                            <span class="members" id="discord-members"></span>
+                        </div>
+                    </div>
+                </a>
+                <a class="community-card reveal" href="https://t.me/nekomoapp" target="_blank" rel="noopener">
+                    <div class="community-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 3.52a1.5 1.5 0 0 0-1.55-.23L2.6 10.56a1.4 1.4 0 0 0 .07 2.63l4.6 1.5 1.76 5.66a1.28 1.28 0 0 0 1.2.9h.03a1.28 1.28 0 0 0 1.16-.75l2.4-4.7 4.76 3.5a1.5 1.5 0 0 0 2.37-.9l2.5-13.1a1.5 1.5 0 0 0-.51-1.28zM9.4 15.97l-.63 2.98-1.1-3.56 10.6-6.95-8.87 7.53z"/></svg>
+                    </div>
+                    <div>
+                        <h3>Telegram</h3>
+                        <p>Join the Nekomo Telegram for updates and chat</p>
+                    </div>
+                </a>
+                <a class="community-card reveal" href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">
+                    <div class="community-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    </div>
+                    <div>
+                        <h3>Main Repository</h3>
+                        <p>App releases, issue tracking, and changelogs</p>
+                    </div>
+                </a>
+                <a class="community-card reveal" href="https://github.com/Nekomo-App/neko-source" target="_blank" rel="noopener">
+                    <div class="community-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.11-.75.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.15c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                    </div>
+                    <div>
+                        <h3>App Source Code</h3>
+                        <p><code>Nekomo-App/neko-source</code> — the app's source, kept as its own fork-friendly repo</p>
+                    </div>
+                </a>
+                <a class="community-card reveal" href="https://github.com/Nekomo-App" target="_blank" rel="noopener">
+                    <div class="community-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div>
+                        <h3>Nekomo-App Org</h3>
+                        <p>All Nekomo projects and related repositories</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                    <span class="logo-text">Nekomo</span>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
+                    <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">Repository</a>
+                    <a href="/updates.html">Releases &amp; Changelog</a>
+                    <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                    <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+                    <a href="/contributors.html">Contributors</a>
+                    <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
+                    <a href="/beta">Beta Testing</a>
+                    <a href="/rules">Rules</a>
+                    <a href="/terms">Terms</a>
+                    <a href="/privacy">Privacy</a>
+                    <a href="/support">Support</a>
+                    <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="/sitemap.html">Sitemap</a>
+                </div>
+            </div>
+            <div class="disclaimer">
+                Nekomo is an open-source project and does not host, store, upload, or distribute media content. Nekomo does not operate, own, maintain, or control streaming servers, content providers, or third-party sources. Any metadata, images, artwork, or descriptions displayed through Nekomo-related applications may originate from third-party APIs or external services. Nekomo is not affiliated with, endorsed by, sponsored by, or officially connected to AniList, MyAnimeList, Kitsu, TMDb, or any other content provider unless explicitly stated otherwise. All trademarks and intellectual property belong to their respective owners. Users are responsible for how they use the software and for complying with all applicable laws in their jurisdiction.
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+
+    <script src="/releases.js"></script>
+    <script>
+        (async function () {
+            // Stars count (non-critical)
+            try {
+                const repo = await (await fetch('https://api.github.com/repos/Nekomo-App/Nekomo')).json();
+                if (repo.stargazers_count != null) {
+                    document.getElementById('stars-text').textContent = repo.stargazers_count + ' stars';
+                    document.getElementById('stars-chip').style.display = 'inline-flex';
+                }
+            } catch (e) { /* ignore */ }
+
+            // Discord member counts via the public invite API (non-critical)
+            try {
+                const inv = await (await fetch('https://discord.com/api/invites/E4Ezmgg7Ka?with_counts=true')).json();
+                if (inv.approximate_member_count != null) {
+                    document.getElementById('discord-online').textContent = inv.approximate_presence_count;
+                    document.getElementById('discord-members').textContent = inv.approximate_member_count + ' members';
+                    document.getElementById('discord-stats').hidden = false;
+                }
+            } catch (e) { /* ignore */ }
+
+            // Stable download tiles: these stay as the static "Not available yet"
+            // copy until a real stable (non-prerelease-only) build exists, then
+            // swap themselves live instead of needing a manual edit here.
+            try {
+                const { matrix } = await window.NekomoReleases.fetchMatrix();
+                ['mobile-stable', 'tv-stable'].forEach(type => {
+                    const platform = type.split('-')[0];
+                    const entry = matrix[platform].stable;
+                    if (!entry) return;
+                    const tile = document.querySelector('.download-tile[data-type="' + type + '"]');
+                    if (!tile) return;
+                    tile.classList.remove('nk-unavailable');
+                    tile.querySelector('[data-field="meta"]').textContent = entry.release.tag_name;
+                    const oldBtn = tile.querySelector('[data-field="btn"]');
+                    const newBtn = document.createElement('a');
+                    newBtn.className = 'btn btn-primary tile-btn';
+                    newBtn.setAttribute('data-field', 'btn');
+                    newBtn.href = entry.asset.browser_download_url;
+                    newBtn.textContent = 'Download';
+                    oldBtn.replaceWith(newBtn);
+                });
+            } catch (e) { /* keep the static fallback copy */ }
+        })();
+
+        // Scroll reveal animations
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
