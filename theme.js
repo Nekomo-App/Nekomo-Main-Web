@@ -125,7 +125,8 @@
         '.nk-search-empty{padding:28px 18px;text-align:center;color:#b9929f;font-size:.88rem;}',
         'body{-webkit-user-select:none;-moz-user-select:none;user-select:none;}',
         'input,textarea,[contenteditable],[contenteditable] *,[data-allow-copy],[data-allow-copy] *{-webkit-user-select:text;-moz-user-select:text;user-select:text;}',
-        'img{-webkit-user-drag:none;user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-drag:none;}'
+        'img{-webkit-user-drag:none;user-drag:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-drag:none;}',
+        '[data-allow-copy] img{-webkit-user-drag:element;user-drag:element;-khtml-user-drag:element;-moz-user-drag:element;-o-user-drag:element;}'
     ].join('\n');
 
     function injectStyles() {
@@ -595,7 +596,7 @@
         var overlay = document.createElement('div');
         overlay.className = 'nk-wallpaper-overlay';
         overlay.innerHTML =
-            '<div class="nk-wallpaper-card">' +
+            '<div class="nk-wallpaper-card" data-allow-copy>' +
             '  <button type="button" class="nk-wallpaper-close" aria-label="Close">' +
             '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
             '  </button>' +
