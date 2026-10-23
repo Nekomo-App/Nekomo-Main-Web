@@ -83,13 +83,14 @@
         return shuffle(pool.concat([PUZZLE_TARGET.emoji]));
     }
 
-    function showGate(onPass) {
+    function showGate(onPass, opts) {
+        opts = opts || {};
         var g = makeOverlay();
 
         g.card.innerHTML =
             '<img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">' +
-            '<h2>Quick check</h2>' +
-            '<p>Just a quick click to prove you\'re not a bot.</p>' +
+            '<h2>' + (opts.heading || 'Quick check') + '</h2>' +
+            '<p>' + (opts.sub || 'Just a quick click to prove you\'re not a bot.') + '</p>' +
             '<div class="nk-puzzle-q">Click the <b>' + PUZZLE_TARGET.name + '</b> ' + PUZZLE_TARGET.emoji + '</div>' +
             '<div class="nk-puzzle-grid" role="group" aria-label="Puzzle options"></div>' +
             '<div class="nk-gate-error" role="alert"></div>';
@@ -161,15 +162,34 @@
         }
     }
 
+    /* ---------- Per-page reverification ----------
+       Some pages want an extra check beyond the sitewide gate, but still only
+       once (not on every visit). Add data-reverify="<name>" to <body> and this
+       will ask again the first time that page is opened, then remember it under
+       its own key (nekomo_verified_<name>_v1) just like the main gate. */
+    function maybeReverify(done) {
+        var name = document.body.getAttribute('data-reverify');
+        if (!name) { done(); return; }
+        var key = 'nekomo_verified_' + name + '_v1';
+        if (localStorage.getItem(key)) { done(); return; }
+        showGate(function () {
+            localStorage.setItem(key, '1');
+            done();
+        }, {
+            heading: 'One more check',
+            sub: 'This page needs a quick extra verification.'
+        });
+    }
+
     function init() {
         injectStyles();
         if (!localStorage.getItem(VERIFIED_KEY)) {
             showGate(function () {
                 localStorage.setItem(VERIFIED_KEY, '1');
-                maybeDisclaimer();
+                maybeReverify(maybeDisclaimer);
             });
         } else {
-            maybeDisclaimer();
+            maybeReverify(maybeDisclaimer);
         }
     }
 
