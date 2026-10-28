@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sources &amp; Extensions Guide — Nekomo</title>
+    <meta name="description" content="How to add your own repositories, sources and extensions to Nekomo, and how the 18+ and movies/TV filters work.">
+    <meta property="og:title" content="Sources &amp; Extensions Guide — Nekomo">
+    <meta property="og:description" content="How to add your own repositories, sources and extensions to Nekomo, and how the 18+ and movies/TV filters work.">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js?v=2" defer></script>
+    <script src="/theme.js?v=2" defer></script>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/home" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/home#features">Features</a>
+            <a href="/home#download">Download</a>
+            <a href="/updates.html">Releases</a>
+            <a href="/beta">Beta</a>
+            <a href="/home#community">Community</a>
+            <a href="/rules">Rules</a>
+            <a href="/sources" class="nk-current">Sources</a>
+            <a href="/support">Support</a>
+            <a href="/contributors.html">Contributors</a>
+            <div class="nk-dd"><button type="button" class="nk-dd-btn" aria-haspopup="true" aria-expanded="false">Legal <span aria-hidden="true">&#9662;</span></button>
+                <div class="nk-dd-menu">
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/dmca.html">DMCA &amp; Disclaimer</a>
+                    <a href="/brand.html">Brand Assets</a>
+                </div></div>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main>
+        <p class="page-label">Guide</p>
+        <h1>Sources &amp; Extensions</h1>
+        <p class="page-sub">Nekomo is a blank client. You choose, add and install every source yourself.</p>
+
+        <div class="toc"><h2>Contents</h2><ol><li><a href="#overview">What is (and isn&rsquo;t) included</a></li><li><a href="#types">Supported source types</a></li><li><a href="#add">Add a repository &amp; install</a></li><li><a href="#choose">Choosing a source</a></li><li><a href="#filters">Content filters (18+, movies &amp; TV)</a></li><li><a href="#safety">Staying safe</a></li><li><a href="#trouble">Troubleshooting</a></li></ol></div>
+
+        <section class="legal-section" id="overview">
+            <h2>What is (and isn&rsquo;t) included</h2>
+            <p>Nekomo ships with <strong>no</strong> sources, repositories, extensions or streaming providers, and it has <strong>no built-in directory, search or one-click install</strong> for them. Title information (names, artwork, descriptions) comes from AniList; everything you can actually play or read comes from sources <em>you</em> add.</p>
+            <p>Nekomo does not recommend, link to, host or vouch for any repository. Find them yourself from the extension authors&rsquo; own pages, and only use ones you trust.</p>
+        </section>
+
+        <section class="legal-section" id="types">
+            <h2>Supported source types</h2>
+            <ul>
+                <li><strong>CloudStream</strong> &mdash; <code>.cs3</code> plugins from a <code>repo.json</code> repository.</li>
+                <li><strong>Zangetsu</strong> &mdash; JavaScript sources from an <code>index.json</code> repository.</li>
+                <li><strong>Aniyomi</strong> &mdash; anime extension APKs from an <code>index.min.json</code> repository.</li>
+                <li><strong>Mihon</strong> &mdash; manga extension APKs from an <code>index.min.json</code> or <code>index.pb</code> repository. Manga is read under Settings &rarr; Manga.</li>
+            </ul>
+            <p>LN Reader (novel) plugins are not supported yet.</p>
+        </section>
+
+        <section class="legal-section" id="add">
+            <h2>Add a repository &amp; install</h2>
+            <ul>
+                <li>Open <strong>Settings &rarr; Extensions</strong> and scroll to the section for the type you want. Each section starts empty.</li>
+                <li>Paste the repository URL you trust and tap <strong>Add</strong>. Confirm the warning.</li>
+                <li>Tap <strong>Browse</strong> on that repository to see what <em>it</em> offers, pick an extension and confirm the install. You are asked every time.</li>
+                <li>Installed items appear under &ldquo;Installed&rdquo; where you can enable, update, report or uninstall them.</li>
+            </ul>
+        </section>
+
+        <section class="legal-section" id="choose">
+            <h2>Choosing a source</h2>
+            <ul>
+                <li>On any title page, tap the cloud icon (<strong>Choose source</strong>) to search that title in one of your installed sources and open the match.</li>
+                <li>A catalogue title with no episodes opens the chooser for you automatically.</li>
+                <li>In the player, the <strong>Source</strong> menu switches between the links the source returned.</li>
+            </ul>
+        </section>
+
+        <section class="legal-section" id="filters">
+            <h2>Content filters (18+, movies &amp; TV)</h2>
+            <p>Both switches live in <strong>Settings &rarr; General</strong> and are <strong>off by default</strong>.</p>
+            <ul>
+                <li><strong>Show movies and TV shows</strong> &mdash; off keeps Nekomo anime-only: sources that provide movies or series are hidden from lists, search and the source chooser. Turn it on to see them.</li>
+                <li><strong>Show 18+ sources and extensions</strong> &mdash; adult content is allowed, but hidden until you opt in. Turning it on asks you to confirm you are 18 or older (or the age of majority where you live). It reveals adult extensions in repository lists and lets search include adult titles.</li>
+            </ul>
+            <p>If a repository looks empty after you browse it, its entries may be hidden by these filters; Nekomo tells you how many.</p>
+        </section>
+
+        <section class="legal-section" id="safety">
+            <h2>Staying safe</h2>
+            <ul>
+                <li>Extensions are third-party code that runs with the app&rsquo;s permissions. A malicious one can read data the app can and use the network. <strong>Only install from authors you trust.</strong></li>
+                <li>Use the <strong>Report</strong> button on an installed extension to open its author&rsquo;s issue tracker. Nekomo cannot fix or moderate third-party extensions.</li>
+                <li>You are responsible for what you install and access. See the <a href="/terms#extensions">Terms</a> and the <a href="/dmca.html">DMCA notice</a>.</li>
+            </ul>
+        </section>
+
+        <section class="legal-section" id="trouble">
+            <h2>Troubleshooting</h2>
+            <ul>
+                <li><strong>A repository won&rsquo;t add or is empty:</strong> check the URL opens in a browser and points at the index file itself. Mihon repositories now often publish <code>index.pb</code> instead of <code>index.min.json</code>.</li>
+                <li><strong>Searches or streams fail:</strong> the source site may be down or blocked by your network or DNS filter. Try Settings &rarr; General &rarr; DNS over HTTPS, or another source.</li>
+                <li><strong>An extension won&rsquo;t load:</strong> it may need a newer Nekomo. Nekomo requires Android 7.0 or newer, and extensions built for much newer APIs can fail; update the app and the extension.</li>
+                <li>Still stuck? See <a href="/support">Support</a> and include the error log from Settings &rarr; History.</li>
+            </ul>
+        </section>
+
+    </main>
+
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="/home">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="/sitemap.html">Sitemap</a>
+                <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
+                <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+                <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -13,6 +13,10 @@
         <priority>0.7</priority>
     </url>
     <url>
+        <loc>https://nekomoapp.netlify.app/sources</loc>
+        <priority>0.7</priority>
+    </url>
+    <url>
         <loc>https://nekomoapp.netlify.app/support.html</loc>
         <priority>0.6</priority>
     </url>
