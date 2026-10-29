@@ -188,13 +188,46 @@
             'Nekomo-tv-release.apk', 'Nekomo-tv-beta.apk', 'Nekomo-tv-debug.apk'
         ];
 
+        // apks/latest.json (written by `./gradlew collectApks`) carries version, build time and SHA-256 per file.
+        // It comes from raw.githubusercontent.com, so it is not subject to the GitHub API rate limit.
+        var RAW_BASE = 'https://raw.githubusercontent.com/' + REPO + '/main/apks/';
+        function fetchLatest() {
+            return fetch(RAW_BASE + 'latest.json', { cache: 'no-cache' }).then(function (r) {
+                if (!r.ok) throw new Error('latest.json ' + r.status);
+                return r.json();
+            });
+        }
+
+        function prettyUrl(name, fallback) {
+            return PRETTY_DOWNLOAD_NAMES.indexOf(name) !== -1 ? '/' + name : fallback;
+        }
+
         // Lists every .apk directly inside https://github.com/Nekomo-App/Neko-Source/tree/main/apks
+        // (the GitHub API listing), enriched with latest.json. If the API is rate limited the page still works from latest.json.
         function fromApksFolder() {
-            return json(API + '/contents/apks?ref=main').then(function (files) {
-                return files.filter(function (f) { return f.type === 'file' && isApk(f.name); }).map(function (f) {
-                    var url = PRETTY_DOWNLOAD_NAMES.indexOf(f.name) !== -1 ? '/' + f.name : f.download_url;
-                    return { name: f.name, size: f.size, date: null, source: 'apks/' + f.name, url: url };
+            var latestP = fetchLatest().catch(function () { return null; });
+            var listP = json(API + '/contents/apks?ref=main').catch(function (e) { return { error: e }; });
+            return Promise.all([latestP, listP]).then(function (r) {
+                var latest = r[0], list = r[1];
+                var meta = {};
+                if (latest && latest.builds) latest.builds.forEach(function (b) { meta[b.file] = b; });
+                var items;
+                if (Array.isArray(list)) {
+                    items = list.filter(function (f) { return f.type === 'file' && isApk(f.name); }).map(function (f) {
+                        return { name: f.name, size: f.size, source: 'apks/' + f.name, url: prettyUrl(f.name, f.download_url) };
+                    });
+                } else if (latest && latest.builds) {
+                    items = latest.builds.map(function (b) {
+                        return { name: b.file, size: b.size, source: 'apks/' + b.file, url: prettyUrl(b.file, RAW_BASE + b.file) };
+                    });
+                } else {
+                    throw list && list.error ? list.error : new Error('No build list available');
+                }
+                items.forEach(function (i) {
+                    var m = meta[i.name];
+                    if (m) { i.date = m.builtAt; i.version = latest.version; i.sha = m.sha256; if (!i.size) i.size = m.size; }
                 });
+                return items;
             });
         }
 
@@ -216,7 +249,9 @@
                 meta.appendChild(el('span', 'tag', i.platform === 'tv' ? 'Android TV' : 'Phone'));
                 meta.appendChild(el('span', 'tag' + (i.channel !== 'release' ? ' hot' : ''), i.channel === 'debug' ? 'Debug / Alpha' : i.channel === 'beta' ? 'Beta' : 'Release'));
                 if (i.size) meta.appendChild(el('span', 'tag', fmtSize(i.size)));
+                if (i.version) meta.appendChild(el('span', 'tag', 'v' + i.version));
                 if (i.date) meta.appendChild(el('span', 'tag', fmtDate(i.date)));
+                if (i.sha) { var shaTag = el('span', 'tag', 'SHA-256 ' + i.sha.slice(0, 8)); shaTag.title = i.sha; meta.appendChild(shaTag); }
                 if (i.downloads) meta.appendChild(el('span', 'tag', i.downloads + ' downloads'));
                 meta.appendChild(el('span', 'tag', i.source));
                 main.appendChild(meta);

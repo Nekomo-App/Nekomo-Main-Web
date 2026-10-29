@@ -1,6 +1,6 @@
 # Direct-download shortcuts for Nekomo APKs.
 # These point at the fixed filenames in the Nekomo-App/Neko-Source "apks" folder,
-# which are overwritten in place on every build, so these URLs never go stale.
+# which are overwritten in place on every build (apks/latest.json lists version, build time and SHA-256), so these URLs never go stale.
 # 302 (not 301) on purpose: the file at each URL changes over time, only the path is permanent.
 #
 # IMPORTANT: if the apks folder filenames are ever renamed, update the targets below to match.
