@@ -289,14 +289,15 @@
         /* ---------- State ---------- */
         var W = 480;
         var state, cat, obstacles, fishes, clouds, petals, stars, specks, speed, distance, score, bonus, hi, flashUntil,
-            overAt, nextMilestone, frame, runFrames, popups, newRecord, diff;
+            overAt, nextMilestone, frame, runFrames, popups, newRecord, diff, runDiff;
         var input = { jump: false, duck: false };
         var autoFsDone = false;
 
         function newPetal(x) { return { x: x, y: rand(-10, GROUND - 20), vx: rand(-0.6, -0.2), vy: rand(0.15, 0.45), ph: rand(0, 6.28) }; }
         function reset() {
             state = 'ready';
-            diff = DIFFICULTY[settings.difficulty];
+            runDiff = settings.difficulty;
+            diff = DIFFICULTY[runDiff];
             hi = getHi(settings.difficulty);
             cat = { y: 0, vy: 0, ducking: false, grounded: true };
             obstacles = []; fishes = []; popups = [];
@@ -473,7 +474,7 @@
             overAt = performance.now();
             input.jump = false;
             newRecord = score > hi;
-            if (newRecord) { hi = score; store(hiKey(settings.difficulty), String(hi)); }
+            if (newRecord) { hi = score; store(hiKey(runDiff), String(hi)); }
             sfx.die();
             updateButtons();
             draw();
@@ -579,7 +580,7 @@
             canvas.focus({ preventScroll: true });
         }
         function exitFs() {
-            if (pseudoFs) { setPseudo(false); return; }
+            if (pseudoFs) { setPseudo(false); pause(); return; }
             if (nativeFsEl() === root) {
                 if (document.exitFullscreen) document.exitFullscreen().catch(function () { });
                 else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
@@ -771,7 +772,7 @@
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 if (!panel.hidden) { closePanel(); e.preventDefault(); return; }
-                if (pseudoFs) { setPseudo(false); return; }
+                if (pseudoFs) { setPseudo(false); pause(); return; }
             }
             if (e.ctrlKey || e.metaKey || e.altKey || blocked(e) || !inView()) return;
             var focused = document.activeElement === canvas || root.contains(document.activeElement);

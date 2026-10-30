@@ -14,7 +14,15 @@
     <link rel="stylesheet" href="/pages.css">
     <script src="/gate.js?v=2" defer></script>
     <script src="/theme.js?v=2" defer></script>
-    <script src="/neko-run.js?v=2" defer></script>
+    <script src="/neko-run.js?v=3" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var pathEl = document.getElementById('nk-missing-path');
+            if (!pathEl || !location.pathname || location.pathname === '/404.html') return;
+            try { pathEl.textContent = decodeURIComponent(location.pathname); }
+            catch (err) { pathEl.textContent = location.pathname; }
+        });
+    </script>
     <style>
         main { max-width: 860px; text-align: center; padding-top: 120px; }
         .big-404 {
