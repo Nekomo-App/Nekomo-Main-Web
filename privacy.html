@@ -73,6 +73,7 @@
                 <li>watch history, bookmarks, favorites, and download records;</li>
                 <li>access tokens for any AniList, MyAnimeList, or Kitsu account you sign in with;</li>
                 <li>installed extensions, extension repositories, and their settings;</li>
+                <li>your offline library, search history and source update history (search history and watch progress are not saved while incognito mode is on);</li>
                 <li>a rolling error log (see below).</li>
             </ul>
             <p>Uninstalling the app or clearing its storage removes this data. Android backups may include some of it depending on your device settings.</p>
@@ -82,9 +83,11 @@
             <p>When you use a feature that talks to another service, your device connects to it directly and that service may receive your IP address, device/user-agent details, and the data needed for the request:</p>
             <ul>
                 <li><strong>AniList, MyAnimeList, Kitsu</strong> &mdash; sign-in, list syncing, and metadata. Governed by their privacy policies.</li>
+                <li><strong>Kitsu, Jikan (MyAnimeList), TVMaze and TMDB</strong> &mdash; backup and movie/TV metadata. TMDB only runs if you add your own API key.</li>
+                <li><strong>YouTube</strong> &mdash; trailers are fetched with an open-source extractor and played in the built-in player; YouTube may receive your IP address and device details.</li>
                 <li><strong>Metadata and artwork providers</strong> &mdash; titles, images, and descriptions.</li>
                 <li><strong>Streaming sources and extensions</strong> &mdash; any provider reached through content sources or user-installed extensions. Nekomo does not control these, and they may log requests or track you. Extensions are third-party code; install only ones you trust.</li>
-                <li><strong>GitHub</strong> &mdash; used for update checks and extension downloads.</li>
+                <li><strong>GitHub</strong> &mdash; used for app update checks, source update checks, extension downloads and the optional Nekomo repository list.</li>
                 <li><strong>DNS-over-HTTPS providers</strong> (optional) &mdash; Cloudflare, Google, AdGuard, or Quad9 if you enable them.</li>
             </ul>
             <p>We are not responsible for the privacy practices of these services. Review their policies before using them.</p>
