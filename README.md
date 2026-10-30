@@ -90,6 +90,7 @@ The website acts as a central hub for:
 | `beta.html`, `updates.html`, `uwu-apk.html`, `releases.js` | Downloads and release tracker. `releases.js` reads the GitHub releases of `Nekomo-App/Nekomo` and matches assets named `Nekomo-<phone\|tv>-<release\|beta\|debug>.apk` |
 | `terms.html`, `privacy.html`, `dmca.html`, `rules.html`, `support.html` | Legal and support pages (linked from the app's Settings → About) |
 | `brand.html`, `contributors.html`, `sitemap.html`, `sitemap.xml`, `robots.txt` | Brand kit, contributors, SEO |
+| `404.html`, `cat-runner.js` | Custom Netlify 404 page with *Neko Run*, a Chrome-dino style pixel cat game (high score saved in `localStorage`) |
 | `pages.css`, `theme.js` | Shared styling. Palette: background `#0c0508`, accent `#e5395f`, deep `#8d2249`, bright `#ff5c7a` |
 | `_redirects` | Netlify direct-download shortcuts (`/Nekomo-phone-release.apk` …) that point at the `apks/` folder of [`neko-source`](https://github.com/Nekomo-App/neko-source) |
 

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page not found · Nekomo</title>
+    <meta name="description" content="This page wandered off. Play Neko Run while you're here, or head back home.">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js?v=2" defer></script>
+    <script src="/theme.js?v=2" defer></script>
+    <script src="/cat-runner.js?v=1" defer></script>
+    <style>
+        main { max-width: 860px; text-align: center; padding-top: 120px; }
+        .big-404 {
+            font-family: 'Press Start 2P', 'Outfit', monospace; font-size: clamp(3.2rem, 14vw, 6.5rem); line-height: 1;
+            margin-top: 14px; color: var(--accent-bright);
+            text-shadow: 4px 4px 0 var(--accent-deep), 8px 8px 0 rgba(141, 34, 73, 0.35);
+        }
+        main h1 { margin-top: 22px; }
+        .page-sub { margin: 12px auto 0; }
+        .page-sub code {
+            font-size: 0.85em; padding: 2px 8px; border-radius: 6px; word-break: break-all;
+            background: rgba(255, 92, 122, 0.1); border: 1px solid var(--surface-border); color: var(--text);
+        }
+        .runner-card {
+            position: relative; margin-top: 32px; padding: 14px; border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: linear-gradient(180deg, rgba(255, 92, 122, 0.07), rgba(255, 92, 122, 0.02));
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), inset 0 0 40px rgba(229, 57, 95, 0.05);
+        }
+        .runner-card canvas {
+            display: block; width: 100%; height: auto; aspect-ratio: 480 / 150;
+            image-rendering: pixelated; image-rendering: crisp-edges;
+            border-radius: 10px; cursor: pointer; touch-action: manipulation; outline: none;
+        }
+        .runner-card canvas:focus-visible { box-shadow: 0 0 0 2px var(--accent-bright); }
+        .runner-bar {
+            margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+            font-size: 0.8rem; color: var(--text-muted);
+        }
+        .runner-bar kbd {
+            font-family: 'Inter', sans-serif; font-size: 0.75rem; padding: 1px 7px; border-radius: 6px;
+            border: 1px solid var(--surface-border); background: rgba(255, 92, 122, 0.08); color: var(--text);
+        }
+        .runner-mute {
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 10px; cursor: pointer;
+            border: 1px solid var(--surface-border); background: var(--surface); color: var(--text-muted);
+            font: 500 0.8rem 'Inter', sans-serif;
+        }
+        .runner-mute:hover { color: var(--text); border-color: rgba(255, 92, 122, 0.35); }
+        .runner-mute svg { width: 15px; height: 15px; }
+        .runner-touch { display: none; margin-top: 12px; gap: 10px; }
+        .runner-touch button {
+            flex: 1; padding: 14px; border-radius: 12px; cursor: pointer; user-select: none; -webkit-user-select: none;
+            border: 1px solid var(--surface-border); background: rgba(255, 92, 122, 0.08); color: var(--text);
+            font: 600 0.9rem 'Outfit', sans-serif; touch-action: none;
+        }
+        .runner-touch button:active { background: rgba(255, 92, 122, 0.2); }
+        @media (pointer: coarse) {
+            .runner-touch { display: flex; }
+            .runner-keys { display: none; }
+        }
+        .btn-row { justify-content: center; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/home" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/home#features">Features</a>
+            <a href="/home#download">Download</a>
+            <a href="/updates.html">Releases</a>
+            <a href="/beta">Beta</a>
+            <a href="/home#community">Community</a>
+            <a href="/rules">Rules</a>
+            <a href="/sources">Sources</a>
+            <a href="/support">Support</a>
+            <a href="/contributors.html">Contributors</a>
+            <div class="nk-dd"><button type="button" class="nk-dd-btn" aria-haspopup="true" aria-expanded="false">Legal <span aria-hidden="true">&#9662;</span></button>
+                <div class="nk-dd-menu">
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/dmca.html">DMCA &amp; Disclaimer</a>
+                    <a href="/brand.html">Brand Assets</a>
+                </div></div>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main>
+        <p class="page-label">Error 404</p>
+        <div class="big-404" aria-hidden="true">404</div>
+        <h1>This page ran off chasing a butterfly</h1>
+        <p class="page-sub">We couldn't find <code id="nk-missing-path">this page</code>. It may have moved or never existed. Help the neko dodge cucumbers while you're here, or use the links below.</p>
+
+        <div class="runner-card">
+            <canvas id="nk-runner" width="480" height="150" tabindex="0" role="img" aria-label="Neko Run: a pixel cat running game. Press Space or tap to jump, Down arrow to duck."></canvas>
+            <div class="runner-touch">
+                <button type="button" id="nk-runner-jump" aria-label="Jump">&#9650; Jump</button>
+                <button type="button" id="nk-runner-duck" aria-label="Duck">&#9660; Duck</button>
+            </div>
+            <div class="runner-bar">
+                <span class="runner-keys"><kbd>Space</kbd> / <kbd>&uarr;</kbd> jump &middot; <kbd>&darr;</kbd> duck &middot; dodge cucumbers &amp; crows, grab fish</span>
+                <button type="button" class="runner-mute" id="nk-runner-mute" aria-pressed="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path class="nk-wave" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                    <span>Sound on</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <a class="btn" href="/home">Back to home</a>
+            <a class="btn ghost" href="/sitemap.html">Sitemap</a>
+            <a class="btn ghost" href="/support">Support</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="/home">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
+                <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+</body>
+</html>
