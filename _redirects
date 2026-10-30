@@ -1,12 +1,20 @@
 # Direct-download shortcuts for Nekomo APKs.
-# These point at the fixed filenames in the Nekomo-App/Neko-Source "apks" folder,
-# which are overwritten in place on every build (apks/latest.json lists version, build time and SHA-256), so these URLs never go stale.
+# These point at the fixed filenames in the Nekomo-App/Neko-Source "apks" folder, which are overwritten in place on every
+# build (apks/latest.json lists version, build time and SHA-256), so these URLs never go stale.
+# Android TV builds always have "TV" in the name (Nekomo-TV-*.apk). "alpha" is the debug build.
 # 302 (not 301) on purpose: the file at each URL changes over time, only the path is permanent.
 #
 # IMPORTANT: if the apks folder filenames are ever renamed, update the targets below to match.
-/Nekomo-phone-release.apk  https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-release.apk  302
-/Nekomo-phone-beta.apk     https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-beta.apk     302
-/Nekomo-phone-debug.apk    https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-debug.apk    302
-/Nekomo-tv-release.apk     https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-tv-release.apk     302
-/Nekomo-tv-beta.apk        https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-tv-beta.apk        302
-/Nekomo-tv-debug.apk       https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-tv-debug.apk       302
+/Nekomo-phone-release.apk   https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-release.apk  302
+/Nekomo-phone-beta.apk      https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-beta.apk  302
+/Nekomo-phone-alpha.apk     https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-alpha.apk  302
+/Nekomo-TV-release.apk      https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-release.apk  302
+/Nekomo-TV-beta.apk         https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-beta.apk  302
+/Nekomo-TV-alpha.apk        https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-alpha.apk  302
+
+# Old names (kept so existing links and bookmarks keep working)
+/Nekomo-phone-debug.apk     https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-alpha.apk  302
+/Nekomo-tv-release.apk      https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-release.apk  302
+/Nekomo-tv-beta.apk         https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-beta.apk  302
+/Nekomo-tv-debug.apk        https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-alpha.apk  302
+/Nekomo-TV-debug.apk        https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-alpha.apk  302

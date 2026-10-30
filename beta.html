@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beta &amp; Alpha Testing — Nekomo</title>
-    <meta name="description" content="Download Nekomo beta, alpha, and debug APKs straight from the official Nekomo-App GitHub repository.">
+    <meta name="description" content="Download Nekomo beta and alpha APKs (phone and TV) straight from the official Nekomo-App GitHub repository.">
     <meta property="og:title" content="Beta &amp; Alpha Testing — Nekomo">
-    <meta property="og:description" content="Download Nekomo beta, alpha, and debug APKs straight from the official Nekomo-App GitHub repository.">
+    <meta property="og:description" content="Download Nekomo beta and alpha APKs (phone and TV) straight from the official Nekomo-App GitHub repository.">
     <meta name="theme-color" content="#8d2249" />
     <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,7 +101,7 @@
             </div>
             <div class="chips" id="channel-chips" role="group" aria-label="Filter by channel">
                 <button class="chip" type="button" data-channel="all" aria-pressed="true">All channels</button>
-                <button class="chip" type="button" data-channel="debug" aria-pressed="false">Debug / Alpha</button>
+                <button class="chip" type="button" data-channel="debug" aria-pressed="false">Alpha</button>
                 <button class="chip" type="button" data-channel="beta" aria-pressed="false">Beta</button>
                 <button class="chip" type="button" data-channel="release" aria-pressed="false">Release</button>
             </div>
@@ -184,8 +184,8 @@
         // nekomoapp.netlify.app/<name> link instead of the raw GitHub URL. Keep this in
         // sync with _redirects if apk filenames in the repo ever change.
         var PRETTY_DOWNLOAD_NAMES = [
-            'Nekomo-phone-release.apk', 'Nekomo-phone-beta.apk', 'Nekomo-phone-debug.apk',
-            'Nekomo-tv-release.apk', 'Nekomo-tv-beta.apk', 'Nekomo-tv-debug.apk'
+            'Nekomo-phone-release.apk', 'Nekomo-phone-beta.apk', 'Nekomo-phone-alpha.apk',
+            'Nekomo-TV-release.apk', 'Nekomo-TV-beta.apk', 'Nekomo-TV-alpha.apk'
         ];
 
         // apks/latest.json (written by `./gradlew collectApks`) carries version, build time and SHA-256 per file.
@@ -246,8 +246,8 @@
                 var main = el('div', 'apk-main');
                 main.appendChild(el('div', 'apk-name', i.name));
                 var meta = el('div', 'apk-meta');
-                meta.appendChild(el('span', 'tag', i.platform === 'tv' ? 'Android TV' : 'Phone'));
-                meta.appendChild(el('span', 'tag' + (i.channel !== 'release' ? ' hot' : ''), i.channel === 'debug' ? 'Debug / Alpha' : i.channel === 'beta' ? 'Beta' : 'Release'));
+                meta.appendChild(el('span', 'tag', i.platform === 'tv' ? 'TV' : 'Phone'));
+                meta.appendChild(el('span', 'tag' + (i.channel !== 'release' ? ' hot' : ''), i.channel === 'debug' ? 'Alpha' : i.channel === 'beta' ? 'Beta' : 'Release'));
                 if (i.size) meta.appendChild(el('span', 'tag', fmtSize(i.size)));
                 if (i.version) meta.appendChild(el('span', 'tag', 'v' + i.version));
                 if (i.date) meta.appendChild(el('span', 'tag', fmtDate(i.date)));
