@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neko Run — pixel cat runner game · Nekomo</title>
+    <meta name="description" content="Neko Run is the Nekomo community's free pixel cat runner. Play it in your browser or download it for Android, Windows and Linux.">
+    <meta property="og:title" content="Neko Run — Nekomo">
+    <meta property="og:description" content="Free pixel cat runner. Play in the browser or get it for Android, Windows and Linux.">
+    <meta property="og:image" content="https://nekomoapp.netlify.app/Images/nekomo-logo-sakura.jpg">
+    <link rel="canonical" href="https://nekomoapp.netlify.app/neko-run">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js?v=2" defer></script>
+    <script src="/theme.js?v=2" defer></script>
+    <script src="/neko-run.js?v=3" defer></script>
+    <style>
+        .runner-card {
+            position: relative; margin-top: 28px; padding: 14px; border-radius: var(--radius);
+            border: 1px solid var(--surface-border);
+            background: linear-gradient(180deg, rgba(255, 92, 122, 0.07), rgba(255, 92, 122, 0.02));
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), inset 0 0 40px rgba(229, 57, 95, 0.05);
+        }
+        .dl-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .dl {
+            display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 12px; text-decoration: none;
+            background: rgba(255, 92, 122, 0.05); border: 1px solid var(--surface-border); color: var(--text); transition: border-color .2s, transform .2s;
+        }
+        .dl:hover { border-color: rgba(255, 92, 122, 0.5); transform: translateY(-1px); text-decoration: none !important; }
+        .dl svg { flex: none; width: 20px; height: 20px; margin-top: 3px; color: var(--accent-bright); }
+        .dl b { display: block; font-size: 0.95rem; }
+        .dl span { display: block; font-size: 0.8rem; color: var(--text-muted); word-break: break-all; }
+        .nr-table { width: 100%; margin-top: 12px; border-collapse: collapse; font-size: 0.9rem; }
+        .nr-table th, .nr-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--surface-border); color: var(--text-muted); vertical-align: top; }
+        .nr-table th { color: var(--text); font-weight: 600; }
+        pre.nr-code { margin-top: 10px; padding: 12px 14px; border-radius: 10px; overflow-x: auto; font-size: 0.82rem; background: rgba(0,0,0,.35); border: 1px solid var(--surface-border); color: var(--text); }
+        #nr-version { color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/home" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/home#features">Features</a>
+            <a href="/gallery">Screenshots</a>
+            <a href="/home#download">Download</a>
+            <a href="/updates.html">Releases</a>
+            <a href="/beta">Beta</a>
+            <a href="/home#community">Community</a>
+            <a href="/rules">Rules</a>
+            <a href="/sources">Sources</a>
+            <a href="/support">Support</a>
+            <a href="/contributors.html">Contributors</a>
+            <div class="nk-dd"><button type="button" class="nk-dd-btn" aria-haspopup="true" aria-expanded="false">Legal <span aria-hidden="true">&#9662;</span></button>
+                <div class="nk-dd-menu">
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/dmca.html">DMCA &amp; Disclaimer</a>
+                    <a href="/brand.html">Brand Assets</a>
+                </div></div>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main class="wide">
+        <p class="page-label">Game</p>
+        <h1>Neko Run</h1>
+        <p class="page-sub">A free pixel cat runner by the Nekomo community. Dodge cucumbers and crows, grab fish for +25, and chase a high score. Play right here, or install it on Android, Windows or Linux.</p>
+
+        <div class="runner-card">
+            <div data-neko-run data-prefix="nekomo_play_"></div>
+        </div>
+
+        <div class="btn-row">
+            <a class="btn" href="#download">Download the app</a>
+            <a class="btn ghost" href="https://github.com/Nekomo-App/Neko-Run" target="_blank" rel="noopener">Source on GitHub</a>
+            <a class="btn ghost" href="https://github.com/Nekomo-App/Neko-Run/releases" target="_blank" rel="noopener">All releases</a>
+        </div>
+
+        <section class="legal-section" id="download">
+            <h2>Download</h2>
+            <p>Latest release: <strong id="nr-version">see GitHub Releases</strong>. Every file is listed with its SHA-256 in <code>SHA256SUMS.txt</code> on the release.</p>
+            <div class="dl-grid" id="nr-downloads">
+                <a class="dl" data-match="apk" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Android</b><span>Android 7.0+ · allow “Install unknown apps”</span><span class="dl-file">Neko-Run-&lt;version&gt;.apk</span></div></a>
+                <a class="dl" data-match="Setup" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Windows installer</b><span>Start menu + desktop shortcut</span><span class="dl-file">Neko-Run-Setup-&lt;version&gt;.exe</span></div></a>
+                <a class="dl" data-match="portable" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Windows portable</b><span>No install, just run it</span><span class="dl-file">Neko-Run-&lt;version&gt;-portable.exe</span></div></a>
+                <a class="dl" data-match="win.zip" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Windows zip</b><span>Unzip anywhere and run Neko Run.exe</span><span class="dl-file">Neko-Run-&lt;version&gt;-win.zip</span></div></a>
+                <a class="dl" data-match="AppImage" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Linux AppImage</b><span>Any distro · chmod +x and run</span><span class="dl-file">Neko-Run-&lt;version&gt;-x86_64.AppImage</span></div></a>
+                <a class="dl" data-match=".deb" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Debian / Ubuntu</b><span>sudo apt install ./neko-run_&lt;version&gt;_amd64.deb</span><span class="dl-file">neko-run_&lt;version&gt;_amd64.deb</span></div></a>
+                <a class="dl" data-match=".rpm" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Fedora / openSUSE</b><span>sudo dnf install ./neko-run-&lt;version&gt;.x86_64.rpm</span><span class="dl-file">neko-run-&lt;version&gt;.x86_64.rpm</span></div></a>
+                <a class="dl" data-match=".tar.gz" href="https://github.com/Nekomo-App/Neko-Run/releases/latest" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><div><b>Linux tarball</b><span>Extract and run neko-run</span><span class="dl-file">Neko-Run-&lt;version&gt;-linux-x64.tar.gz</span></div></a>
+            </div>
+            <p>Builds are unsigned. Windows SmartScreen may ask once: <em>More info → Run anyway</em>.</p>
+        </section>
+
+        <section class="legal-section" id="packages">
+            <h2>Packages</h2>
+            <p>The web game is also published to <a href="https://github.com/orgs/Nekomo-App/packages?repo_name=Neko-Run" target="_blank" rel="noopener">GitHub Packages</a>, so you can embed it in your own site or host it yourself.</p>
+            <h3>npm: @nekomo-app/neko-run</h3>
+<pre class="nr-code"># .npmrc
+@nekomo-app:registry=https://npm.pkg.github.com
+
+npm install @nekomo-app/neko-run</pre>
+<pre class="nr-code">&lt;div data-neko-run data-prefix="mysite_"&gt;&lt;/div&gt;
+&lt;script src="node_modules/@nekomo-app/neko-run/neko-run.js" defer&gt;&lt;/script&gt;</pre>
+            <h3>Container: ghcr.io/nekomo-app/neko-run</h3>
+<pre class="nr-code">docker run -p 8080:80 ghcr.io/nekomo-app/neko-run
+# then open http://localhost:8080</pre>
+        </section>
+
+        <section class="legal-section" id="controls">
+            <h2>How to play</h2>
+            <table class="nr-table">
+                <tr><th>Action</th><th>Keyboard</th><th>Touch</th></tr>
+                <tr><td>Jump (hold for higher)</td><td>Space / ↑ / W</td><td>Tap the game or Jump</td></tr>
+                <tr><td>Duck / fast fall</td><td>↓ / S</td><td>Duck</td></tr>
+                <tr><td>Pause</td><td>P</td><td>Pause button</td></tr>
+                <tr><td>Mute</td><td>M</td><td>Speaker button</td></tr>
+                <tr><td>Full screen</td><td>F (F11 in the desktop app)</td><td>Full screen button</td></tr>
+                <tr><td>Settings</td><td>Gear button, Esc closes</td><td>Gear button</td></tr>
+            </table>
+            <p>Settings include sound and volume, difficulty (Easy / Normal / Hard, each with its own high score), five cat colours, Sakura or Night sky, effects, auto full screen and touch buttons. Everything is saved on your device; this page keeps its own high scores separate from the 404 page.</p>
+        </section>
+    </main>
+    <script>
+        // Point each download card at the actual file in the latest release.
+        fetch('https://api.github.com/repos/Nekomo-App/Neko-Run/releases/latest')
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+            .then(function (rel) {
+                document.getElementById('nr-version').textContent = rel.tag_name;
+                document.querySelectorAll('#nr-downloads .dl').forEach(function (card) {
+                    var m = card.getAttribute('data-match');
+                    var a = (rel.assets || []).find(function (x) { return x.name.indexOf(m) !== -1; });
+                    if (a) {
+                        card.href = a.browser_download_url;
+                        card.removeAttribute('target');
+                        card.querySelector('.dl-file').textContent = a.name + ' · ' + (a.size / 1048576).toFixed(1) + ' MB';
+                    }
+                });
+            })
+            .catch(function () { /* links stay on the Releases page */ });
+    </script>
+
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="/home">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
+                <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+</body>
+</html>
