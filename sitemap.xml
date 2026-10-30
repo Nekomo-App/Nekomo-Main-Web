@@ -51,4 +51,8 @@
     <url>
         <loc>https://nekomoapp.netlify.app/gallery</loc>
     </url>
+    <url>
+        <loc>https://nekomoapp.netlify.app/neko-run</loc>
+        <priority>0.6</priority>
+    </url>
 </urlset>

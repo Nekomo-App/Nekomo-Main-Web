@@ -299,6 +299,7 @@
         { title: 'Releases & Updates', desc: 'Latest build, full changelog history, auto-update methods', url: '/updates.html', cat: 'Pages' },
         { title: 'Contributors', desc: 'Project history, repositories, developers, alternatives', url: '/contributors.html', cat: 'Pages' },
         { title: 'Community Rules', desc: 'Rules for the app, Discord, Telegram and GitHub', url: '/rules', cat: 'Pages' },
+        { title: 'Neko Run', desc: 'Play the pixel cat runner, download it for Android, Windows and Linux', url: '/neko-run', cat: 'Pages' },
         { title: 'Sitemap', desc: 'Every page on the Nekomo website in one place', url: '/sitemap.html', cat: 'Pages' },
         { title: 'Brand Assets', desc: 'Official logos, app icon, and usage rules', url: '/brand.html', cat: 'Legal' },
         { title: 'Support & Contact', desc: 'Help, FAQ, bug reports, and contact options', url: '/support', cat: 'Pages' },
