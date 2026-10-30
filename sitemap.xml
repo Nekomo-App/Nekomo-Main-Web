@@ -48,4 +48,7 @@
         <loc>https://nekomoapp.netlify.app/brand.html</loc>
         <priority>0.3</priority>
     </url>
+    <url>
+        <loc>https://nekomoapp.netlify.app/gallery</loc>
+    </url>
 </urlset>

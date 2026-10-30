@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nekomo screenshots - phone app gallery</title>
+    <meta name="description" content="See Nekomo on a phone: home, search, title details with trailers, episode lists, the Extensions manager, and appearance and privacy settings.">
+    <meta property="og:title" content="Nekomo screenshots - phone app gallery">
+    <meta property="og:description" content="See Nekomo on a phone: home, search, title details with trailers, episode lists, the Extensions manager, and appearance and privacy settings.">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js?v=2" defer></script>
+    <script src="/theme.js?v=2" defer></script>
+
+    <style>
+    .gx{max-width:1180px;margin:0 auto;padding:110px 20px 70px;overflow-x:clip}
+    html,body{overflow-x:hidden}
+    .gx-hero{text-align:center;margin-bottom:34px}
+    .gx-hero h1{font-family:'Outfit',sans-serif;font-size:clamp(2rem,5vw,3.2rem);margin:0 0 10px;letter-spacing:-.02em}
+    .gx-hero p{color:var(--text-dim,#b9a9b0);max-width:640px;margin:0 auto;line-height:1.6}
+    .gx-stage{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:0;margin:34px auto 12px;padding:30px 0 20px}
+    .gx-stage::before{content:"";position:absolute;inset:auto 10% 0 10%;height:70%;background:radial-gradient(60% 80% at 50% 100%,rgba(229,57,95,.28),transparent 70%);filter:blur(10px);z-index:0}
+    .gx-stage .gx-phone{position:relative;z-index:1;width:min(27vw,240px);flex:0 0 auto}
+    .gx-stage .gx-phone:nth-child(1){transform:translateX(22px) rotate(-6deg) scale(.88);z-index:1}
+    .gx-stage .gx-phone:nth-child(2){transform:translateY(-14px);z-index:2}
+    .gx-stage .gx-phone:nth-child(3){transform:translateX(-22px) rotate(6deg) scale(.88);z-index:1}
+    .gx-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:26px 0 24px}
+    .gx-chip{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:inherit;padding:8px 16px;border-radius:999px;font:600 .86rem 'Inter',sans-serif;cursor:pointer;transition:.2s}
+    .gx-chip:hover{border-color:var(--accent-bright,#ff5c7a)}
+    .gx-chip[aria-pressed="true"]{background:var(--accent-bright,#ff5c7a);border-color:transparent;color:#1a0710}
+    .gx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:34px 26px;justify-items:center}
+    .gx-item{margin:0;width:100%;max-width:260px;text-align:center}
+    .gx-item[hidden]{display:none}
+    .gx-item figcaption{margin-top:14px}
+    .gx-item h3{margin:0 0 4px;font:700 1rem 'Outfit',sans-serif}
+    .gx-item p{margin:0;font-size:.85rem;color:var(--text-dim,#b9a9b0);line-height:1.5}
+    .gx-phone{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;color:inherit;font:inherit}
+    .gx-frame{display:block;position:relative;border-radius:34px;padding:9px;background:linear-gradient(145deg,#4a4a55,#17171c 50%,#3d3d48);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 0 0 1.5px #0a0a0d,0 22px 50px rgba(0,0,0,.55),0 4px 14px rgba(0,0,0,.4);transition:transform .25s ease,box-shadow .25s ease}
+    .gx-phone:hover .gx-frame,.gx-phone:focus-visible .gx-frame{transform:translateY(-6px);box-shadow:0 0 0 1.5px rgba(229,57,95,.5),0 28px 60px rgba(0,0,0,.6)}
+    .gx-frame::before{content:"";position:absolute;top:17px;left:50%;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:#050507;box-shadow:inset 0 0 0 2px #1b1b21;z-index:3}
+    .gx-frame::after{content:"";position:absolute;right:-3px;top:22%;width:3px;height:56px;border-radius:2px;background:#33333c}
+    .gx-frame img{display:block;width:100%;height:auto;border-radius:26px;background:#0c0508;position:relative;z-index:1}
+    .gx-note{text-align:center;color:var(--text-dim,#b9a9b0);font-size:.82rem;margin-top:36px}
+    .gx-dialog{border:0;background:transparent;padding:0;max-width:100vw;max-height:100vh}
+    .gx-dialog::backdrop{background:rgba(5,2,4,.86);backdrop-filter:blur(4px)}
+    .gx-dialog .gx-frame{width:min(86vw,400px);margin:0 auto;cursor:zoom-out}
+    .gx-dialog .gx-cap{color:#fff;text-align:center;margin-top:14px;font:600 .95rem 'Inter',sans-serif}
+    @media (max-width:760px){
+      .gx{padding-top:96px}
+      .gx-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 14px}
+      .gx-frame{border-radius:24px;padding:6px}.gx-frame img{border-radius:19px}.gx-frame::before{top:12px;width:8px;height:8px;margin-left:-4px}
+      .gx-item p{display:none}
+      .gx-stage .gx-phone:nth-child(1){transform:translateX(14px) rotate(-5deg) scale(.88)}
+      .gx-stage .gx-phone:nth-child(3){transform:translateX(-14px) rotate(5deg) scale(.88)}
+      .gx-stage .gx-phone{width:34vw}
+    }
+    @media (prefers-reduced-motion:reduce){.gx-frame{transition:none}.gx-phone:hover .gx-frame{transform:none}}
+    </style>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/home" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/home#features">Features</a>
+            <a href="/gallery" class="nk-current">Screenshots</a>
+            <a href="/home#download">Download</a>
+            <a href="/updates.html">Releases</a>
+            <a href="/beta">Beta</a>
+            <a href="/home#community">Community</a>
+            <a href="/rules">Rules</a>
+            <a href="/sources">Sources</a>
+            <a href="/support">Support</a>
+            <a href="/contributors.html">Contributors</a>
+            <div class="nk-dd"><button type="button" class="nk-dd-btn" aria-haspopup="true" aria-expanded="false">Legal <span aria-hidden="true">&#9662;</span></button>
+                <div class="nk-dd-menu">
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/dmca.html">DMCA &amp; Disclaimer</a>
+                    <a href="/brand.html">Brand Assets</a>
+                </div></div>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main>
+    <div class="gx">
+        <header class="gx-hero">
+            <h1>Nekomo, up close</h1>
+            <p>A look at the Android app: browse, track and discover anime and manga, then add the sources you trust. These are real screenshots from a stable build, with no account or personal data.</p>
+        </header>
+        <div class="gx-stage" aria-hidden="false"><button type="button" class="gx-phone" data-src="/Images/screens/home.webp" data-cap="Home" aria-label="Enlarge screenshot: Home"><span class="gx-frame"><img src="/Images/screens/home.webp" width="540" height="1056" alt="Nekomo home screen" decoding="async"></span></button><button type="button" class="gx-phone" data-src="/Images/screens/details.webp" data-cap="Title details" aria-label="Enlarge screenshot: Title details"><span class="gx-frame"><img src="/Images/screens/details.webp" width="540" height="1056" alt="Nekomo title details screen" decoding="async"></span></button><button type="button" class="gx-phone" data-src="/Images/screens/episodes.webp" data-cap="Episode list" aria-label="Enlarge screenshot: Episode list"><span class="gx-frame"><img src="/Images/screens/episodes.webp" width="540" height="1056" alt="Nekomo episode list screen" decoding="async"></span></button></div>
+        <div class="gx-chips" role="group" aria-label="Filter screenshots">
+            <button class="gx-chip" type="button" data-f="all" aria-pressed="true">All</button>
+            <button class="gx-chip" type="button" data-f="browse" aria-pressed="false">Browse</button>
+            <button class="gx-chip" type="button" data-f="details" aria-pressed="false">Details &amp; trailers</button>
+            <button class="gx-chip" type="button" data-f="settings" aria-pressed="false">Settings</button>
+        </div>
+        <div class="gx-grid"><figure class="gx-item" data-cat="browse"><button type="button" class="gx-phone" data-src="/Images/screens/home.webp" data-cap="Home" aria-label="Enlarge screenshot: Home"><span class="gx-frame"><img src="/Images/screens/home.webp" width="540" height="1056" alt="Nekomo home screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Home</h3><p>Trending, recently updated and recommended rows from AniList, fully customizable.</p></figcaption></figure><figure class="gx-item" data-cat="browse"><button type="button" class="gx-phone" data-src="/Images/screens/search.webp" data-cap="Search" aria-label="Enlarge screenshot: Search"><span class="gx-frame"><img src="/Images/screens/search.webp" width="540" height="1056" alt="Nekomo search screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Search</h3><p>Search the built-in catalogue. Results stay separate from your installed sources.</p></figcaption></figure><figure class="gx-item" data-cat="details"><button type="button" class="gx-phone" data-src="/Images/screens/details.webp" data-cap="Title details" aria-label="Enlarge screenshot: Title details"><span class="gx-frame"><img src="/Images/screens/details.webp" width="540" height="1056" alt="Nekomo title details screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Title details</h3><p>Poster, rating, genres, season, studio, synopsis and a trailer button.</p></figcaption></figure><figure class="gx-item" data-cat="details"><button type="button" class="gx-phone" data-src="/Images/screens/episodes.webp" data-cap="Episode list" aria-label="Enlarge screenshot: Episode list"><span class="gx-frame"><img src="/Images/screens/episodes.webp" width="540" height="1056" alt="Nekomo episode list screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Episode list</h3><p>Episode titles and synopses, with tracking even before you add a source.</p></figcaption></figure><figure class="gx-item" data-cat="details"><button type="button" class="gx-phone" data-src="/Images/screens/trailer.webp" data-cap="In-app trailers" aria-label="Enlarge screenshot: In-app trailers"><span class="gx-frame"><img src="/Images/screens/trailer.webp" width="540" height="1056" alt="Nekomo in-app trailers screen" loading="lazy" decoding="async"></span></button><figcaption><h3>In-app trailers</h3><p>Watch trailers in the built-in player with play, pause and seek.</p></figcaption></figure><figure class="gx-item" data-cat="settings"><button type="button" class="gx-phone" data-src="/Images/screens/settings.webp" data-cap="Settings" aria-label="Enlarge screenshot: Settings"><span class="gx-frame"><img src="/Images/screens/settings.webp" width="540" height="1056" alt="Nekomo settings screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Settings</h3><p>Everything grouped: account, sources, app, privacy and about.</p></figcaption></figure><figure class="gx-item" data-cat="settings"><button type="button" class="gx-phone" data-src="/Images/screens/extensions.webp" data-cap="Extensions manager" aria-label="Enlarge screenshot: Extensions manager"><span class="gx-frame"><img src="/Images/screens/extensions.webp" width="540" height="1056" alt="Nekomo extensions manager screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Extensions manager</h3><p>One place for repositories, sources, updates and update history.</p></figcaption></figure><figure class="gx-item" data-cat="settings"><button type="button" class="gx-phone" data-src="/Images/screens/homepage.webp" data-cap="Home page" aria-label="Enlarge screenshot: Home page"><span class="gx-frame"><img src="/Images/screens/homepage.webp" width="540" height="1056" alt="Nekomo home page screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Home page</h3><p>Choose metadata providers and reorder or hide home sections.</p></figcaption></figure><figure class="gx-item" data-cat="settings"><button type="button" class="gx-phone" data-src="/Images/screens/appearance.webp" data-cap="Appearance" aria-label="Enlarge screenshot: Appearance"><span class="gx-frame"><img src="/Images/screens/appearance.webp" width="540" height="1056" alt="Nekomo appearance screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Appearance</h3><p>Pick a theme or tune the colours to your taste.</p></figcaption></figure><figure class="gx-item" data-cat="settings"><button type="button" class="gx-phone" data-src="/Images/screens/general.webp" data-cap="General" aria-label="Enlarge screenshot: General"><span class="gx-frame"><img src="/Images/screens/general.webp" width="540" height="1056" alt="Nekomo general screen" loading="lazy" decoding="async"></span></button><figcaption><h3>General</h3><p>Content filters, playback hand-off, downloads and more.</p></figcaption></figure><figure class="gx-item" data-cat="settings"><button type="button" class="gx-phone" data-src="/Images/screens/privacy.webp" data-cap="History and privacy" aria-label="Enlarge screenshot: History and privacy"><span class="gx-frame"><img src="/Images/screens/privacy.webp" width="540" height="1056" alt="Nekomo history and privacy screen" loading="lazy" decoding="async"></span></button><figcaption><h3>History and privacy</h3><p>Incognito mode, search history and 18+ controls, all off by default.</p></figcaption></figure><figure class="gx-item" data-cat="settings"><button type="button" class="gx-phone" data-src="/Images/screens/licenses.webp" data-cap="Open-source licenses" aria-label="Enlarge screenshot: Open-source licenses"><span class="gx-frame"><img src="/Images/screens/licenses.webp" width="540" height="1056" alt="Nekomo open-source licenses screen" loading="lazy" decoding="async"></span></button><figcaption><h3>Open-source licenses</h3><p>Full license text, data-service credits and every library we use.</p></figcaption></figure></div>
+        <p class="gx-note">Screenshots are from the phone app and may change slightly between versions. Nekomo ships with no sources installed; you add your own.</p>
+    </div>
+    <dialog class="gx-dialog" id="gxDialog" aria-label="Screenshot preview"><div class="gx-frame" id="gxBig"><img alt="" width="540" height="1056"></div><div class="gx-cap" id="gxCap"></div></dialog>
+    <script>
+    (function(){
+      var chips=document.querySelectorAll('.gx-chip'),items=document.querySelectorAll('.gx-item');
+      chips.forEach(function(c){c.addEventListener('click',function(){
+        chips.forEach(function(x){x.setAttribute('aria-pressed',x===c?'true':'false')});
+        var f=c.getAttribute('data-f');
+        items.forEach(function(i){i.hidden=!(f==='all'||i.getAttribute('data-cat')===f)});
+      })});
+      var d=document.getElementById('gxDialog'),img=d.querySelector('img'),cap=document.getElementById('gxCap');
+      document.querySelectorAll('.gx-phone').forEach(function(b){b.addEventListener('click',function(){
+        img.src=b.getAttribute('data-src');img.alt=b.getAttribute('data-cap');cap.textContent=b.getAttribute('data-cap');
+        if(d.showModal){d.showModal()}else{window.open(b.getAttribute('data-src'))}
+      })});
+      d.addEventListener('click',function(){d.close()});
+    })();
+    </script>
+    </main>
+
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat loaf">
+                <span class="logo-text">Nekomo</span>
+            </div>
+            <div class="footer-links">
+                <a href="/home">Home</a>
+                <a href="/updates.html">Releases &amp; Changelog</a>
+                <a href="/beta">Beta Testing</a>
+                <a href="/rules">Rules</a>
+                <a href="/terms">Terms</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/support">Support</a>
+                <a href="/dmca.html">DMCA / Disclaimer</a>
+                <a href="/sitemap.html">Sitemap</a>
+                <a href="/Images/nekomo-wallpaper.jpg" target="_blank" rel="noopener" data-wallpaper-trigger>Wallpaper</a>
+                <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener">Discord</a>
+                <a href="https://t.me/nekomoapp" target="_blank" rel="noopener">Telegram</a>
+                <a href="https://github.com/Nekomo-App" target="_blank" rel="noopener">GitHub Org</a>
+            </div>
+            <p class="copyright">Built with <span>&hearts;</span> by the Nekomo community &middot; 猫も</p>
+        </div>
+    </footer>
+</body>
+</html>
