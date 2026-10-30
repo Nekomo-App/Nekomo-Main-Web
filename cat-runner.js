@@ -7,7 +7,8 @@
 
     var pathEl = document.getElementById('nk-missing-path');
     if (pathEl && location.pathname && location.pathname !== '/404.html') {
-        pathEl.textContent = decodeURIComponent(location.pathname);
+        try { pathEl.textContent = decodeURIComponent(location.pathname); }
+        catch (err) { pathEl.textContent = location.pathname; }
     }
 
     var W = 480, H = 150, GROUND = 128, PX = 2, CAT_X = 36;
@@ -253,7 +254,7 @@
 
     /* ---------- State ---------- */
     var state, cat, obstacles, fishes, clouds, petals, specks, speed, distance, score, bonus, hi, flashUntil,
-        overAt, nextMilestone, frame, popups;
+        overAt, nextMilestone, frame, popups, newRecord;
     hi = parseInt(localStorage.getItem(HI_KEY), 10) || 0;
     var input = { jump: false, duck: false };
     var reducedMotion = localStorage.getItem('nekomo_reduced_motion') === '1' ||
@@ -417,7 +418,8 @@
         state = 'over';
         overAt = performance.now();
         input.jump = false;
-        if (score > hi) { hi = score; localStorage.setItem(HI_KEY, String(hi)); }
+        newRecord = score > hi;
+        if (newRecord) { hi = score; localStorage.setItem(HI_KEY, String(hi)); }
         sfx.die();
         draw();
     }
@@ -469,7 +471,7 @@
             text(coarse ? 'TAP TO START' : 'PRESS SPACE TO START', W / 2, 64, 8, '#f7ecf0', 'center');
         } else if (state === 'over') {
             text('MEOW OVER', W / 2, 30, 16, '#ff5c7a', 'center');
-            text(score >= hi && score > 0 ? 'NEW HIGH SCORE!' : (coarse ? 'TAP' : 'SPACE') + ' TO TRY AGAIN', W / 2, 56, 8, '#f7ecf0', 'center');
+            text(newRecord ? 'NEW HIGH SCORE!' : (coarse ? 'TAP' : 'SPACE') + ' TO TRY AGAIN', W / 2, 56, 8, '#f7ecf0', 'center');
             drawRetry(W / 2 - 11, 74);
         }
     }
@@ -526,6 +528,9 @@
 
     document.addEventListener('keydown', function (e) {
         if (e.ctrlKey || e.metaKey || e.altKey || blocked(e) || !inView()) return;
+        // Arrow keys keep scrolling the page unless the game is focused or a run is in progress.
+        var arrow = e.code === 'ArrowUp' || e.code === 'ArrowDown';
+        if (arrow && state !== 'running' && document.activeElement !== canvas) return;
         if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
             e.preventDefault();
             if (!e.repeat) pressJump();
