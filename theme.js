@@ -587,8 +587,27 @@
     }
 
     /* ---------- Wallpaper viewer ---------- */
-    var WALLPAPER_SRC = '/Images/nekomo-wallpaper.jpg';
-    var WALLPAPER_NAME = 'nekomo-wallpaper.jpg';
+    var WALLPAPERS = [
+        '/Images/nekomo-wallpaper.jpg',
+        '/Images/nekomo-wallpaper-2.jpg',
+        '/Images/nekomo-wallpaper-3.jpg'
+    ];
+    var BG_KEY = 'nekomo_bg_wall';
+    function currentWall() {
+        var p = '';
+        try { p = sessionStorage.getItem(BG_KEY) || ''; } catch (e) {}
+        return WALLPAPERS.indexOf(p) >= 0 ? p : WALLPAPERS[0];
+    }
+    function setWall(src) {
+        try { sessionStorage.setItem(BG_KEY, src); } catch (e) {}
+        var st = document.getElementById('nk-bg-override');
+        if (!st) {
+            st = document.createElement('style');
+            st.id = 'nk-bg-override';
+            document.head.appendChild(st);
+        }
+        st.textContent = '.bg-fx::after { background-image: url("' + src + '") !important; }';
+    }
 
     function initWallpaperViewer() {
         var triggers = document.querySelectorAll('[data-wallpaper-trigger]');
@@ -601,15 +620,16 @@
             '  <button type="button" class="nk-wallpaper-close" aria-label="Close">' +
             '    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
             '  </button>' +
-            '  <img src="' + WALLPAPER_SRC + '" alt="Nekomo wallpaper">' +
+            '  <img src="' + currentWall() + '" alt="Nekomo wallpaper">' +
             '  <div class="nk-wallpaper-actions">' +
-            '    <a class="nk-wallpaper-btn nk-primary" href="' + WALLPAPER_SRC + '" download="' + WALLPAPER_NAME + '">' +
+            '    <a class="nk-wallpaper-btn nk-primary" href="' + currentWall() + '" download="nekomo-wallpaper.jpg">' +
             '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
             '      Save wallpaper' +
             '    </a>' +
-            '    <a class="nk-wallpaper-btn nk-ghost" href="' + WALLPAPER_SRC + '" target="_blank" rel="noopener">Open full size</a>' +
+            '    <a class="nk-wallpaper-btn nk-ghost" href="' + currentWall() + '" target="_blank" rel="noopener">Open full size</a>' +
+            '    <button type="button" class="nk-wallpaper-btn nk-ghost" data-wall-next>Next wallpaper &rarr;</button>' +
             '  </div>' +
-            '  <p class="nk-wallpaper-caption">Free to use as your own wallpaper &mdash; part of the Nekomo site theme.</p>' +
+            '  <p class="nk-wallpaper-caption">Free to use as your own wallpaper &mdash; part of the Nekomo site theme. "Next" also changes the page background for this session.</p>' +
             '</div>';
         document.body.appendChild(overlay);
 
@@ -623,6 +643,14 @@
             document.body.style.overflow = '';
         }
 
+        overlay.querySelector('[data-wall-next]').addEventListener('click', function () {
+            var i = (WALLPAPERS.indexOf(currentWall()) + 1) % WALLPAPERS.length;
+            var src = WALLPAPERS[i];
+            setWall(src);
+            overlay.querySelector('img').src = src;
+            overlay.querySelector('.nk-wallpaper-btn.nk-primary').href = src;
+            overlay.querySelectorAll('.nk-wallpaper-btn.nk-ghost')[0].href = src;
+        });
         triggers.forEach(function (el) { el.addEventListener('click', open); });
         overlay.querySelector('.nk-wallpaper-close').addEventListener('click', close);
         overlay.addEventListener('click', function (e) {
@@ -753,13 +781,22 @@
         '/Images/nekomo-wallpaper-2.jpg',
         '/Images/nekomo-wallpaper-3.jpg'
     ];
-    var pick = sessionStorage.getItem(KEY);
-    if (!pick || WALLS.indexOf(pick) < 0) {
-        pick = WALLS[Math.floor(Math.random() * WALLS.length)];
-        try { sessionStorage.setItem(KEY, pick); } catch (e) {}
+    var pick = '';
+    try { pick = sessionStorage.getItem(KEY) || ''; } catch (e) {}
+    if (WALLS.indexOf(pick) < 0) {
+        // New session: advance to the NEXT wallpaper (localStorage counter) so visits
+        // rotate 1 -> 2 -> 3 -> 1 deterministically instead of random repeats.
+        var idx = 0;
+        try { idx = (parseInt(localStorage.getItem(KEY + '_idx') || '-1', 10) + 1) % WALLS.length; } catch (e) {}
+        pick = WALLS[idx];
+        try {
+            localStorage.setItem(KEY + '_idx', String(idx));
+            sessionStorage.setItem(KEY, pick);
+        } catch (e) {}
     }
     if (pick === WALLS[0]) return; // default wall — no override needed
     var st = document.createElement('style');
+    st.id = 'nk-bg-override';
     st.textContent = '.bg-fx::after { background-image: url("' + pick + '") !important; }';
     document.head.appendChild(st);
 })();
