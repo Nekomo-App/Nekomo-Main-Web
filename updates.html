@@ -360,9 +360,18 @@
         }
         .history-head .tag { font-weight: 700; font-size: 1rem; }
         .history-head .date { font-size: 0.8rem; color: var(--text-muted); }
-        .history-links { margin-top: 4px; display: flex; gap: 14px; }
+        .history-links { margin-top: 10px; display: flex; gap: 14px; }
         .history-links a { font-size: 0.82rem; color: var(--accent-bright); text-decoration: none; }
         .history-links a:hover { text-decoration: underline; }
+        .history-assets { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+        .asset-link {
+            font-size: 0.78rem; color: var(--accent-bright); text-decoration: none;
+            padding: 5px 12px; border: 1px solid rgba(255, 92, 122, 0.28);
+            border-radius: 999px; transition: border-color .15s ease, background .15s ease;
+        }
+        .asset-link:hover { border-color: rgba(255, 92, 122, 0.6); background: rgba(255, 92, 122, 0.08); }
+        .chip-dl { text-decoration: none; color: inherit; transition: border-color .15s ease, background .15s ease; }
+        .chip-dl:hover { border-color: rgba(255, 92, 122, 0.5); }
         .history-excerpt { margin-top: 10px; font-size: 0.86rem; color: var(--text-muted); }
         .history-status { text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 30px 0; }
         .history-status a { color: var(--accent-bright); }
@@ -582,7 +591,8 @@
                 }
 
                 const latest = list[0];
-                const asset = (latest.assets || []).find(a => /\.(apk|zip|exe)$/i.test(a.name));
+                const allAssets = (latest.assets || []).filter(a => /\.(apk|zip|exe)$/i.test(a.name));
+                const asset = allAssets[0];
 
                 document.getElementById('latest-card').innerHTML =
                     '<div class="latest-top">' +
@@ -600,9 +610,13 @@
                     '  </div>' +
                     '</div>' +
                     '<div class="asset-chips">' +
-                    (asset ? '<span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>' + asset.name + '</span>' : '') +
-                    (asset && asset.size ? '<span class="chip">' + formatBytes(asset.size) + '</span>' : '') +
-                    (asset ? '<span class="chip">' + asset.download_count + ' downloads</span>' : '') +
+                    allAssets.map(function (a) {
+                        return '<a class="chip chip-dl" href="' + a.browser_download_url + '">' +
+                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>' +
+                            a.name.replace('Nekomo-', '').replace('.apk', '') +
+                            (a.size ? ' &middot; ' + formatBytes(a.size) : '') +
+                            '</a>';
+                    }).join('') +
                     '</div>' +
                     '<div class="latest-notes">' +
                     '  <h4>Changelog</h4>' +
@@ -617,15 +631,22 @@
                 }
                 historyList.innerHTML = '';
                 rest.forEach(r => {
-                    const a = (r.assets || []).find(as => /\.(apk|zip|exe)$/i.test(as.name));
+                    const assets = (r.assets || []).filter(as => /\.(apk|zip|exe)$/i.test(as.name));
                     const row = document.createElement('div');
                     row.className = 'history-row';
                     const excerpt = (r.body || '').split('\n').find(l => l.trim().length) || 'No release notes provided.';
                     row.innerHTML =
                         '<div class="history-head"><span class="tag">' + r.tag_name + '</span><span class="date">' + formatDate(r.published_at) + '</span></div>' +
                         '<p class="history-excerpt">' + escapeHtml(excerpt.replace(/^#+\s*/, '')).slice(0, 180) + '</p>' +
+                        '<div class="history-assets">' +
+                        assets.map(function (a) {
+                            return '<a class="asset-link" href="' + a.browser_download_url + '">' +
+                                a.name.replace('Nekomo-', '').replace('.apk', '') +
+                                (a.size ? ' &middot; ' + formatBytes(a.size) : '') +
+                                '</a>';
+                        }).join('') +
+                        '</div>' +
                         '<div class="history-links">' +
-                        (a ? '<a href="' + a.browser_download_url + '">Download</a>' : '') +
                         '<a href="' + r.html_url + '" target="_blank" rel="noopener">View release</a>' +
                         '</div>';
                     historyList.appendChild(row);
