@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEX — the Nekomo companion app</title>
+    <meta name="description" content="NEX is the free companion app for Nekomo — it hands source repositories straight into Nekomo.">
+    <meta property="og:title" content="NEX — the Nekomo companion app">
+    <meta name="theme-color" content="#8d2249" />
+    <link rel="icon" href="/Images/nekomo-logo-sakura.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages.css">
+    <script src="/gate.js?v=2" defer></script>
+    <script src="/theme.js?v=2" defer></script>
+</head>
+<body>
+    <div class="bg-fx"></div>
+
+    <nav>
+        <a href="/home" class="nav-logo">
+            <img src="/Images/nekomo-logo-sakura.jpg" alt="Nekomo cat">
+            <span class="logo-text">Nekomo</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="nav-links">
+            <a href="/home#features">Features</a>
+            <a href="/gallery">Screenshots</a>
+            <a href="/home#download">Download</a>
+            <a href="/updates.html">Releases</a>
+            <a href="/beta">Beta</a>
+            <a href="/home#community">Community</a>
+            <a href="/rules">Rules</a>
+            <a href="/sources">Sources</a>
+            <a href="/support">Support</a>
+            <a href="/contributors.html">Contributors</a>
+            <div class="nk-dd"><button type="button" class="nk-dd-btn" aria-haspopup="true" aria-expanded="false">Legal <span aria-hidden="true">&#9662;</span></button>
+                <div class="nk-dd-menu">
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/dmca.html">DMCA &amp; Disclaimer</a>
+                    <a href="/brand.html">Brand Assets</a>
+                </div></div>
+            <a href="https://github.com/Nekomo-App/Nekomo" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://discord.com/invite/E4Ezmgg7Ka" target="_blank" rel="noopener" class="nav-cta">Discord</a>
+        </div>
+    </nav>
+
+    <main>
+        <p class="page-label">Companion app</p>
+        <h1>NEX</h1>
+
+        <p>NEX (<code>net.nekomo.nex</code>) is the free companion app for Nekomo. It hands source
+        repositories straight into Nekomo — tap a repository link in NEX and Nekomo opens the
+        <code>nekomo-repo://add</code> flow to confirm and add it, instead of you copying URLs by hand.</p>
+
+        <h2>What it does</h2>
+        <ul>
+            <li>Browse and send repository links to Nekomo in one tap (Nekomo still asks you to confirm every add — nothing installs silently).</li>
+            <li>Nekomo detects NEX automatically and can open it from Settings &rarr; Extensions.</li>
+            <li>Free and open source, same as Nekomo itself.</li>
+        </ul>
+
+        <h2>Get NEX</h2>
+        <p>NEX is a separate app and is not bundled inside Nekomo. Grab it from the NEX repository:</p>
+        <p>
+            <a class="btn btn-primary" href="https://github.com/Nekomo-App/NEX/releases/latest" target="_blank" rel="noopener">Download NEX (GitHub releases)</a>
+            <a class="btn btn-ghost" href="https://github.com/Nekomo-App/NEX" target="_blank" rel="noopener">Source code</a>
+        </p>
+        <p style="opacity:.75; font-size:.9rem">If the releases page is empty, NEX builds are being prepared — check back later or build it from source. NEX is optional: every repository can also be added by URL inside Nekomo (Settings &rarr; Extensions &rarr; add repository).</p>
+
+        <h2>How they talk</h2>
+        <p>NEX opens <code>nekomo-repo://add?url=&lt;repository&gt;</code> links; Nekomo registers that
+        scheme and shows its normal add-repository confirmation. No account, no pairing, nothing sent to our servers.</p>
+    </main>
+
+    <footer>
+        <p>Nekomo — community-run, open source. NEX and Nekomo are separate apps by the same project.</p>
+    </footer>
+</body>
+</html>
