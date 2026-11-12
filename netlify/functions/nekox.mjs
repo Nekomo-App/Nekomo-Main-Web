@@ -3,9 +3,10 @@
 
 const ANILIST = "https://graphql.anilist.co";
 
-const json = (body, status = 200) => new Response(JSON.stringify(body), {
-    status,
+const json = (body, status = 200) => ({
+    statusCode: status,
     headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+    body: JSON.stringify(body),
 });
 
 async function gql(query, variables = {}) {
@@ -43,15 +44,15 @@ const INFO = `query($id:Int){
   }
 }`;
 
-export default async (req) => {
+export const handler = async (event) => {
     try {
-        const url = new URL(req.url);
-        // Path arrives as /api/anime/<route> (rewritten); also accept /.netlify/functions/nekox/<route>
-        const route = url.pathname
+        // Path arrives as /.netlify/functions/nekox/<route> (or /api/anime/<route> via redirect).
+        const route = event.path
             .replace(/^\/api\/anime/, "")
             .replace(/^\/\.netlify\/functions\/nekox/, "") || "/";
-        const page = parseInt(url.searchParams.get("page") || "1", 10);
-        const per = Math.min(parseInt(url.searchParams.get("per_page") || "30", 10), 50);
+        const params = event.queryStringParameters || {};
+        const page = parseInt(params.page || "1", 10);
+        const per = Math.min(parseInt(params.per_page || "30", 10), 50);
 
         const list = async (sort, extra = {}) => {
             const r = await gql(PAGE, { page, per, sort, ...extra });
@@ -61,9 +62,9 @@ export default async (req) => {
         if (route === "/spotlight" || route === "/trending") return list(["TRENDING_DESC"]);
         if (route === "/popular") return list(["POPULARITY_DESC"]);
         if (route === "/recent") return list(["UPDATED_AT_DESC"]);
-        if (route === "/search") return list(["SEARCH_MATCH"], { search: url.searchParams.get("query") || "" });
+        if (route === "/search") return list(["SEARCH_MATCH"], { search: params.query || "" });
         if (route === "/filter") {
-            const genre = url.searchParams.get("genre");
+            const genre = params.genre;
             return list(["POPULARITY_DESC"], genre ? { genre: [genre] } : {});
         }
         if (route === "/schedule") {
@@ -77,7 +78,6 @@ export default async (req) => {
         }
         const e = route.match(/^\/episodes\/(\d+)$/);
         if (e) {
-            // AniList has no per-episode list; synthesize entries from the episode count.
             const r = await gql(INFO, { id: +e[1] });
             const n = r?.data?.Media?.episodes || r?.data?.Media?.nextAiringEpisode?.episode || 0;
             const eps = Array.from({ length: n }, (_, i) => ({
@@ -93,5 +93,3 @@ export default async (req) => {
         return json({ error: err.message }, 500);
     }
 };
-
-export const config = { path: ["/api/anime", "/api/anime/*"] };
