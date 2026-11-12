@@ -86,9 +86,49 @@ export const handler = async (event) => {
             return json({ results: eps });
         }
         // ---- Stream sources (server-side providers) ----
-        // Each provider returns {streams:[{url,type,referer,quality}]}; they run in
-        // order, so every provider is a backup for the one before it.
+        // Zangetsu providers are plain JS modules using global fetch — run them
+        // here in a Node VM so the whole scraper stack lives on the site, private.
+        const ZG_INDEX = "https://raw.githubusercontent.com/Spyou/zangetsu-providers/main/index.json";
+        const ZG_BASE = "https://raw.githubusercontent.com/Spyou/zangetsu-providers/main/";
+        const vm = await import("node:vm");
+        const codeCache = {};
+        const loadProvider = async (id) => {
+            if (codeCache[id]) return codeCache[id];
+            const code = await (await fetch(`${ZG_BASE}providers/${id}.js`)).text();
+            const ctx = vm.createContext({
+                fetch, console, setTimeout, Buffer, URL, URLSearchParams, TextEncoder, TextDecoder,
+                atob: (s) => Buffer.from(s, "base64").toString("binary"),
+                btoa: (s) => Buffer.from(s, "binary").toString("base64"),
+                crypto,
+            });
+            const api = vm.runInContext(
+                `(function(){${code}; return {getInfo, search, getDetail, getEpisodes, getVideoSources};})()`,
+                ctx, { timeout: 20000 });
+            codeCache[id] = api;
+            return api;
+        };
+        const zgStreams = async (id, title, ep) => {
+            try {
+                const p = await loadProvider(id);
+                const hits = await p.search(title, 1, {});
+                const first = Array.isArray(hits) ? hits[0] : hits?.results?.[0] || hits?.items?.[0];
+                if (!first) return null;
+                const detail = await p.getDetail(first.url || first.id, {});
+                const eps = detail?.episodes || (await p.getEpisodes?.(first.url, {})) || [];
+                const target = eps[ep - 1] || eps[0];
+                if (!target) return null;
+                const srcs = await p.getVideoSources(target.url || target.id || target);
+                const streams = (srcs?.streams || srcs || []).map((s) => ({
+                    url: s.url || s.file, type: s.type || (s.url?.includes(".m3u8") ? "hls" : "mp4"),
+                    referer: s.referer || s.headers?.Referer || "", quality: s.quality || "auto",
+                })).filter((s) => s.url);
+                return streams.length ? { streams, provider: `zg-${id}` } : null;
+            } catch { return null; }
+        };
+
         const providers = [
+            async (title, ep) => zgStreams("hianime", title, ep),
+            async (title, ep) => zgStreams("anikoto", title, ep),
             async (title, ep) => {
                 // Internet Archive — public media library, direct mp4 files.
                 const q = encodeURIComponent(`title:(${title}) AND mediatype:(movies)`);
@@ -129,6 +169,31 @@ export const handler = async (event) => {
                 body: buf.toString("base64"),
                 isBase64Encoded: true,
             };
+        }
+        // ---- Provider/source directory ----
+        // The app pulls its scraper + API list from here; each entry names the kind
+        // and how the app should use it.
+        if (route === "/providers") {
+            return json({
+                metadata: [
+                    { id: "hosted", kind: "rest", base: "/api/anime" },
+                    { id: "anilist", kind: "graphql", base: "https://graphql.anilist.co" },
+                    { id: "kitsu", kind: "rest", base: "https://kitsu.io/api/edge" },
+                    { id: "jikan", kind: "rest", base: "https://api.jikan.moe/v4" },
+                ],
+                streams: [
+                    { id: "hosted-extract", kind: "rest", base: "/api/anime/extract" },
+                    { id: "hianime", kind: "zg-provider", repo: ZG_INDEX },
+                    { id: "anikoto", kind: "zg-provider", repo: ZG_INDEX },
+                    { id: "archive.org", kind: "rest", base: "https://archive.org" },
+                ],
+                providersVersion: 1,
+            });
+        }
+        if (route.startsWith("/provider-code/")) {
+            const id = route.split("/").pop();
+            const code = await (await fetch(`${ZG_BASE}providers/${id}.js`)).text();
+            return { statusCode: 200, headers: { "Content-Type": "text/javascript", "Access-Control-Allow-Origin": "*" }, body: code };
         }
         return json({ ok: true, service: "nekomo-nekox" });
     } catch (err) {
