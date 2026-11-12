@@ -1,0 +1,9 @@
+[functions]
+directory = "netlify/functions"
+
+# Private API for the NekōX app: /api/anime/* -> AniList-backed function.
+[[redirects]]
+from = "/api/anime/*"
+to = "/.netlify/functions/nekox/:splat"
+status = 200
+force = true
