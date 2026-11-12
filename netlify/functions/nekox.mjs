@@ -85,8 +85,50 @@ export const handler = async (event) => {
             }));
             return json({ results: eps });
         }
-        if (route.startsWith("/extract") || route.startsWith("/proxy")) {
-            return json({ error: "Streaming is not served by this endpoint — needs a dedicated scraper." }, 501);
+        // ---- Stream sources (server-side providers) ----
+        // Each provider returns {streams:[{url,type,referer,quality}]}; they run in
+        // order, so every provider is a backup for the one before it.
+        const providers = [
+            async (title, ep) => {
+                // Internet Archive — public media library, direct mp4 files.
+                const q = encodeURIComponent(`title:(${title}) AND mediatype:(movies)`);
+                const r = await fetch(`https://archive.org/advancedsearch.php?q=${q}&fl[]=identifier&fl[]=title&rows=5&page=1&output=json`);
+                const item = (await r.json())?.response?.docs?.[0]?.identifier;
+                if (!item) return null;
+                const meta = await (await fetch(`https://archive.org/metadata/${item}`)).json();
+                const vids = (meta?.files || []).filter(f => /\.(mp4|mkv|avi)$/i.test(f.name || "") && !(f.format || "").includes("Preview"));
+                if (!vids.length) return null;
+                const pick = vids[Math.min(ep - 1, vids.length - 1)];
+                return { streams: [{ url: `https://archive.org/download/${item}/${encodeURIComponent(pick.name)}`, type: "mp4", referer: "", quality: "auto" }], provider: "archive.org" };
+            },
+        ];
+
+        const ex = route.match(/^\/extract\/(\d+)$/);
+        if (ex) {
+            const info = (await gql(INFO, { id: +ex[1] }))?.data?.Media;
+            const title = info?.title?.english || info?.title?.romaji || "";
+            const ep = parseInt((params.e || "1").split(":").pop() || "1", 10);
+            for (const p of providers) {
+                const r = await p(title, ep).catch(() => null);
+                if (r?.streams?.length) return json({ ssub: r, sdub: r, provider: r.provider });
+            }
+            return json({ error: "No provider returned streams", title, ep }, 404);
+        }
+
+        const px = route.match(/^\/proxy\/(m3u8|segment)$/);
+        if (px) {
+            // Pass-through proxy for manifests/subtitles (functions cap ~6MB — video
+            // segments must play direct-from-CDN, which the app already prefers).
+            const target = params.url;
+            if (!target || !/^https?:\/\//.test(target)) return json({ error: "Bad url" }, 400);
+            const r = await fetch(target, { headers: { Referer: params.referer || "", "User-Agent": "Mozilla/5.0" } });
+            const buf = Buffer.from(await r.arrayBuffer());
+            return {
+                statusCode: r.status,
+                headers: { "Content-Type": r.headers.get("content-type") || "application/octet-stream", "Access-Control-Allow-Origin": "*" },
+                body: buf.toString("base64"),
+                isBase64Encoded: true,
+            };
         }
         return json({ ok: true, service: "nekomo-nekox" });
     } catch (err) {
