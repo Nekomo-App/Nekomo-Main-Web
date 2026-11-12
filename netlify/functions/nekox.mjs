@@ -95,11 +95,16 @@ export const handler = async (event) => {
         const loadProvider = async (id) => {
             if (codeCache[id]) return codeCache[id];
             const code = await (await fetch(`${ZG_BASE}providers/${id}.js`)).text();
+            // Zangetsu's host fetch returns {status, headers, body} — not a Web Response.
+            const zfetch = async (u, o = {}) => {
+                const r = await fetch(u, o);
+                return { status: r.status, headers: Object.fromEntries(r.headers), body: await r.text() };
+            };
             const ctx = vm.createContext({
-                fetch, console, setTimeout, Buffer, URL, URLSearchParams, TextEncoder, TextDecoder,
+                fetch: zfetch, console, setTimeout, Buffer, URL, URLSearchParams, TextEncoder, TextDecoder,
                 atob: (s) => Buffer.from(s, "base64").toString("binary"),
                 btoa: (s) => Buffer.from(s, "binary").toString("base64"),
-                crypto,
+                crypto, Uint8Array,
             });
             const api = vm.runInContext(
                 `(function(){${code}; return {getInfo, search, getDetail, getEpisodes, getVideoSources};})()`,
@@ -129,18 +134,7 @@ export const handler = async (event) => {
         const providers = [
             async (title, ep) => zgStreams("hianime", title, ep),
             async (title, ep) => zgStreams("anikoto", title, ep),
-            async (title, ep) => {
-                // Internet Archive — public media library, direct mp4 files.
-                const q = encodeURIComponent(`title:(${title}) AND mediatype:(movies)`);
-                const r = await fetch(`https://archive.org/advancedsearch.php?q=${q}&fl[]=identifier&fl[]=title&rows=5&page=1&output=json`);
-                const item = (await r.json())?.response?.docs?.[0]?.identifier;
-                if (!item) return null;
-                const meta = await (await fetch(`https://archive.org/metadata/${item}`)).json();
-                const vids = (meta?.files || []).filter(f => /\.(mp4|mkv|avi)$/i.test(f.name || "") && !(f.format || "").includes("Preview"));
-                if (!vids.length) return null;
-                const pick = vids[Math.min(ep - 1, vids.length - 1)];
-                return { streams: [{ url: `https://archive.org/download/${item}/${encodeURIComponent(pick.name)}`, type: "mp4", referer: "", quality: "auto" }], provider: "archive.org" };
-            },
+            async (title, ep) => zgStreams("fourkhdhub", title, ep),
         ];
 
         const ex = route.match(/^\/extract\/(\d+)$/);
