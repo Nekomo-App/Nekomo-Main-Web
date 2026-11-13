@@ -381,11 +381,19 @@ export const handler = async (event) => {
                 const { blobs } = await store.list();
                 const now = Date.now();
                 const prof = await blob("profiles");
-                const members = await Promise.all(blobs.map(async (b) => {
+                // Group presence rows by member key — one member can have several devices.
+                const byKey = {};
+                for (const b of blobs) {
                     const d = JSON.parse((await store.get(b.key)) || "{}");
                     const keyPart = b.key.split(":")[0];
+                    const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), devices: 0, lastSeen: 0, online: false });
+                    g.devices += 1;
+                    g.lastSeen = Math.max(g.lastSeen, d.lastSeen || 0);
+                    if (now - (d.lastSeen || 0) < 240000) g.online = true;
+                }
+                const members = await Promise.all(Object.entries(byKey).map(async ([keyPart, g]) => {
                     const p = JSON.parse((await prof.get(`profile:${keyPart}`)) || "{}");
-                    return { id: b.key.slice(0, 12), name: p.name || "", discord: p.discord || "", lastSeen: d.lastSeen, online: now - (d.lastSeen || 0) < 240000 };
+                    return { ...g, name: p.name || "", discord: p.discord || "" };
                 }));
                 return json({ ok: true, members, online: members.filter(m => m.online).length });
             }

@@ -84,7 +84,7 @@ async function show() {
   ].map(([l, v]) => `<div class="card" style="padding:10px 16px;margin:0"><div style="font-size:20px;font-weight:700">${v}</div><div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:1px">${l}</div></div>`).join("");
   const sorted = (m.members || []).slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0));
   members.innerHTML = sorted.length ? sorted.map(x =>
-    `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"}</span></span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
+    `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"} · ${x.devices || 1} device${(x.devices || 1) > 1 ? "s" : ""}</span></span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
   ).join("") : '<p class="muted">No members online yet — heartbeats appear after first app launch.</p>';
   allkeys.innerHTML = (ak.keys || []).map(x =>
     `<div class="row"><span class="mono">${x.key}</span><span class="muted">${x.type}</span></div>`
