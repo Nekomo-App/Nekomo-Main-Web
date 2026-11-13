@@ -1,0 +1,172 @@
+functionsDirectory = "C:\\Users\\lphou\\OneDrive\\Documents\\GitHub\\nekomo-main-web\\netlify\\functions"
+functionsDirectoryOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+headers = []
+
+[build]
+publish = "C:\\Users\\lphou\\OneDrive\\Documents\\GitHub\\nekomo-main-web"
+publishOrigin = "ui"
+functions = "C:\\Users\\lphou\\OneDrive\\Documents\\GitHub\\nekomo-main-web\\netlify\\functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+
+[[redirects]]
+from = "/Nekomo-phone-release.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-release.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-phone-beta.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-beta.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-phone-alpha.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-alpha.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-TV-release.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-release.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-TV-beta.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-beta.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-TV-alpha.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-alpha.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-phone-debug.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-phone-alpha.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-tv-release.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-release.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-tv-beta.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-beta.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-tv-debug.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-alpha.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/Nekomo-TV-debug.apk"
+to = "https://raw.githubusercontent.com/Nekomo-App/Neko-Source/main/apks/Nekomo-TV-alpha.apk"
+status = 302.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/api/anime/*"
+to = "/.netlify/functions/nekox/:splat"
+status = 200.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
