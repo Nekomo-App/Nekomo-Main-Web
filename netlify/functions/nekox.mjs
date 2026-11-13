@@ -101,10 +101,11 @@ export const handler = async (event) => {
                 return { status: r.status, headers: Object.fromEntries(r.headers), body: await r.text() };
             };
             const ctx = vm.createContext({
-                fetch: zfetch, console, setTimeout, Buffer, URL, URLSearchParams, TextEncoder, TextDecoder,
+                fetch: zfetch, console, setTimeout, clearTimeout, setInterval, clearInterval,
+                queueMicrotask, Buffer, URL, URLSearchParams, TextEncoder, TextDecoder,
                 atob: (s) => Buffer.from(s, "base64").toString("binary"),
                 btoa: (s) => Buffer.from(s, "binary").toString("base64"),
-                crypto, Uint8Array,
+                crypto, Uint8Array, Promise, ArrayBuffer, DataView,
             });
             const api = vm.runInContext(
                 `(function(){${code}; return {getInfo, search, getDetail, getEpisodes, getVideoSources};})()`,
@@ -142,11 +143,15 @@ export const handler = async (event) => {
             const info = (await gql(INFO, { id: +ex[1] }))?.data?.Media;
             const title = info?.title?.english || info?.title?.romaji || "";
             const ep = parseInt((params.e || "1").split(":").pop() || "1", 10);
+            const errs = [];
             for (const p of providers) {
-                const r = await p(title, ep).catch(() => null);
-                if (r?.streams?.length) return json({ ssub: r, sdub: r, provider: r.provider });
+                try {
+                    const r = await p(title, ep);
+                    if (r?.streams?.length) return json({ ssub: r, sdub: r, provider: r.provider });
+                    errs.push(`${p.name || "provider"}: empty`);
+                } catch (e) { errs.push(String(e?.message || e)); }
             }
-            return json({ error: "No provider returned streams", title, ep }, 404);
+            return json({ error: "No provider returned streams", title, ep, errs }, 404);
         }
 
         const px = route.match(/^\/proxy\/(m3u8|segment)$/);
