@@ -234,20 +234,35 @@ export const handler = async (event) => {
             if (!key) return json({ ok: false, error: "key required" }, 400);
             const store = await blob("invites");
             for (const h of SEED_HASHES) await store.set(h, JSON.stringify({ seed: true }));
-            const rec = await store.get(keyHash(key));
+            const rec = JSON.parse((await store.get(keyHash(key))) || "null");
             if (!rec) return json({ ok: false });
-            // Device sign-in cap: one key signs in on at most 3 devices.
+            const isFriend = rec.type === "friend";
+            const cap = isFriend ? 2 : 3;
+            // Device sign-in cap: member keys 3 devices, friend keys 2 devices.
             if (did) {
                 const dev = await blob("devices");
                 const slot = `devices:${keyHash(key)}`;
                 const d = JSON.parse((await dev.get(slot)) || "{\"devices\":{}}");
-                if (!(did in d.devices) && Object.keys(d.devices).length >= 3) {
-                    return json({ ok: false, error: "max_devices", max: 3 });
+                if (!(did in d.devices) && Object.keys(d.devices).length >= cap) {
+                    return json({ ok: false, error: "max_devices", max: cap });
                 }
                 d.devices[did] = Date.now();
                 await dev.set(slot, JSON.stringify(d));
             }
-            return json({ ok: true });
+            // Members get one friend key, auto-minted on first sign-in — share
+            // with exactly one trusted friend; it signs in on up to 2 devices.
+            if (!isFriend) {
+                const fr = await blob("friendkeys");
+                const slot = `friend:${keyHash(key)}`;
+                let fk = await fr.get(slot);
+                if (!fk) {
+                    fk = `NX-F-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
+                    await store.set(keyHash(fk), JSON.stringify({ type: "friend", parent: keyHash(key), at: Date.now() }));
+                    await fr.set(slot, fk);
+                }
+                return json({ ok: true, type: "member", friendKey: fk });
+            }
+            return json({ ok: true, type: "friend" });
         }
         if (route === "/presence") { // member heartbeat: ?key=<invitekey>&did=<device>
             const key = (params.key || "").trim();
