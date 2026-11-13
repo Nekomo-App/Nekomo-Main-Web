@@ -1,6 +1,6 @@
 {
-  "version": "1.0.5",
+  "version": "1.0.6",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Themes, staff tools, member system",
-  "versionCode": 4
+  "notes": "AniList sync, VPN warning in setup, staff device counts",
+  "versionCode": 5
 }
