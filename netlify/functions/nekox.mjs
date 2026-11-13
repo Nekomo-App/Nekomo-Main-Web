@@ -215,7 +215,10 @@ export const handler = async (event) => {
         const STAFF_HASHES = (process.env.STAFF_HASHES || "ac69cfc6c01bee8cf292457b750e2c14b314832ff4215ef23fc5b38eca92c67a").split(","); // admin / nekomo-staff-2025
         const SEED_HASHES = ["c88eab1d62adf64cb4ebadce17b8f4069e2e7cd5e8ff9ba31487767664d9f289"]; // NEKX-NEKO-2025
         const keyHash = (k) => sha(`${k}:${SALT}`);
-        const blob = async (name) => (await import("@netlify/blobs")).getStore(name);
+        const blob = async (name) => (await import("@netlify/blobs")).getStore({
+            name, siteID: "b19f8392-b12a-451d-94f3-8d64dbefc741",
+            token: process.env.NETLIFY_BLOBS_TOKEN || "",
+        });
         const body = () => { try { return event.body ? JSON.parse(event.body) : {}; } catch { return {}; } };
         const auth = () => {
             const t = (params.token || (event.headers.authorization || "").replace(/^Bearer /, "")).split(".");
