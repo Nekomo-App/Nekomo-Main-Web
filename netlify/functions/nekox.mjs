@@ -243,8 +243,20 @@ export const handler = async (event) => {
             // Device sign-in cap: member keys 3 devices, friend keys 2 devices.
             if (did) {
                 const dev = await blob("devices");
+                // One device may only ever sign in under ONE key — flag multi-key abuse.
+                const dslot = `devicekeys:${did}`;
+                const bound = JSON.parse((await dev.get(dslot)) || "null");
+                if (bound && bound.keyHash !== keyHash(key)) {
+                    const abuse = await blob("abuse");
+                    await abuse.set(did, JSON.stringify({ keys: [...new Set([bound.keyHash, keyHash(key)])], at: Date.now() }));
+                    return json({ ok: false, error: "key_abuse" });
+                }
+                if (!bound) await dev.set(dslot, JSON.stringify({ keyHash: keyHash(key), since: Date.now() }));
                 const slot = `devices:${keyHash(key)}`;
                 const d = JSON.parse((await dev.get(slot)) || "{\"devices\":{}}");
+                // Auto-prune devices silent for 14+ days (uninstalled/dead) before counting.
+                const cutoff = Date.now() - 14 * 86400000;
+                d.devices = Object.fromEntries(Object.entries(d.devices).filter(([, t]) => t > cutoff));
                 if (!(did in d.devices) && Object.keys(d.devices).length >= cap) {
                     return json({ ok: false, error: "max_devices", max: cap });
                 }
@@ -296,6 +308,19 @@ export const handler = async (event) => {
             if (!key) return json({ ok: false }, 400);
             const store = await blob("presence");
             await store.set(`${sha(key)}:${params.did || "dev"}`, JSON.stringify({ lastSeen: Date.now() }));
+            return json({ ok: true });
+        }
+        if (route === "/signout") { // member signs out: frees their device slot
+            const key = (params.key || "").trim(), did = (params.did || "").trim();
+            if (!key || !did) return json({ ok: false }, 400);
+            const dev = await blob("devices");
+            const slot = `devices:${keyHash(key)}`;
+            const d = JSON.parse((await dev.get(slot)) || "{\"devices\":{}}");
+            delete d.devices[did];
+            await dev.set(slot, JSON.stringify(d));
+            await dev.delete(`devicekeys:${did}`);
+            const pres = await blob("presence");
+            await pres.delete(`${sha(key)}:${did}`);
             return json({ ok: true });
         }
         if (route === "/staff/login") {
@@ -379,6 +404,12 @@ export const handler = async (event) => {
                     return { hash: b.key.slice(0, 10), devices: Object.keys(dd.devices).length, ...(JSON.parse((await store.get(b.key)) || "{}")) };
                 }));
                 return json({ ok: true, keys, count: keys.length });
+            }
+            if (route === "/admin/abuse") {
+                const abuse = await blob("abuse");
+                const { blobs } = await abuse.list();
+                const flags = await Promise.all(blobs.map(async (b) => ({ did: b.key.slice(0, 10), ...(JSON.parse((await abuse.get(b.key)) || "{}")) })));
+                return json({ ok: true, abuse: flags, count: flags.length });
             }
             return json({ ok: true });
         }
