@@ -409,6 +409,32 @@ export const handler = async (event) => {
                 }));
                 return json({ ok: true, keys, count: keys.length, used: keys.filter(k => k.used).length, unused: keys.filter(k => !k.used).length });
             }
+            if (route === "/admin/mintbulk") { // ?n=50 → wipe old friend keys, mint member+friend pairs
+                const n = Math.min(parseInt(params.n || "50"), 200);
+                const inv = await blob("invites"), fr = await blob("friendkeys");
+                // Remove every friend key + friend-typed invite (fresh pairing).
+                const fAll = await fr.list();
+                for (const b of fAll.blobs) {
+                    const fk = await fr.get(b.key);
+                    if (fk) await inv.delete(keyHash(fk));
+                    await fr.delete(b.key);
+                }
+                const iAll = await inv.list();
+                for (const b of iAll.blobs) {
+                    const rec = JSON.parse((await inv.get(b.key)) || "{}");
+                    if (rec.type === "friend") await inv.delete(b.key);
+                }
+                const pairs = [];
+                for (let i = 0; i < n; i++) {
+                    const mk = `NEKX-${crypto2.randomBytes(2).toString("hex").toUpperCase()}-${crypto2.randomBytes(2).toString("hex").toUpperCase()}`;
+                    const fk = `NX-F-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
+                    await inv.set(keyHash(mk), JSON.stringify({ type: "member", minted: Date.now() }));
+                    await inv.set(keyHash(fk), JSON.stringify({ type: "friend", parent: keyHash(mk), at: Date.now() }));
+                    await fr.set(`friend:${keyHash(mk)}`, fk);
+                    pairs.push({ member: mk, friend: fk });
+                }
+                return json({ ok: true, count: pairs.length, pairs });
+            }
             if (route === "/admin/allkeys") { // every usable sign-in key (plaintext friend keys + member seeds)
                 const inv = await blob("invites");
                 const fr = await blob("friendkeys");
