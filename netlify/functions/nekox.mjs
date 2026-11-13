@@ -306,7 +306,7 @@ export const handler = async (event) => {
                 // Discord's public key is a raw 32-byte ed25519 key — wrap it in the
                 // standard SPKI prefix so node:crypto can import it.
                 const spki = Buffer.from(`302a300506032b6570032100${pub}`, "hex");
-                valid = crypto2.verify("ed25519", { key: spki, format: "der", type: "spki" }, null, Buffer.from(ts + raw), Buffer.from(sig, "hex"));
+                valid = crypto2.verify("ed25519", { key: spki, format: "der", type: "spki" }, Buffer.from(sig, "hex"), Buffer.from(ts + raw));
             } catch { valid = false; }
             if (!valid) return json({ error: "bad signature" }, 401);
             const i = JSON.parse(raw);
