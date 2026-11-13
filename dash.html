@@ -48,6 +48,10 @@
     <div id="keys"></div>
     <p id="newKey" class="accent mono"></p>
   </div>
+  <div class="card">
+    <h1>Abuse flags</h1>
+    <div id="abuse"></div>
+  </div>
 </div>
 
 <script>
@@ -70,6 +74,10 @@ async function show() {
   members.innerHTML = (m.members || []).length ? m.members.map(x =>
     `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"}</span></span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
   ).join("") : '<p class="muted">No members online yet — heartbeats appear after first app launch.</p>';
+  const ab = await api("/admin/abuse");
+  abuse.innerHTML = (ab.abuse || []).length ? ab.abuse.map(x =>
+    `<div class="row"><span class="mono">device ${x.did}…</span><span class="muted">${(x.keys || []).length} keys</span></div>`
+  ).join("") : '<p class="muted">No flagged devices.</p>';
   const k = await api("/admin/keys");
   keys.innerHTML = (k.keys || []).map(x =>
     `<div class="row"><span class="mono">${x.hash}… ${x.seed ? '<span class="muted">(seed)</span>' : ""}${x.name ? "· " + x.name : ""}</span><button onclick="revoke('${x.hash}')">Revoke</button></div>`
