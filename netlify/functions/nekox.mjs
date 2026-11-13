@@ -398,12 +398,16 @@ export const handler = async (event) => {
                     return json({ ok: true });
                 }
                 const { blobs } = await store.list();
+                const prof = await blob("profiles");
+                const dev = await blob("devices");
                 const keys = await Promise.all(blobs.map(async (b) => {
-                    const dev = await blob("devices");
                     const dd = JSON.parse((await dev.get(`devices:${b.key}`)) || "{\"devices\":{}}");
-                    return { hash: b.key.slice(0, 10), devices: Object.keys(dd.devices).length, ...(JSON.parse((await store.get(b.key)) || "{}")) };
+                    const rec = JSON.parse((await store.get(b.key)) || "{}");
+                    const p = JSON.parse((await prof.get(`profile:${b.key}`)) || "{}");
+                    const n = Object.keys(dd.devices).length;
+                    return { hash: b.key.slice(0, 10), type: rec.type || "member", name: p.name || rec.name || "", discord: p.discord || "", devices: n, used: n > 0, seed: !!rec.seed };
                 }));
-                return json({ ok: true, keys, count: keys.length });
+                return json({ ok: true, keys, count: keys.length, used: keys.filter(k => k.used).length, unused: keys.filter(k => !k.used).length });
             }
             if (route === "/admin/abuse") {
                 const abuse = await blob("abuse");

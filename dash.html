@@ -43,6 +43,7 @@
   <div class="card">
     <div class="flex" style="justify-content:space-between;align-items:baseline">
       <h1>Invite keys</h1>
+      <p id="keyStats" class="muted"></p>
       <div class="flex"><input id="mintName" placeholder="Friend name" style="width:140px;margin:0"><button onclick="mint()">Mint</button></div>
     </div>
     <div id="keys"></div>
@@ -79,8 +80,9 @@ async function show() {
     `<div class="row"><span class="mono">device ${x.did}…</span><span class="muted">${(x.keys || []).length} keys</span></div>`
   ).join("") : '<p class="muted">No flagged devices.</p>';
   const k = await api("/admin/keys");
+  keyStats.textContent = `${k.used || 0} used · ${k.unused || 0} unused`;
   keys.innerHTML = (k.keys || []).map(x =>
-    `<div class="row"><span class="mono">${x.hash}… ${x.seed ? '<span class="muted">(seed)</span>' : ""}${x.name ? "· " + x.name : ""}</span><button onclick="revoke('${x.hash}')">Revoke</button></div>`
+    `<div class="row"><span><span class="dot ${x.used ? "on" : "off"}"></span><span class="mono">${x.hash}…</span> <span class="muted">${x.type}${x.name ? "· " + x.name : ""}${x.discord ? "· " + x.discord : ""} · ${x.devices} dev</span></span><button onclick="revoke('${x.hash}')">Revoke</button></div>`
   ).join("");
 }
 async function mint() {
