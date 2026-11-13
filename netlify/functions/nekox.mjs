@@ -307,9 +307,14 @@ export const handler = async (event) => {
         }
         if (route === "/presence") { // member heartbeat: ?key=<invitekey>&did=<device>
             const key = (params.key || "").trim();
+            const did = (params.did || "").trim();
             if (!key) return json({ ok: false }, 400);
+            // Kicked device? devicekeys binding was removed → force sign-out.
+            const dev = await blob("devices");
+            const bound = JSON.parse((await dev.get(`devicekeys:${did}`)) || "null");
+            if (did && !bound) return json({ ok: false, kicked: true });
             const store = await blob("presence");
-            await store.set(`${sha(key)}:${params.did || "dev"}`, JSON.stringify({ lastSeen: Date.now() }));
+            await store.set(`${sha(key)}:${did || "dev"}`, JSON.stringify({ lastSeen: Date.now(), kh: keyHash(key) }));
             return json({ ok: true });
         }
         if (route === "/signout") { // member signs out: frees their device slot
@@ -455,6 +460,38 @@ export const handler = async (event) => {
                 const friendKeys = await Promise.all(blobs.map(async (b) => ({ key: await fr.get(b.key), parent: b.key.slice(7, 17), type: "friend" })));
                 const seedKeys = (process.env.NEKOX_SEED_KEYS || "NEKX-NEKO-2025").split(",").map(k => ({ key: k.trim(), type: "member" }));
                 return json({ ok: true, keys: [...seedKeys, ...friendKeys] });
+            }
+            if (route === "/admin/kick") { // ?member=<presenceId> kicks that device; &all=1 kicks every device on the key
+                const mid = (params.member || "").trim();
+                if (!mid) return json({ ok: false, error: "member required" }, 400);
+                const pres = await blob("presence"), dev = await blob("devices");
+                const rec = JSON.parse((await pres.get(mid)) || "null");
+                const kh = rec?.kh, did = mid.split(":")[1];
+                if (!kh) return json({ ok: false, error: "member not found" }, 404);
+                const dslot = `devices:${kh}`;
+                const dd = JSON.parse((await dev.get(dslot)) || "{\"devices\":{}}");
+                if (params.all) {
+                    for (const d of Object.keys(dd.devices)) await dev.delete(`devicekeys:${d}`);
+                    dd.devices = {};
+                    const { blobs } = await pres.list({ prefix: `${mid.split(":")[0]}:` });
+                    for (const b of blobs) await pres.delete(b.key);
+                } else {
+                    delete dd.devices[did];
+                    await dev.delete(`devicekeys:${did}`);
+                    await pres.delete(mid);
+                }
+                await dev.set(dslot, JSON.stringify(dd));
+                return json({ ok: true });
+            }
+            if (route === "/admin/signoutall") { // kick every device on every key
+                const pres = await blob("presence"), dev = await blob("devices"), inv = await blob("invites");
+                const { blobs: keys } = await inv.list();
+                for (const k of keys) await dev.delete(`devices:${k.key}`);
+                const { blobs: dbs } = await dev.list({ prefix: "devicekeys:" });
+                for (const b of dbs) await dev.delete(b.key);
+                const { blobs: ps } = await pres.list();
+                for (const b of ps) await pres.delete(b.key);
+                return json({ ok: true });
             }
             if (route === "/admin/abuse") {
                 const abuse = await blob("abuse");
