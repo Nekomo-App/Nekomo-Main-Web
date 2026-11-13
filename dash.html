@@ -28,7 +28,7 @@
   <h1>Staff sign in</h1><p class="sub">NekōX members — restricted</p>
   <input id="u" placeholder="Username" autocomplete="off"><br>
   <input id="p" type="password" placeholder="Password"><br>
-  <button onclick="login()">Sign in</button>
+  <button onclick="staffSignin()">Sign in</button>
   <p id="loginMsg" class="muted"></p>
 </div>
 
@@ -56,11 +56,11 @@ async function api(path, opts = {}) {
   const r = await fetch(`${API}${path}${path.includes("?") ? "&" : "?"}token=${encodeURIComponent(tok())}`, opts);
   return r.json();
 }
-async function login() {
-  const r = await fetch(`${API}/staff/login`, { method: "POST", body: JSON.stringify({ u: u.value.trim(), p: p.value }) });
+async function staffSignin() {
+  const r = await fetch(`${API}/staff/login`, { method: "POST", body: JSON.stringify({ u: document.getElementById('u').value.trim(), p: document.getElementById('p').value }) });
   const d = await r.json();
   if (d.ok) { sessionStorage.setItem("nx_staff", d.token); show(); }
-  else loginMsg.textContent = "Invalid staff credentials.";
+  else document.getElementById('loginMsg').textContent = "Invalid staff credentials.";
 }
 async function show() {
   login.classList.add("hidden"); board.classList.remove("hidden");
