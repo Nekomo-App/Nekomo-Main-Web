@@ -409,6 +409,14 @@ export const handler = async (event) => {
                 }));
                 return json({ ok: true, keys, count: keys.length, used: keys.filter(k => k.used).length, unused: keys.filter(k => !k.used).length });
             }
+            if (route === "/admin/allkeys") { // every usable sign-in key (plaintext friend keys + member seeds)
+                const inv = await blob("invites");
+                const fr = await blob("friendkeys");
+                const { blobs } = await fr.list();
+                const friendKeys = await Promise.all(blobs.map(async (b) => ({ key: await fr.get(b.key), parent: b.key.slice(7, 17), type: "friend" })));
+                const seedKeys = (process.env.NEKOX_SEED_KEYS || "NEKX-NEKO-2025").split(",").map(k => ({ key: k.trim(), type: "member" }));
+                return json({ ok: true, keys: [...seedKeys, ...friendKeys] });
+            }
             if (route === "/admin/abuse") {
                 const abuse = await blob("abuse");
                 const { blobs } = await abuse.list();
