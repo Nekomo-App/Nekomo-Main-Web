@@ -230,17 +230,30 @@ export const handler = async (event) => {
 
         if (route === "/invite/validate") {
             const key = (params.key || "").trim();
+            const did = (params.did || "").trim();
             if (!key) return json({ ok: false, error: "key required" }, 400);
             const store = await blob("invites");
             for (const h of SEED_HASHES) await store.set(h, JSON.stringify({ seed: true }));
             const rec = await store.get(keyHash(key));
-            return json({ ok: !!rec });
+            if (!rec) return json({ ok: false });
+            // Device sign-in cap: one key signs in on at most 3 devices.
+            if (did) {
+                const dev = await blob("devices");
+                const slot = `devices:${keyHash(key)}`;
+                const d = JSON.parse((await dev.get(slot)) || "{\"devices\":{}}");
+                if (!(did in d.devices) && Object.keys(d.devices).length >= 3) {
+                    return json({ ok: false, error: "max_devices", max: 3 });
+                }
+                d.devices[did] = Date.now();
+                await dev.set(slot, JSON.stringify(d));
+            }
+            return json({ ok: true });
         }
-        if (route === "/presence") { // member heartbeat: ?key=<invitekey>
+        if (route === "/presence") { // member heartbeat: ?key=<invitekey>&did=<device>
             const key = (params.key || "").trim();
             if (!key) return json({ ok: false }, 400);
             const store = await blob("presence");
-            await store.set(sha(key), JSON.stringify({ lastSeen: Date.now() }));
+            await store.set(`${sha(key)}:${params.did || "dev"}`, JSON.stringify({ lastSeen: Date.now() }));
             return json({ ok: true });
         }
         if (route === "/staff/login") {
