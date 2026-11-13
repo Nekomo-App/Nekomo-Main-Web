@@ -290,6 +290,43 @@ export const handler = async (event) => {
             const exp = Date.now() + 6 * 3600 * 1000;
             return json({ ok: true, user: u, token: `${u}.${exp}.${sha(`${u}:${exp}:${SECRET}`)}` });
         }
+        // ---- Discord bot (interactions webhook — no websocket needed) ----
+        // Discord signs every POST with ed25519; verify with the app's public key.
+        if (route === "/discord/interactions") {
+            const pub = process.env.DISCORD_PUBLIC_KEY || "";
+            const bot = process.env.DISCORD_BOT_TOKEN || "";
+            const guild = process.env.DISCORD_GUILD_ID || "";
+            const roleId = process.env.DISCORD_MEMBER_ROLE_ID || "";
+            if (!pub) return json({ error: "discord not configured" }, 503);
+            const sig = event.headers["x-signature-ed25519"] || "";
+            const ts = event.headers["x-signature-timestamp"] || "";
+            const raw = event.isBase64Encoded ? Buffer.from(event.body || "", "base64").toString() : (event.body || "");
+            let valid = false;
+            try {
+                // Discord's public key is a raw 32-byte ed25519 key — wrap it in the
+                // standard SPKI prefix so node:crypto can import it.
+                const spki = Buffer.from(`302a300506032b6570032100${pub}`, "hex");
+                valid = crypto2.verify("ed25519", { key: spki, format: "der", type: "spki" }, null, Buffer.from(ts + raw), Buffer.from(sig, "hex"));
+            } catch { valid = false; }
+            if (!valid) return json({ error: "bad signature" }, 401);
+            const i = JSON.parse(raw);
+            if (i.type === 1) return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: 1 }) }; // PING
+            if (i.type === 2 && i.data?.name === "verify") {
+                const key = (i.data.options || []).find(o => o.name === "key")?.value?.trim() || "";
+                const userId = i.member?.user?.id || "";
+                const tag = i.member?.user ? `${i.member.user.username}` : "";
+                const store = await blob("invites");
+                const rec = JSON.parse((await store.get(keyHash(key))) || "null");
+                if (!rec) return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: 4, data: { content: "That invite key isn't valid." } }) };
+                const prof = await blob("profiles");
+                await prof.set(`profile:${keyHash(key)}`, JSON.stringify({ discordId: userId, discordTag: tag, verifiedAt: Date.now() }));
+                if (bot && guild && roleId) {
+                    await fetch(`https://discord.com/api/v10/guilds/${guild}/members/${userId}/roles/${roleId}`, { method: "PUT", headers: { Authorization: `Bot ${bot}` } });
+                }
+                return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: 4, data: { content: `Verified — welcome to NekōX, ${tag}.` } }) };
+            }
+            return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: 4, data: { content: "Unknown command." } }) };
+        }
         if (route.startsWith("/admin/")) {
             if (!auth()) return json({ ok: false, error: "staff login required" }, 401);
             if (route === "/admin/members") {
