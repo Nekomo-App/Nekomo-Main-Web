@@ -106,6 +106,15 @@ export const handler = async (event) => {
                 atob: (s) => Buffer.from(s, "base64").toString("binary"),
                 btoa: (s) => Buffer.from(s, "binary").toString("base64"),
                 crypto, Uint8Array, Promise, ArrayBuffer, DataView,
+                // Zangetsu host-API helpers the providers expect as globals.
+                htmlText: (s) => String(s || "")
+                    .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+                    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
+                    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n))
+                    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+                    .replace(/&nbsp;/g, " "),
+                base64ToBytes: (s) => Array.from(Buffer.from(String(s || ""), "base64")),
+                absUrl: (href, base) => { try { return new URL(href, base || "https://localhost/").href; } catch { return href; } },
             });
             const api = vm.runInContext(
                 `(function(){${code}; return {getInfo, search, getDetail, getEpisodes, getVideoSources};})()`,
