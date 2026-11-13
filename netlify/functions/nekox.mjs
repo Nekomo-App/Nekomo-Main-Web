@@ -114,23 +114,26 @@ export const handler = async (event) => {
             return api;
         };
         const zgStreams = async (id, title, ep) => {
+            const tag = `zg-${id}`;
             try {
                 const p = await loadProvider(id);
                 const hits = await p.search(title, 1, {});
                 const first = Array.isArray(hits) ? hits[0] : hits?.results?.[0] || hits?.items?.[0];
-                if (!first) return null;
+                if (!first) { errs.push(`${tag}: search empty`); return null; }
                 const detail = await p.getDetail(first.url || first.id, {});
                 const eps = detail?.episodes || (await p.getEpisodes?.(first.url, {})) || [];
                 const target = eps[ep - 1] || eps[0];
-                if (!target) return null;
+                if (!target) { errs.push(`${tag}: no ep ${ep} of ${eps.length}`); return null; }
                 const srcs = await p.getVideoSources(target.url || target.id || target);
-                const streams = (srcs?.streams || srcs || []).map((s) => ({
+                const streams = (srcs?.streams || srcs?.sources || (Array.isArray(srcs) ? srcs : [])).map((s) => ({
                     url: s.url || s.file, type: s.type || (s.url?.includes(".m3u8") ? "hls" : "mp4"),
                     referer: s.referer || s.headers?.Referer || "", quality: s.quality || "auto",
                 })).filter((s) => s.url);
-                return streams.length ? { streams, provider: `zg-${id}` } : null;
-            } catch { return null; }
+                if (!streams.length) errs.push(`${tag}: getVideoSources empty (keys ${typeof srcs === "object" && srcs ? Object.keys(srcs).join(",") : typeof srcs})`);
+                return streams.length ? { streams, provider: tag } : null;
+            } catch (e) { errs.push(`${tag}: ${String(e?.message || e)}`); return null; }
         };
+        const errs = [];
 
         const providers = [
             async (title, ep) => zgStreams("hianime", title, ep),
@@ -143,7 +146,6 @@ export const handler = async (event) => {
             const info = (await gql(INFO, { id: +ex[1] }))?.data?.Media;
             const title = info?.title?.english || info?.title?.romaji || "";
             const ep = parseInt((params.e || "1").split(":").pop() || "1", 10);
-            const errs = [];
             for (const p of providers) {
                 try {
                     const r = await p(title, ep);
