@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><title>Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<style>
+  body{background:#0c0508;color:#e8d5dc;font-family:Inter,system-ui,sans-serif;max-width:640px;margin:0 auto;padding:32px 16px}
+  h1{font-size:1.4rem;font-weight:700;margin-bottom:4px}
+  .sub{color:#8a6a76;font-size:.85rem;margin-bottom:24px}
+  input,button{background:#1a0e13;border:1px solid #3a2530;color:#e8d5dc;border-radius:10px;padding:10px 14px;font-size:.95rem}
+  input{width:100%;box-sizing:border-box;margin-bottom:10px}
+  button{cursor:pointer;font-weight:600}
+  button:hover{background:#2a1620}
+  .card{background:#140a10;border:1px solid #2a1620;border-radius:14px;padding:16px;margin-bottom:16px}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #231218;font-size:.9rem}
+  .row:last-child{border-bottom:none}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px}
+  .on{background:#4ade80}.off{background:#52525b}
+  .mono{font-family:ui-monospace,monospace;font-size:.8rem;color:#a18997}
+  .accent{color:#ff5c7a}.muted{color:#8a6a76;font-size:.8rem}
+  .flex{display:flex;gap:8px}.hidden{display:none}
+  a{color:#ff5c7a}
+</style>
+</head>
+<body>
+<div id="login">
+  <h1>Staff sign in</h1><p class="sub">NekōX members — restricted</p>
+  <input id="u" placeholder="Username" autocomplete="off"><br>
+  <input id="p" type="password" placeholder="Password"><br>
+  <button onclick="login()">Sign in</button>
+  <p id="loginMsg" class="muted"></p>
+</div>
+
+<div id="board" class="hidden">
+  <div class="flex" style="justify-content:space-between;align-items:baseline">
+    <h1>Members</h1>
+    <button onclick="sessionStorage.removeItem('nx_staff');location.reload()">Sign out</button>
+  </div>
+  <p class="sub" id="stats"></p>
+  <div class="card" id="members"></div>
+  <div class="card">
+    <div class="flex" style="justify-content:space-between;align-items:baseline">
+      <h1>Invite keys</h1>
+      <div class="flex"><input id="mintName" placeholder="Friend name" style="width:140px;margin:0"><button onclick="mint()">Mint</button></div>
+    </div>
+    <div id="keys"></div>
+    <p id="newKey" class="accent mono"></p>
+  </div>
+</div>
+
+<script>
+const API = "/api/anime";
+const tok = () => sessionStorage.getItem("nx_staff") || "";
+async function api(path, opts = {}) {
+  const r = await fetch(`${API}${path}${path.includes("?") ? "&" : "?"}token=${encodeURIComponent(tok())}`, opts);
+  return r.json();
+}
+async function login() {
+  const r = await fetch(`${API}/staff/login`, { method: "POST", body: JSON.stringify({ u: u.value.trim(), p: p.value }) });
+  const d = await r.json();
+  if (d.ok) { sessionStorage.setItem("nx_staff", d.token); show(); }
+  else loginMsg.textContent = "Invalid staff credentials.";
+}
+async function show() {
+  login.classList.add("hidden"); board.classList.remove("hidden");
+  const m = await api("/admin/members");
+  stats.textContent = `${m.online || 0} online · ${(m.members || []).length} registered`;
+  members.innerHTML = (m.members || []).length ? m.members.map(x =>
+    `<div class="row"><span class="mono">${x.id}…</span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
+  ).join("") : '<p class="muted">No members online yet — heartbeats appear after first app launch.</p>';
+  const k = await api("/admin/keys");
+  keys.innerHTML = (k.keys || []).map(x =>
+    `<div class="row"><span class="mono">${x.hash}… ${x.seed ? '<span class="muted">(seed)</span>' : ""}${x.name ? "· " + x.name : ""}</span><button onclick="revoke('${x.hash}')">Revoke</button></div>`
+  ).join("");
+}
+async function mint() {
+  const d = await api(`/admin/keys?mint=${encodeURIComponent(mintName.value || "friend")}`);
+  if (d.key) { newKey.textContent = `Share once: ${d.key}`; show(); }
+}
+async function revoke(h) { await api(`/admin/keys?hash=${h}`, { method: "DELETE" }); show(); }
+if (tok()) show();
+</script>
+</body>
+</html>

@@ -205,22 +205,74 @@ export const handler = async (event) => {
             const code = await (await fetch(`${ZG_BASE}providers/${id}.js`)).text();
             return { statusCode: 200, headers: { "Content-Type": "text/javascript", "Access-Control-Allow-Origin": "*" }, body: code };
         }
-        // ---- Member invite keys ----
-        // Keys are owner-issued strings; validity = sha256(key + ":" + salt)
-        // matching a hash in the INVITE_HASHES env var. Salt + hashes live in
-        // Netlify env (not this public repo), so keys can't be forged from code.
-        if (route.startsWith("/invite/validate")) {
+        // ---- Member system (Netlify Blobs state) ----
+        // Invite keys: hash(key:salt) stored in the "invites" blob store so staff
+        // can mint/revoke live. Presence: sha256(key) -> lastSeen, online < 4 min.
+        const crypto2 = await import("node:crypto");
+        const sha = (s) => crypto2.createHash("sha256").update(s).digest("hex");
+        const SALT = process.env.INVITE_SALT || "nx-a1b2c3d4e5f6g7h8i9j0k1l2";
+        const SECRET = process.env.STAFF_SECRET || "nx-staff-tok-s2";
+        const STAFF_HASHES = (process.env.STAFF_HASHES || "ac69cfc6c01bee8cf292457b750e2c14b314832ff4215ef23fc5b38eca92c67a").split(","); // admin / nekomo-staff-2025
+        const SEED_HASHES = ["c88eab1d62adf64cb4ebadce17b8f4069e2e7cd5e8ff9ba31487767664d9f289"]; // NEKX-NEKO-2025
+        const keyHash = (k) => sha(`${k}:${SALT}`);
+        const blob = async (name) => (await import("@netlify/blobs")).getStore(name);
+        const body = () => { try { return event.body ? JSON.parse(event.body) : {}; } catch { return {}; } };
+        const auth = () => {
+            const t = (params.token || (event.headers.authorization || "").replace(/^Bearer /, "")).split(".");
+            if (t.length !== 3) return false;
+            const [u, exp, sig] = t;
+            return Date.now() < +exp && sha(`${u}:${exp}:${SECRET}`) === sig && STAFF_HASHES.includes(sha(`${u}:${SECRET}`));
+        };
+
+        if (route === "/invite/validate") {
             const key = (params.key || "").trim();
             if (!key) return json({ ok: false, error: "key required" }, 400);
-            // Env vars preferred; code fallbacks keep it working on free tier.
-            // The hashes can't be reversed into keys — keys stay owner-issued.
-            const salt = process.env.INVITE_SALT || "nx-a1b2c3d4e5f6g7h8i9j0k1l2";
-            const DEFAULT_HASHES = ["c88eab1d62adf64cb4ebadce17b8f4069e2e7cd5e8ff9ba31487767664d9f289"];
-            const hashes = (process.env.INVITE_HASHES || "").split(",").map(s => s.trim()).filter(Boolean);
-            const valid = hashes.length ? hashes : DEFAULT_HASHES;
-            const crypto2 = await import("node:crypto");
-            const h = crypto2.createHash("sha256").update(`${key}:${salt}`).digest("hex");
-            return json({ ok: valid.includes(h) });
+            const store = await blob("invites");
+            for (const h of SEED_HASHES) await store.set(h, JSON.stringify({ seed: true }));
+            const rec = await store.get(keyHash(key));
+            return json({ ok: !!rec });
+        }
+        if (route === "/presence") { // member heartbeat: ?key=<invitekey>
+            const key = (params.key || "").trim();
+            if (!key) return json({ ok: false }, 400);
+            const store = await blob("presence");
+            await store.set(sha(key), JSON.stringify({ lastSeen: Date.now() }));
+            return json({ ok: true });
+        }
+        if (route === "/staff/login") {
+            const { u, p } = body();
+            if (!u || !p) return json({ ok: false, error: "u/p required" }, 400);
+            if (!STAFF_HASHES.includes(sha(`${p}:nx-staff-s1`))) return json({ ok: false }, 403);
+            const exp = Date.now() + 6 * 3600 * 1000;
+            return json({ ok: true, user: u, token: `${u}.${exp}.${sha(`${u}:${exp}:${SECRET}`)}` });
+        }
+        if (route.startsWith("/admin/")) {
+            if (!auth()) return json({ ok: false, error: "staff login required" }, 401);
+            if (route === "/admin/members") {
+                const store = await blob("presence");
+                const { blobs } = await store.list();
+                const now = Date.now();
+                const members = await Promise.all(blobs.map(async (b) => {
+                    const d = JSON.parse((await store.get(b.key)) || "{}");
+                    return { id: b.key.slice(0, 12), lastSeen: d.lastSeen, online: now - (d.lastSeen || 0) < 240000 };
+                }));
+                return json({ ok: true, members, online: members.filter(m => m.online).length });
+            }
+            if (route === "/admin/keys") {
+                const store = await blob("invites");
+                if (route === "/admin/keys" && event.httpMethod === "DELETE") {
+                    await store.delete(params.hash || ""); return json({ ok: true });
+                }
+                if (params.mint) { // ?mint=name -> returns the plaintext key once
+                    const newKey = `NX-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
+                    await store.set(keyHash(newKey), JSON.stringify({ name: params.mint, at: Date.now() }));
+                    return json({ ok: true, key: newKey });
+                }
+                const { blobs } = await store.list();
+                const keys = await Promise.all(blobs.map(async (b) => ({ hash: b.key.slice(0, 10), ...(JSON.parse((await store.get(b.key)) || "{}")) })));
+                return json({ ok: true, keys, count: keys.length });
+            }
+            return json({ ok: true });
         }
         return json({ ok: true, service: "nekomo-nekox" });
     } catch (err) {
