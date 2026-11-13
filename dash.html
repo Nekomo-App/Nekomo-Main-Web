@@ -68,7 +68,7 @@ async function show() {
   const m = await api("/admin/members");
   stats.textContent = `${m.online || 0} online · ${(m.members || []).length} registered`;
   members.innerHTML = (m.members || []).length ? m.members.map(x =>
-    `<div class="row"><span class="mono">${x.id}…</span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
+    `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"}</span></span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
   ).join("") : '<p class="muted">No members online yet — heartbeats appear after first app launch.</p>';
   const k = await api("/admin/keys");
   keys.innerHTML = (k.keys || []).map(x =>

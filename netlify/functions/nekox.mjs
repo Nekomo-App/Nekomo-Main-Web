@@ -231,6 +231,8 @@ export const handler = async (event) => {
         if (route === "/invite/validate") {
             const key = (params.key || "").trim();
             const did = (params.did || "").trim();
+            const name = (params.name || "").trim().slice(0, 40);
+            const discord = (params.discord || "").trim().slice(0, 40);
             if (!key) return json({ ok: false, error: "key required" }, 400);
             const store = await blob("invites");
             for (const h of SEED_HASHES) await store.set(h, JSON.stringify({ seed: true }));
@@ -248,6 +250,16 @@ export const handler = async (event) => {
                 }
                 d.devices[did] = Date.now();
                 await dev.set(slot, JSON.stringify(d));
+            }
+            // Record the member profile (name + discord tag) for the staff board.
+            const prof = await blob("profiles");
+            const pslot = `profile:${keyHash(key)}`;
+            const prof0 = JSON.parse((await prof.get(pslot)) || "{}");
+            if (name || discord) {
+                await prof.set(pslot, JSON.stringify({
+                    name: name || prof0.name || "", discord: discord || prof0.discord || "",
+                    firstSeen: prof0.firstSeen || Date.now(), lastSeen: Date.now(),
+                }));
             }
             // Members get one friend key, auto-minted on first sign-in — share
             // with exactly one trusted friend; it signs in on up to 2 devices.
@@ -284,9 +296,12 @@ export const handler = async (event) => {
                 const store = await blob("presence");
                 const { blobs } = await store.list();
                 const now = Date.now();
+                const prof = await blob("profiles");
                 const members = await Promise.all(blobs.map(async (b) => {
                     const d = JSON.parse((await store.get(b.key)) || "{}");
-                    return { id: b.key.slice(0, 12), lastSeen: d.lastSeen, online: now - (d.lastSeen || 0) < 240000 };
+                    const keyPart = b.key.split(":")[0];
+                    const p = JSON.parse((await prof.get(`profile:${keyPart}`)) || "{}");
+                    return { id: b.key.slice(0, 12), name: p.name || "", discord: p.discord || "", lastSeen: d.lastSeen, online: now - (d.lastSeen || 0) < 240000 };
                 }));
                 return json({ ok: true, members, online: members.filter(m => m.online).length });
             }
