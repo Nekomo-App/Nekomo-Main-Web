@@ -1,6 +1,6 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Nek\u014dX private beta",
-  "versionCode": 2
+  "notes": "Themes, staff tools, member system",
+  "versionCode": 3
 }
