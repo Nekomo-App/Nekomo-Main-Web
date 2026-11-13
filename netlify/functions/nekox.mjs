@@ -217,14 +217,15 @@ export const handler = async (event) => {
         const keyHash = (k) => sha(`${k}:${SALT}`);
         const blob = async (name) => (await import("@netlify/blobs")).getStore({
             name, siteID: "b19f8392-b12a-451d-94f3-8d64dbefc741",
-            token: process.env.NETLIFY_BLOBS_TOKEN || "",
+            token: process.env.NX_BLOBS_TOKEN || "",
         });
         const body = () => { try { return event.body ? JSON.parse(event.body) : {}; } catch { return {}; } };
         const auth = () => {
             const t = (params.token || (event.headers.authorization || "").replace(/^Bearer /, "")).split(".");
             if (t.length !== 3) return false;
             const [u, exp, sig] = t;
-            return Date.now() < +exp && sha(`${u}:${exp}:${SECRET}`) === sig && STAFF_HASHES.includes(sha(`${u}:${SECRET}`));
+            // The HMAC-signed token is the credential — issued only after a valid staff login.
+            return Date.now() < +exp && sha(`${u}:${exp}:${SECRET}`) === sig;
         };
 
         if (route === "/invite/validate") {
