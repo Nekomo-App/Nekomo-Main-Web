@@ -288,6 +288,11 @@ export const handler = async (event) => {
                     name: name || prof0.name || "", discord: discord || prof0.discord || "",
                     discordVerified, firstSeen: prof0.firstSeen || Date.now(), lastSeen: Date.now(),
                 }));
+                // Also stamp name/discord on the salted profile slot so /admin/keys
+                // and the Discord verify record can see who claimed this key.
+                const vslot = `profile:${keyHash(key)}`;
+                const v0 = JSON.parse((await prof.get(vslot)) || "{}");
+                await prof.set(vslot, JSON.stringify({ ...v0, name: name || v0.name || "", discord: discord || v0.discord || "" }));
             }
             // Members get one friend key, auto-minted on first sign-in — share
             // with exactly one trusted friend; it signs in on up to 2 devices.
@@ -381,20 +386,34 @@ export const handler = async (event) => {
                 const { blobs } = await store.list();
                 const now = Date.now();
                 const prof = await blob("profiles");
-                // Group presence rows by member key — one member can have several devices.
+                // Group presence rows by member key (a key can have several devices),
+                // then merge keys that belong to the same person — identified by
+                // verified Discord id, else profile name, else the key itself.
                 const byKey = {};
                 for (const b of blobs) {
                     const d = JSON.parse((await store.get(b.key)) || "{}");
                     const keyPart = b.key.split(":")[0];
-                    const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), devices: 0, lastSeen: 0, online: false });
+                    const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), kh: "", devices: 0, lastSeen: 0, online: false });
+                    g.kh = d.kh || g.kh;
                     g.devices += 1;
                     g.lastSeen = Math.max(g.lastSeen, d.lastSeen || 0);
                     if (now - (d.lastSeen || 0) < 240000) g.online = true;
                 }
-                const members = await Promise.all(Object.entries(byKey).map(async ([keyPart, g]) => {
+                const groups = await Promise.all(Object.entries(byKey).map(async ([keyPart, g]) => {
                     const p = JSON.parse((await prof.get(`profile:${keyPart}`)) || "{}");
-                    return { ...g, name: p.name || "", discord: p.discord || "" };
+                    const v = g.kh ? JSON.parse((await prof.get(`profile:${g.kh}`)) || "{}") : {};
+                    return { ...g, name: p.name || v.name || "", discord: v.discordTag || p.discord || v.discord || "", discordId: v.discordId || "" };
                 }));
+                const people = {};
+                for (const g of groups) {
+                    const pid = g.discordId ? `d:${g.discordId}` : (g.name ? `n:${g.name.toLowerCase()}` : `k:${g.id}`);
+                    const p = (people[pid] ||= { id: g.id, name: "", discord: "", devices: 0, keys: 0, lastSeen: 0, online: false });
+                    p.devices += g.devices; p.keys += 1;
+                    p.name = p.name || g.name; p.discord = p.discord || g.discord;
+                    p.lastSeen = Math.max(p.lastSeen, g.lastSeen);
+                    p.online = p.online || g.online;
+                }
+                const members = Object.values(people).sort((a, b) => (b.online - a.online) || (b.lastSeen - a.lastSeen));
                 return json({ ok: true, members, online: members.filter(m => m.online).length });
             }
             if (route === "/admin/keys") {
