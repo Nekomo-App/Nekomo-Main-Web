@@ -252,13 +252,28 @@ export const handler = async (event) => {
                 await dev.set(slot, JSON.stringify(d));
             }
             // Record the member profile (name + discord tag) for the staff board.
+            // Keyed by the same unsalted hash the presence store uses.
             const prof = await blob("profiles");
-            const pslot = `profile:${keyHash(key)}`;
+            const pslot = `profile:${sha(key)}`;
             const prof0 = JSON.parse((await prof.get(pslot)) || "{}");
+            // Verify they're actually in the Discord server (needs bot token + guild).
+            let discordVerified = prof0.discordVerified || false;
+            if (discord && (process.env.DISCORD_BOT_TOKEN || "") && (process.env.DISCORD_GUILD_ID || "")) {
+                try {
+                    const r = await fetch(`https://discord.com/api/v10/guilds/${process.env.DISCORD_GUILD_ID}/members/search?query=${encodeURIComponent(discord)}&limit=5`,
+                        { headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` } });
+                    const ms = r.ok ? await r.json() : [];
+                    discordVerified = ms.some(m => {
+                        const u = m.user || {};
+                        const tag = `${u.username}`;
+                        return tag === discord || `${tag}#${u.discriminator}` === discord || `${u.username}#${u.discriminator}` === discord;
+                    });
+                } catch { /* check skipped if the API is unreachable */ }
+            }
             if (name || discord) {
                 await prof.set(pslot, JSON.stringify({
                     name: name || prof0.name || "", discord: discord || prof0.discord || "",
-                    firstSeen: prof0.firstSeen || Date.now(), lastSeen: Date.now(),
+                    discordVerified, firstSeen: prof0.firstSeen || Date.now(), lastSeen: Date.now(),
                 }));
             }
             // Members get one friend key, auto-minted on first sign-in — share
@@ -272,9 +287,9 @@ export const handler = async (event) => {
                     await store.set(keyHash(fk), JSON.stringify({ type: "friend", parent: keyHash(key), at: Date.now() }));
                     await fr.set(slot, fk);
                 }
-                return json({ ok: true, type: "member", friendKey: fk });
+                return json({ ok: true, type: "member", friendKey: fk, discordVerified });
             }
-            return json({ ok: true, type: "friend" });
+            return json({ ok: true, type: "friend", discordVerified });
         }
         if (route === "/presence") { // member heartbeat: ?key=<invitekey>&did=<device>
             const key = (params.key || "").trim();
