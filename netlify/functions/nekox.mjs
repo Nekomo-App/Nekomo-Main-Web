@@ -215,7 +215,7 @@ export const handler = async (event) => {
             // Env vars preferred; code fallbacks keep it working on free tier.
             // The hashes can't be reversed into keys — keys stay owner-issued.
             const salt = process.env.INVITE_SALT || "nx-a1b2c3d4e5f6g7h8i9j0k1l2";
-            const DEFAULT_HASHES = ["37fe21f7d8e91d05d7862ea37309d9f033d2840bb84f392934f91059d9e65224"];
+            const DEFAULT_HASHES = ["c88eab1d62adf64cb4ebadce17b8f4069e2e7cd5e8ff9ba31487767664d9f289"];
             const hashes = (process.env.INVITE_HASHES || "").split(",").map(s => s.trim()).filter(Boolean);
             const valid = hashes.length ? hashes : DEFAULT_HASHES;
             const crypto2 = await import("node:crypto");
