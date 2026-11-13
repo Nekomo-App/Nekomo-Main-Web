@@ -285,8 +285,17 @@ export const handler = async (event) => {
                     await store.set(keyHash(newKey), JSON.stringify({ name: params.mint, at: Date.now() }));
                     return json({ ok: true, key: newKey });
                 }
+                if (params.resetDevices) { // ?resetDevices=<fullkeyhash> clears a key's 3-device slots
+                    const dev = await blob("devices");
+                    await dev.delete(`devices:${params.resetDevices}`);
+                    return json({ ok: true });
+                }
                 const { blobs } = await store.list();
-                const keys = await Promise.all(blobs.map(async (b) => ({ hash: b.key.slice(0, 10), ...(JSON.parse((await store.get(b.key)) || "{}")) })));
+                const keys = await Promise.all(blobs.map(async (b) => {
+                    const dev = await blob("devices");
+                    const dd = JSON.parse((await dev.get(`devices:${b.key}`)) || "{\"devices\":{}}");
+                    return { hash: b.key.slice(0, 10), devices: Object.keys(dd.devices).length, ...(JSON.parse((await store.get(b.key)) || "{}")) };
+                }));
                 return json({ ok: true, keys, count: keys.length });
             }
             return json({ ok: true });
