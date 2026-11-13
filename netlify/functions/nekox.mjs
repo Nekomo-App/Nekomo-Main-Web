@@ -239,7 +239,8 @@ export const handler = async (event) => {
             const rec = JSON.parse((await store.get(keyHash(key))) || "null");
             if (!rec) return json({ ok: false });
             const isFriend = rec.type === "friend";
-            const cap = isFriend ? 2 : 3;
+            const isAdmin = rec.type === "admin";
+            const cap = isFriend ? 2 : isAdmin ? 999 : 3;
             // Device sign-in cap: member keys 3 devices, friend keys 2 devices.
             if (did) {
                 const dev = await blob("devices");
@@ -301,6 +302,7 @@ export const handler = async (event) => {
                 }
                 return json({ ok: true, type: "member", friendKey: fk, discordVerified });
             }
+            if (isAdmin) return json({ ok: true, type: "admin", discordVerified });
             return json({ ok: true, type: "friend", discordVerified });
         }
         if (route === "/presence") { // member heartbeat: ?key=<invitekey>&did=<device>
@@ -408,6 +410,17 @@ export const handler = async (event) => {
                     return { hash: b.key.slice(0, 10), type: rec.type || "member", name: p.name || rec.name || "", discord: p.discord || "", devices: n, used: n > 0, seed: !!rec.seed };
                 }));
                 return json({ ok: true, keys, count: keys.length, used: keys.filter(k => k.used).length, unused: keys.filter(k => !k.used).length });
+            }
+            if (route === "/admin/mintadmin") { // ?n=2 → elevated keys: no device cap, unlocks staff/dev in-app
+                const n = Math.min(parseInt(params.n || "2"), 10);
+                const inv = await blob("invites");
+                const keys = [];
+                for (let i = 0; i < n; i++) {
+                    const k = `NEKX-ADM-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
+                    await inv.set(keyHash(k), JSON.stringify({ type: "admin", minted: Date.now() }));
+                    keys.push(k);
+                }
+                return json({ ok: true, keys });
             }
             if (route === "/admin/mintbulk") { // ?n=50 → wipe old friend keys, mint member+friend pairs
                 const n = Math.min(parseInt(params.n || "50"), 200);
