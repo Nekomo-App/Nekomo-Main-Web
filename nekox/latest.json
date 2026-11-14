@@ -1,6 +1,6 @@
 {
-  "version": "1.0.15",
+  "version": "1.0.16",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Launch-time member validation — revoked keys and kicked devices now land back on the sign-in screen instead of loading into the app.",
-  "versionCode": 14
+  "notes": "Setup now asks about Incognito (no history saved) and 18+ content during sign-in — both off unless you turn them on, changeable anytime in Settings.",
+  "versionCode": 15
 }
