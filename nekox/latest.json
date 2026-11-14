@@ -1,6 +1,6 @@
 {
   "version": "1.0.9",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "TV launcher banner, fixed back-from-player showing the mobile card on TV, exit confirmation, device-limit + Discord-tag sign-in checks",
+  "notes": "TV banner, back-from-player fix, exit confirmation, device-limit + Discord sign-in checks, always-on screenshot protection, Settings fixes",
   "versionCode": 8
 }
