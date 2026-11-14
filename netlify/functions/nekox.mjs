@@ -142,12 +142,21 @@ export const handler = async (event) => {
                 const target = eps[ep - 1] || eps[0];
                 if (!target) { errs.push(`${tag}: no ep ${ep} of ${eps.length}`); return null; }
                 const srcs = await p.getVideoSources(target.url || target.id || target);
-                const streams = (srcs?.streams || srcs?.sources || (Array.isArray(srcs) ? srcs : [])).map((s) => ({
+                const rawStreams = srcs?.streams || srcs?.sources || (Array.isArray(srcs) ? srcs : []);
+                const streams = rawStreams.map((s) => ({
                     url: s.url || s.file, type: s.type || (s.url?.includes(".m3u8") ? "hls" : "mp4"),
                     referer: s.referer || s.headers?.Referer || "", quality: s.quality || "auto",
                 })).filter((s) => s.url);
+                // Tracks can be top-level OR embedded per-stream (Zangetsu style).
+                // Carry each track's referer — sub CDNs 403 without it.
+                const normSub = (s, ref) => ({ url: s.url || s.file || s.src, lang: s.lang || s.label || s.language || "Unknown", default: !!s.default, referer: s.referer || s.headers?.Referer || ref || "" });
+                const topRef = (srcs?.streams?.[0] || rawStreams[0] || {})?.headers?.Referer || "";
+                const subtitles = [
+                    ...(srcs?.subtitles || srcs?.tracks || srcs?.subs || []).map((s) => normSub(s, topRef)),
+                    ...rawStreams.flatMap((s) => (s.subtitles || s.tracks || []).map((t) => normSub(t, s.headers?.Referer || s.referer || ""))),
+                ].filter((s) => s.url);
                 if (!streams.length) errs.push(`${tag}: getVideoSources empty (keys ${typeof srcs === "object" && srcs ? Object.keys(srcs).join(",") : typeof srcs})`);
-                return streams.length ? { streams, provider: tag } : null;
+                return (streams.length || subtitles.length) ? { streams, subtitles, provider: tag } : null;
             } catch (e) { errs.push(`${tag}: ${String(e?.message || e)}`); return null; }
         };
         const errs = [];
@@ -155,22 +164,62 @@ export const handler = async (event) => {
         const providers = [
             async (title, ep) => zgStreams("hianime", title, ep),
             async (title, ep) => zgStreams("anikoto", title, ep),
+            async (title, ep) => zgStreams("animecube", title, ep),
+            async (title, ep) => zgStreams("kartoons", title, ep),
             async (title, ep) => zgStreams("fourkhdhub", title, ep),
         ];
+
+        // Third-party subtitle backup: Jimaku (anime subtitle community, keyed
+        // by AniList id). Active only when JIMAKU_API_KEY is configured —
+        // files are community packs, so episode matching is best-effort on the
+        // filename (" - 03", "E03", "ep 03" ...). No key → skipped silently.
+        const jimakuSubs = async (anilistId, ep) => {
+            const key = process.env.JIMAKU_API_KEY;
+            if (!key) return [];
+            try {
+                const auth = { headers: { "X-API-Key": key, Accept: "application/json" } };
+                const entries = await (await fetch(`https://jimaku.cc/api/entries/search?anilist_id=${anilistId}`, auth)).json();
+                const out = [];
+                const pad = String(ep).padStart(2, "0");
+                const re = new RegExp(`(e(p|x)?\\s?0*${ep}([\\s\\-_.\\[]|$)|[\\s\\-_.\\[]0*${pad}([\\s\\-_.\\]]|$))`, "i");
+                for (const e of (Array.isArray(entries) ? entries : [])) {
+                    const files = await (await fetch(`https://jimaku.cc/api/entries/${e.id}/files`, auth)).json();
+                    for (const f of (Array.isArray(files) ? files : [])) {
+                        if (!/\.(srt|vtt)$/i.test(f.name || "") || !f.url) continue;
+                        if (!re.test(f.name)) continue;
+                        out.push({ url: f.url, lang: "English (Jimaku)" });
+                    }
+                }
+                return out.slice(0, 6);
+            } catch { return []; }
+        };
 
         const ex = route.match(/^\/extract\/(\d+)$/);
         if (ex) {
             const info = (await gql(INFO, { id: +ex[1] }))?.data?.Media;
             const title = info?.title?.english || info?.title?.romaji || "";
             const ep = parseInt((params.e || "1").split(":").pop() || "1", 10);
+            let winner = null; const subPool = []; const seen = new Set();
+            const addSubs = (subs, src) => {
+                for (const s of subs || []) {
+                    const k = `${s.lang}|${src}`; // one track per language per source
+                    if (seen.has(k)) continue;
+                    seen.add(k); subPool.push({ ...s, src });
+                }
+            };
             for (const p of providers) {
                 try {
                     const r = await p(title, ep);
-                    if (r?.streams?.length) return json({ ssub: r, sdub: r, provider: r.provider });
-                    errs.push(`${p.name || "provider"}: empty`);
+                    if (!r) continue;
+                    if (!winner && r.streams?.length) winner = r;
+                    addSubs(r.subtitles, r.provider);
+                    if (winner && subPool.length) break; // have video + subs — done
                 } catch (e) { errs.push(String(e?.message || e)); }
             }
-            return json({ error: "No provider returned streams", title, ep, errs }, 404);
+            if (!winner) return json({ error: "No provider returned streams", title, ep, errs }, 404);
+            if (!subPool.length) addSubs(await jimakuSubs(+ex[1], ep), "jimaku");
+            winner.subtitles = subPool;
+            return json({ ssub: winner, sdub: winner, provider: winner.provider });
         }
 
         const px = route.match(/^\/proxy\/(m3u8|segment)$/);
@@ -179,7 +228,9 @@ export const handler = async (event) => {
             // segments must play direct-from-CDN, which the app already prefers).
             const target = params.url;
             if (!target || !/^https?:\/\//.test(target)) return json({ error: "Bad url" }, 400);
-            const r = await fetch(target, { headers: { Referer: params.referer || "", "User-Agent": "Mozilla/5.0" } });
+            const ref = params.referer || "";
+            const origin = ref ? new URL(ref).origin : new URL(target).origin;
+            const r = await fetch(target, { headers: { Referer: ref, Origin: origin, "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" } });
             const buf = Buffer.from(await r.arrayBuffer());
             return {
                 statusCode: r.status,
