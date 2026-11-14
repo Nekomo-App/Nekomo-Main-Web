@@ -1,4 +1,4 @@
-/* Nekomo site gate — verification puzzle + DMCA/disclaimer notice.
+/* N𝖊kō𝖒𝖔 site gate — verification puzzle + DMCA/disclaimer notice.
    Shows once per browser (localStorage) — not re-shown every visit/session. Include with:
    <script src="gate.js" defer></script> */
 (function () {
@@ -131,14 +131,14 @@
 
         g.card.innerHTML =
             '<h2>Before you continue</h2>' +
-            '<p>Please read and acknowledge the Nekomo disclaimer.</p>' +
+            '<p>Please read and acknowledge the N𝖊kō𝖒𝖔 disclaimer.</p>' +
             '<div class="nk-disclaimer-scroll">' +
             '  <h3>No hosted content</h3>' +
-            '  <p>Nekomo is an open-source project and does not host, store, upload, or distribute media content. It does not operate, own, maintain, or control streaming servers, content providers, or third-party sources.</p>' +
+            '  <p>N𝖊kō𝖒𝖔 is an open-source project and does not host, store, upload, or distribute media content. It does not operate, own, maintain, or control streaming servers, content providers, or third-party sources.</p>' +
             '  <h3>Third-party data</h3>' +
-            '  <p>Any metadata, images, artwork, descriptions, or other information displayed through Nekomo-related applications may originate from third-party APIs or external services.</p>' +
+            '  <p>Any metadata, images, artwork, descriptions, or other information displayed through N𝖊kō𝖒𝖔-related applications may originate from third-party APIs or external services.</p>' +
             '  <h3>No affiliation</h3>' +
-            '  <p>Nekomo is not affiliated with, endorsed by, sponsored by, or officially connected to AniList, MyAnimeList, Kitsu, TMDb, or any other content provider unless explicitly stated otherwise.</p>' +
+            '  <p>N𝖊kō𝖒𝖔 is not affiliated with, endorsed by, sponsored by, or officially connected to AniList, MyAnimeList, Kitsu, TMDb, or any other content provider unless explicitly stated otherwise.</p>' +
             '  <h3>Your responsibility</h3>' +
             '  <p>All trademarks, copyrights, logos, and names belong to their respective owners. You are responsible for how you use the software and for complying with all applicable laws in your jurisdiction.</p>' +
             '  <p>Full details are on the <a href="/dmca.html" style="color:#ff5c7a">DMCA &amp; Disclaimer page</a>.</p>' +

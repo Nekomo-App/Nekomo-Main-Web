@@ -227,6 +227,24 @@ export const handler = async (event) => {
             // The HMAC-signed token is the credential — issued only after a valid staff login.
             return Date.now() < +exp && sha(`${u}:${exp}:${SECRET}`) === sig;
         };
+        // Discord tag check — "ok" verified / "required" missing / "invalid" not in
+        // the guild / "unreachable" Discord API failed (fail closed).
+        const discordCheck = async (discord) => {
+            if (!discord) return "required";
+            if (!(process.env.DISCORD_BOT_TOKEN || "") || !(process.env.DISCORD_GUILD_ID || "")) return "ok";
+            try {
+                const r = await fetch(`https://discord.com/api/v10/guilds/${process.env.DISCORD_GUILD_ID}/members/search?query=${encodeURIComponent(discord)}&limit=5`,
+                    { headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` } });
+                if (!r.ok) return "unreachable";
+                const ms = await r.json();
+                const want = discord.toLowerCase();
+                return ms.some(m => {
+                    const u = m.user || {};
+                    const tag = `${u.username}`.toLowerCase();
+                    return tag === want || `${tag}#${u.discriminator}` === want;
+                }) ? "ok" : "invalid";
+            } catch { return "unreachable"; }
+        };
 
         if (route === "/invite/validate") {
             const key = (params.key || "").trim();
@@ -241,6 +259,14 @@ export const handler = async (event) => {
             const isFriend = rec.type === "friend";
             const isAdmin = rec.type === "admin";
             const cap = isFriend ? 2 : isAdmin ? 999 : 3;
+            // Discord tag is mandatory for member/friend sign-ins; admin keys skip it.
+            // A wrong tag denies the login outright — checked before any device binding.
+            let discordVerified = false;
+            if (!isAdmin) {
+                const dc = await discordCheck(discord);
+                if (dc !== "ok") return json({ ok: false, error: `discord_${dc}` });
+                discordVerified = (process.env.DISCORD_BOT_TOKEN || "") !== "";
+            }
             // Device sign-in cap: member keys 3 devices, friend keys 2 devices.
             if (did) {
                 const dev = await blob("devices");
@@ -280,20 +306,9 @@ export const handler = async (event) => {
             const prof = await blob("profiles");
             const pslot = `profile:${sha(key)}`;
             const prof0 = JSON.parse((await prof.get(pslot)) || "{}");
-            // Verify they're actually in the Discord server (needs bot token + guild).
-            let discordVerified = prof0.discordVerified || false;
-            if (discord && (process.env.DISCORD_BOT_TOKEN || "") && (process.env.DISCORD_GUILD_ID || "")) {
-                try {
-                    const r = await fetch(`https://discord.com/api/v10/guilds/${process.env.DISCORD_GUILD_ID}/members/search?query=${encodeURIComponent(discord)}&limit=5`,
-                        { headers: { Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` } });
-                    const ms = r.ok ? await r.json() : [];
-                    discordVerified = ms.some(m => {
-                        const u = m.user || {};
-                        const tag = `${u.username}`;
-                        return tag === discord || `${tag}#${u.discriminator}` === discord || `${u.username}#${u.discriminator}` === discord;
-                    });
-                } catch { /* check skipped if the API is unreachable */ }
-            }
+            // discordVerified was enforced above for member/friend keys; admins keep
+            // whatever was previously recorded.
+            discordVerified = discordVerified || prof0.discordVerified || false;
             if (name || discord) {
                 await prof.set(pslot, JSON.stringify({
                     name: name || prof0.name || "", discord: discord || prof0.discord || "",
@@ -305,6 +320,8 @@ export const handler = async (event) => {
                 const v0 = JSON.parse((await prof.get(vslot)) || "{}");
                 await prof.set(vslot, JSON.stringify({ ...v0, name: name || v0.name || "", discord: discord || v0.discord || "" }));
             }
+            // Admin keys bypass caps and Discord and never mint friend keys.
+            if (isAdmin) return json({ ok: true, type: "admin", discordVerified });
             // Members get one friend key, auto-minted on first sign-in — share
             // with exactly one trusted friend; it signs in on up to 2 devices.
             if (!isFriend) {
@@ -318,7 +335,6 @@ export const handler = async (event) => {
                 }
                 return json({ ok: true, type: "member", friendKey: fk, discordVerified });
             }
-            if (isAdmin) return json({ ok: true, type: "admin", discordVerified });
             return json({ ok: true, type: "friend", discordVerified });
         }
         if (route === "/devices") { // member asks "which devices are on my key?" ?key=&did=
@@ -384,6 +400,11 @@ export const handler = async (event) => {
             const inv = await blob("invites");
             const known = JSON.parse((await inv.get(keyHash(key))) || "null");
             if (!known) return json({ ok: false, error: "bad_key" });
+            // Same Discord gate as sign-in — surface a bad tag on the phone, not the TV.
+            if (known.type !== "admin") {
+                const dc = await discordCheck((b.discord || "").trim().slice(0, 40));
+                if (dc !== "ok") return json({ ok: false, error: `discord_${dc}` });
+            }
             await store.set(`pair:${code}`, JSON.stringify({
                 at: rec.at, key,
                 name: (b.name || "").slice(0, 40), discord: (b.discord || "").slice(0, 40),

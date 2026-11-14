@@ -1,6 +1,6 @@
 {
-  "version": "1.0.8",
+  "version": "1.0.9",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "TV QR sign-in, per-device kick + real key revoke for staff, sign-out confirmations, online device slots",
-  "versionCode": 7
+  "notes": "TV launcher banner, fixed back-from-player showing the mobile card on TV, exit confirmation, device-limit + Discord-tag sign-in checks",
+  "versionCode": 8
 }

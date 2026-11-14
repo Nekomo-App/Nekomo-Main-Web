@@ -62,7 +62,12 @@
         body: JSON.stringify({ code, key, name, discord }) });
       const d = await r.json();
       if (d.ok) { msg("Approved — your TV is signing in now. You can close this page.", true); }
-      else msg(d.error === "code_expired" ? "That code expired — rescan the QR." : d.error === "bad_key" ? "That key isn't valid." : `Failed: ${d.error || r.status}`, false);
+      else msg(d.error === "code_expired" ? "That code expired — rescan the QR."
+        : d.error === "bad_key" ? "That key isn't valid."
+        : d.error === "discord_required" ? "Discord tag is required."
+        : d.error === "discord_invalid" ? "That Discord tag doesn't match a member of our server — check it."
+        : d.error === "discord_unreachable" ? "Couldn't verify your Discord tag right now — try again."
+        : `Failed: ${d.error || r.status}`, false);
     } catch (e) { msg("Network error — try again.", false); }
     btn.disabled = false;
   };

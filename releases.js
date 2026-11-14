@@ -1,4 +1,4 @@
-/* Nekomo releases helper — fetches GitHub releases and sorts assets into a
+/* N𝖊kō𝖒𝖔 releases helper — fetches GitHub releases and sorts assets into a
    mobile/TV x stable/beta matrix. Used by index.html to light up the Stable
    download tiles automatically once a real stable build exists. Load this
    (non-deferred) before any inline script that uses window.NekomoReleases. */

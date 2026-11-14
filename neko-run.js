@@ -1,4 +1,4 @@
-/* Neko Run — a Chrome-dino style pixel cat runner by the Nekomo community.
+/* Neko Run — a Chrome-dino style pixel cat runner by the N𝖊kō𝖒𝖔 community.
    Usage: <div data-neko-run data-prefix="myapp_" data-mode="embed|app"></div> + <script src="neko-run.js" defer></script>
    Keys: Space / Up / W jump (hold = higher) · Down / S duck · P pause · F full screen · M mute · Esc close settings. */
 (function () {

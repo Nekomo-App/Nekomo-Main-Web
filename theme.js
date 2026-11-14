@@ -1,4 +1,4 @@
-/* Nekomo theme extras — falling sakura petals + a small settings panel.
+/* N𝖊kō𝖒𝖔 theme extras — falling sakura petals + a small settings panel.
    Include with: <script src="theme.js" defer></script> (after gate.js) */
 (function () {
     var PETALS_KEY = 'nekomo_petals';
@@ -291,24 +291,24 @@
 
     /* ---------- Advanced site search ---------- */
     var SEARCH_INDEX = [
-        { title: 'Home', desc: 'Nekomo — community-driven anime client overview', url: '/home', cat: 'Pages' },
+        { title: 'Home', desc: 'N𝖊kō𝖒𝖔 — community-driven anime client overview', url: '/home', cat: 'Pages' },
         { title: 'Features', desc: 'AniList discovery, streaming, downloads, watchlist & tracking', url: '/home#features', cat: 'Pages' },
-        { title: 'Download Nekomo', desc: 'Get the app — mobile & Android TV, stable & beta channels', url: '/home#download', cat: 'Pages' },
+        { title: 'Download N𝖊kō𝖒𝖔', desc: 'Get the app — mobile & Android TV, stable & beta channels', url: '/home#download', cat: 'Pages' },
         { title: 'Community', desc: 'Discord, Telegram, GitHub org and repositories', url: '/home#community', cat: 'Pages' },
-        { title: 'Beta & Alpha Testing', desc: 'Download Nekomo beta, alpha and debug APKs, filter by device/channel', url: '/beta', cat: 'Pages' },
+        { title: 'Beta & Alpha Testing', desc: 'Download N𝖊kō𝖒𝖔 beta, alpha and debug APKs, filter by device/channel', url: '/beta', cat: 'Pages' },
         { title: 'Releases & Updates', desc: 'Latest build, full changelog history, auto-update methods', url: '/updates.html', cat: 'Pages' },
         { title: 'Contributors', desc: 'Project history, repositories, developers, alternatives', url: '/contributors.html', cat: 'Pages' },
         { title: 'Community Rules', desc: 'Rules for the app, Discord, Telegram and GitHub', url: '/rules', cat: 'Pages' },
         { title: 'Neko Run', desc: 'Play the pixel cat runner, download it for Android, Windows and Linux', url: '/neko-run', cat: 'Pages' },
-        { title: 'Sitemap', desc: 'Every page on the Nekomo website in one place', url: '/sitemap.html', cat: 'Pages' },
+        { title: 'Sitemap', desc: 'Every page on the N𝖊kō𝖒𝖔 website in one place', url: '/sitemap.html', cat: 'Pages' },
         { title: 'Brand Assets', desc: 'Official logos, app icon, and usage rules', url: '/brand.html', cat: 'Legal' },
         { title: 'Support & Contact', desc: 'Help, FAQ, bug reports, and contact options', url: '/support', cat: 'Pages' },
 
         { title: 'About this website', desc: 'What nekomoapp.netlify.app is and who runs it', url: '/support#about', cat: 'FAQ' },
-        { title: 'Is Nekomo available on iOS?', desc: 'No — Android and Android TV only', url: '/support#faq', cat: 'FAQ' },
-        { title: 'Where do I download Nekomo?', desc: 'Only official builds on the Beta page for now', url: '/support#faq', cat: 'FAQ' },
-        { title: 'Does Nekomo host videos?', desc: 'No, Nekomo hosts nothing and runs no streaming servers', url: '/support#faq', cat: 'FAQ' },
-        { title: 'Why do I have to sign in?', desc: 'AniList, MyAnimeList, or Kitsu — Nekomo has no accounts of its own', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Is N𝖊kō𝖒𝖔 available on iOS?', desc: 'No — Android and Android TV only', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Where do I download N𝖊kō𝖒𝖔?', desc: 'Only official builds on the Beta page for now', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Does N𝖊kō𝖒𝖔 host videos?', desc: 'No, N𝖊kō𝖒𝖔 hosts nothing and runs no streaming servers', url: '/support#faq', cat: 'FAQ' },
+        { title: 'Why do I have to sign in?', desc: 'AniList, MyAnimeList, or Kitsu — N𝖊kō𝖒𝖔 has no accounts of its own', url: '/support#faq', cat: 'FAQ' },
         { title: 'Can you add a streaming source?', desc: 'No sources ship by default; you install them yourself', url: '/support#faq', cat: 'FAQ' },
         { title: 'What is the background music?', desc: 'Optional, off by default — play/pause, volume, custom link', url: '/support#faq', cat: 'FAQ' },
         { title: 'Report a bug', desc: 'What to include in a GitHub issue', url: '/support#report', cat: 'FAQ' },
@@ -317,26 +317,26 @@
         { title: 'Playback problems', desc: 'Troubleshooting sources and the player', url: '/support#playback', cat: 'FAQ' },
         { title: 'Extensions help', desc: 'Installing and troubleshooting third-party extensions', url: '/support#ext', cat: 'FAQ' },
 
-        { title: 'Terms of Service', desc: 'Rules governing use of the Nekomo app and website', url: '/terms', cat: 'Legal' },
-        { title: 'No hosted content', desc: 'Nekomo does not host or distribute media', url: '/terms#content', cat: 'Legal' },
+        { title: 'Terms of Service', desc: 'Rules governing use of the N𝖊kō𝖒𝖔 app and website', url: '/terms', cat: 'Legal' },
+        { title: 'No hosted content', desc: 'N𝖊kō𝖒𝖔 does not host or distribute media', url: '/terms#content', cat: 'Legal' },
         { title: 'Extensions & third-party sources', desc: 'Only install extensions you trust', url: '/terms#extensions', cat: 'Legal' },
         { title: 'Beta and test builds', desc: 'Unfinished software — use at your own risk', url: '/terms#beta', cat: 'Legal' },
-        { title: 'Privacy Policy', desc: 'What Nekomo does and does not do with your data', url: '/privacy', cat: 'Legal' },
+        { title: 'Privacy Policy', desc: 'What N𝖊kō𝖒𝖔 does and does not do with your data', url: '/privacy', cat: 'Legal' },
         { title: 'Data stored on your device', desc: 'Preferences, history, tokens, extensions, error logs', url: '/privacy#device', cat: 'Legal' },
         { title: 'Third-party services', desc: 'AniList, MyAnimeList, Kitsu, streaming sources, DNS providers', url: '/privacy#thirdparty', cat: 'Legal' },
         { title: 'This website (privacy)', desc: 'Local storage usage: verification, petals, music prefs', url: '/privacy#website', cat: 'Legal' },
         { title: 'DMCA & Disclaimer', desc: 'Copyright notice procedure and project disclaimers', url: '/dmca.html', cat: 'Legal' },
-        { title: 'No servers or sources', desc: 'Nekomo does not operate streaming servers or providers', url: '/dmca.html#noservers', cat: 'Legal' },
+        { title: 'No servers or sources', desc: 'N𝖊kō𝖒𝖔 does not operate streaming servers or providers', url: '/dmca.html#noservers', cat: 'Legal' },
         { title: 'Background music & external links', desc: 'Music licensing responsibility and third-party link disclaimer', url: '/dmca.html#media', cat: 'Legal' },
         { title: 'DMCA notice procedure', desc: 'How to file a valid copyright notice', url: '/dmca.html#notice', cat: 'Legal' },
         { title: 'Be respectful (Rule 1)', desc: 'Community conduct expectations', url: '/rules#r1', cat: 'Legal' },
         { title: 'No piracy distribution (Rule 5)', desc: 'No pirated links or source/extension requests', url: '/rules#r5', cat: 'Legal' },
         { title: 'Reporting (Rule 9)', desc: 'How to report rule-breaking or copyright issues', url: '/rules#r9', cat: 'Legal' },
 
-        { title: 'Project history', desc: 'Shiro → Kuro No → Nekomo lineage', url: '/contributors.html', cat: 'Contributors' },
+        { title: 'Project history', desc: 'Shiro → Kuro No → N𝖊kō𝖒𝖔 lineage', url: '/contributors.html', cat: 'Contributors' },
         { title: 'N3K0', desc: 'Head Developer & Project Lead', url: '/contributors.html', cat: 'Contributors' },
         { title: 'Resources & Alternatives', desc: 'Dantotsu, Cloudstream, Miru, Kitsune, AnimeTV, Kamyroll', url: '/contributors.html', cat: 'Contributors' },
-        { title: 'Project repositories', desc: 'Nekomo, Neko-Source, og-kuro-no-source, website repos', url: '/contributors.html', cat: 'Contributors' }
+        { title: 'Project repositories', desc: 'N𝖊kō𝖒𝖔, Neko-Source, og-kuro-no-source, website repos', url: '/contributors.html', cat: 'Contributors' }
     ];
     var SEARCH_CATEGORIES = ['All', 'Pages', 'FAQ', 'Legal', 'Contributors'];
 
@@ -629,7 +629,7 @@
             '    <a class="nk-wallpaper-btn nk-ghost" href="' + currentWall() + '" target="_blank" rel="noopener">Open full size</a>' +
             '    <button type="button" class="nk-wallpaper-btn nk-ghost" data-wall-next>Next wallpaper &rarr;</button>' +
             '  </div>' +
-            '  <p class="nk-wallpaper-caption">Free to use as your own wallpaper &mdash; part of the Nekomo site theme. "Next" also changes the page background for this session.</p>' +
+            '  <p class="nk-wallpaper-caption">Free to use as your own wallpaper &mdash; part of the N𝖊kō𝖒𝖔 site theme. "Next" also changes the page background for this session.</p>' +
             '</div>';
         document.body.appendChild(overlay);
 
