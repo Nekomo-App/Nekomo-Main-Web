@@ -96,9 +96,16 @@ async function show() {
   members.innerHTML = sorted.length ? sorted.map(x =>
     `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"} · ${x.devices || 1} device${(x.devices || 1) > 1 ? "s" : ""}${(x.keys || 1) > 1 ? ` · ${x.keys} keys` : ""}</span>${(x.deviceIds || []).length ? `<br><span class="muted">devices: ${x.deviceIds.map(d => `<button class="mono" style="padding:2px 8px;font-size:.72rem" onclick="kick('${d}','${(x.name || "member").replace(/'/g, "")}')">${d} ✕</button>`).join(" ")}</span>` : ""}</span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
   ).join("") : '<p class="muted">No members online yet — heartbeats appear after first app launch.</p>';
-  allkeys.innerHTML = (ak.keys || []).map(x =>
-    `<div class="row"><span class="mono">${x.key}</span><span class="muted">${x.type}</span></div>`
-  ).join("") || '<p class="muted">No keys.</p>';
+  const list = ak.keys || [];
+  const grp = (items, label, render, openFirst) => items.length ? `<details ${openFirst ? "open" : ""} style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:600">${label} — ${items.length}</summary>${items.map(render).join("")}</details>` : "";
+  const rMember = x => `<div class="row"><span><span class="mono">${x.hash}…</span> <span class="muted">${x.type}${x.name ? " · " + x.name : ""}${x.discord ? " · " + x.discord : ""} · ${x.devices || 0} dev</span></span></div>`;
+  const rFriend = x => `<div class="row"><span class="mono">${x.key}</span><span class="muted">friend · of ${x.parent}</span></div>`;
+  const rSeed = x => `<div class="row"><span class="mono">${x.key}</span><span class="muted">member · seed</span></div>`;
+  allkeys.innerHTML =
+    grp(list.filter(x => x.type !== "friend" && !x.seed), "Member keys", rMember, true) +
+    grp(list.filter(x => x.type === "friend"), "Friend codes", rFriend) +
+    grp(list.filter(x => x.seed), "Seed codes", rSeed) ||
+    '<p class="muted">No keys.</p>';
   abuse.innerHTML = (ab.abuse || []).length ? ab.abuse.map(x =>
     `<div class="row"><span class="mono">device ${x.did}…</span><span class="muted">${(x.keys || []).length} keys</span></div>`
   ).join("") : '<p class="muted">No flagged devices.</p>';

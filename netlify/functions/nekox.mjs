@@ -656,8 +656,18 @@ export const handler = async (event) => {
                 const fr = await blob("friendkeys");
                 const { blobs } = await fr.list();
                 const friendKeys = await Promise.all(blobs.map(async (b) => ({ key: await fr.get(b.key), parent: b.key.slice(7, 17), type: "friend" })));
-                const seedKeys = (process.env.NEKOX_SEED_KEYS || "NEKX-NEKO-2025").split(",").map(k => ({ key: k.trim(), type: "member" }));
-                return json({ ok: true, keys: [...seedKeys, ...friendKeys] });
+                const seedKeys = (process.env.NEKOX_SEED_KEYS || "NEKX-NEKO-2025").split(",").map(k => ({ key: k.trim(), type: "member", seed: true }));
+                // Member keys are stored hashed — plaintext can't be recovered, so
+                // staff see the hash, owner and device count instead of the code.
+                const { blobs: invs } = await inv.list();
+                const prof2 = await blob("profiles"), dev2 = await blob("devices");
+                const memberKeys = await Promise.all(invs.map(async (b) => {
+                    const rec = JSON.parse((await inv.get(b.key)) || "{}");
+                    const pr = JSON.parse((await prof2.get(`profile:${b.key}`)) || "{}");
+                    const dd = JSON.parse((await dev2.get(`devices:${b.key}`)) || "{\"devices\":{}}");
+                    return { hash: b.key.slice(0, 10), type: rec.type || "member", name: pr.name || rec.name || "", discord: pr.discordTag || pr.discord || "", devices: Object.keys(dd.devices).length };
+                }));
+                return json({ ok: true, keys: [...seedKeys, ...memberKeys, ...friendKeys] });
             }
             if (route === "/admin/kick" && params.did) { // ?did=<deviceId or 10-char prefix> unbinds that device
                 const want = params.did.trim();
