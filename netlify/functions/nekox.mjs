@@ -655,7 +655,7 @@ export const handler = async (event) => {
                     const { blobs: ps } = await pres.list();
                     let purged = 0;
                     for (const b of ps) {
-                        const d2 = b.key.split(":")[1] || "";
+                        const d2 = b.key.split(":")[1] || "?";
                         if (d2 === want || d2.startsWith(want) || d2.slice(0, 10) === want.slice(0, 10)) { await pres.delete(b.key); purged++; }
                     }
                     if (purged) return json({ ok: true, did: want, purged });
