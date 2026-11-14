@@ -1,6 +1,6 @@
 {
-  "version": "1.0.14",
+  "version": "1.0.15",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Incognito mode (no watch history or progress saved) and a default-off 18+ content filter, both in Settings -> Library. Friend-key sign-ins no longer receive a shareable friend code.",
-  "versionCode": 13
+  "notes": "Launch-time member validation — revoked keys and kicked devices now land back on the sign-in screen instead of loading into the app.",
+  "versionCode": 14
 }
