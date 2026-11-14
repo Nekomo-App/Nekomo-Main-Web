@@ -1,6 +1,6 @@
 {
-  "version": "1.0.12",
+  "version": "1.0.13",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Third-party subtitle sources: provider subtitle tracks now flow to the player, subtitles collected across all 5 providers as failover, Jimaku backup, per-source labels in the CC picker, raw/proxy fallback, correct referer handling.",
-  "versionCode": 11
+  "notes": "Working sub/dub switching, private auto-resolved sources, built-in backup subtitle fetching, subtitle language + on/off preferences in setup and Settings.",
+  "versionCode": 12
 }

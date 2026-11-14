@@ -130,14 +130,14 @@ export const handler = async (event) => {
             codeCache[id] = api;
             return api;
         };
-        const zgStreams = async (id, title, ep) => {
+        const zgStreams = async (id, title, ep, cat = "sub") => {
             const tag = `zg-${id}`;
             try {
                 const p = await loadProvider(id);
                 const hits = await p.search(title, 1, {});
                 const first = Array.isArray(hits) ? hits[0] : hits?.results?.[0] || hits?.items?.[0];
                 if (!first) { errs.push(`${tag}: search empty`); return null; }
-                const detail = await p.getDetail(first.url || first.id, {});
+                const detail = await p.getDetail(first.url || first.id, { category: cat });
                 const eps = detail?.episodes || (await p.getEpisodes?.(first.url, {})) || [];
                 const target = eps[ep - 1] || eps[0];
                 if (!target) { errs.push(`${tag}: no ep ${ep} of ${eps.length}`); return null; }
@@ -162,11 +162,11 @@ export const handler = async (event) => {
         const errs = [];
 
         const providers = [
-            async (title, ep) => zgStreams("hianime", title, ep),
-            async (title, ep) => zgStreams("anikoto", title, ep),
-            async (title, ep) => zgStreams("animecube", title, ep),
-            async (title, ep) => zgStreams("kartoons", title, ep),
-            async (title, ep) => zgStreams("fourkhdhub", title, ep),
+            async (title, ep, cat = "sub") => zgStreams("hianime", title, ep, cat),
+            async (title, ep, cat = "sub") => zgStreams("anikoto", title, ep, cat),
+            async (title, ep, cat = "sub") => zgStreams("animecube", title, ep, cat),
+            async (title, ep, cat = "sub") => zgStreams("kartoons", title, ep, cat),
+            async (title, ep, cat = "sub") => zgStreams("fourkhdhub", title, ep, cat),
         ];
 
         // Third-party subtitle backup: Jimaku (anime subtitle community, keyed
@@ -187,7 +187,7 @@ export const handler = async (event) => {
                     for (const f of (Array.isArray(files) ? files : [])) {
                         if (!/\.(srt|vtt)$/i.test(f.name || "") || !f.url) continue;
                         if (!re.test(f.name)) continue;
-                        out.push({ url: f.url, lang: "English (Jimaku)" });
+                        out.push({ url: f.url, lang: "English" });
                     }
                 }
                 return out.slice(0, 6);
@@ -199,27 +199,69 @@ export const handler = async (event) => {
             const info = (await gql(INFO, { id: +ex[1] }))?.data?.Media;
             const title = info?.title?.english || info?.title?.romaji || "";
             const ep = parseInt((params.e || "1").split(":").pop() || "1", 10);
-            let winner = null; const subPool = []; const seen = new Set();
-            const addSubs = (subs, src) => {
-                for (const s of subs || []) {
-                    const k = `${s.lang}|${src}`; // one track per language per source
-                    if (seen.has(k)) continue;
-                    seen.add(k); subPool.push({ ...s, src });
+            const audio = String(params.audio || "sub");
+            const want = audio === "dub" ? "dub" : "sub"; // raw rides on sub streams
+            const runChain = async (cat) => {
+                let winner = null; const subPool = []; const seen = new Set();
+                for (const p of providers) {
+                    try {
+                        const r = await p(title, ep, cat);
+                        if (!r) continue;
+                        if (!winner && r.streams?.length) winner = r;
+                        for (const s of r.subtitles || []) {
+                            const k = `${s.lang}|${r.provider}`; // one per lang+source
+                            if (seen.has(k)) continue;
+                            seen.add(k); subPool.push({ ...s, src: r.provider });
+                        }
+                        if (winner && subPool.length) break; // video + subs — done
+                    } catch (e) { errs.push(String(e?.message || e)); }
                 }
+                return { winner, subPool };
             };
-            for (const p of providers) {
-                try {
-                    const r = await p(title, ep);
-                    if (!r) continue;
-                    if (!winner && r.streams?.length) winner = r;
-                    addSubs(r.subtitles, r.provider);
-                    if (winner && subPool.length) break; // have video + subs — done
-                } catch (e) { errs.push(String(e?.message || e)); }
+            let { winner, subPool } = await runChain(want);
+            let resolvedCat = want;
+            if (!winner) {
+                // Requested audio missing entirely — fall back to the other cut
+                // so playback still works (dub often doesn't exist for a title).
+                const alt = await runChain(want === "dub" ? "sub" : "dub");
+                if (alt.winner) { winner = alt.winner; subPool = alt.subPool; resolvedCat = want === "dub" ? "sub" : "dub"; }
             }
             if (!winner) return json({ error: "No provider returned streams", title, ep, errs }, 404);
-            if (!subPool.length) addSubs(await jimakuSubs(+ex[1], ep), "jimaku");
+            if (!subPool.length && resolvedCat === "sub") {
+                const seen = new Set(subPool.map((s) => `${s.lang}|${s.src}`));
+                for (const s of await jimakuSubs(+ex[1], ep)) {
+                    const k = `${s.lang}|jimaku`;
+                    if (seen.has(k)) continue; seen.add(k); subPool.push({ ...s, src: "jimaku" });
+                }
+            }
+            if (audio === "raw") subPool.length = 0; // raw = no subtitle tracks
             winner.subtitles = subPool;
-            return json({ ssub: winner, sdub: winner, provider: winner.provider });
+            const slot = audio === "raw" ? "sraw" : `s${resolvedCat}`;
+            return json({ [slot]: winner, result: winner, audio: resolvedCat, provider: winner.provider });
+        }
+
+        // Backup subtitle endpoint — the app calls this when an extract result
+        // carried no tracks, or every track it returned failed. All providers are
+        // queried concurrently for their tracks only; Jimaku fills the gap when
+        // configured. Response carries language + URL + referer, never source names
+        // needed by the UI (src stays internal/dedupe-only).
+        const sr = route.match(/^\/subs\/(\d+)$/);
+        if (sr) {
+            const info = (await gql(INFO, { id: +sr[1] }))?.data?.Media;
+            const title = info?.title?.english || info?.title?.romaji || "";
+            const ep = parseInt((params.e || "1").split(":").pop() || "1", 10);
+            const pool = []; const seen = new Set();
+            const add = (subs, src) => {
+                for (const s of subs || []) {
+                    const k = `${s.lang}|${src}`;
+                    if (seen.has(k)) continue;
+                    seen.add(k); pool.push({ ...s, src });
+                }
+            };
+            const settled = await Promise.allSettled(providers.map((p) => p(title, ep)));
+            for (const s of settled) if (s.status === "fulfilled" && s.value) add(s.value.subtitles, s.value.provider);
+            if (!pool.length) add(await jimakuSubs(+sr[1], ep), "jimaku");
+            return json({ subtitles: pool });
         }
 
         const px = route.match(/^\/proxy\/(m3u8|segment)$/);
