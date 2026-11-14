@@ -547,6 +547,19 @@ export const handler = async (event) => {
                     p.lastSeen = Math.max(p.lastSeen, g.lastSeen);
                     p.online = p.online || g.online;
                 }
+                // Everyone who ever registered: profiles without devices still show.
+                const { blobs: profs } = await prof.list({ prefix: "profile:" });
+                for (const pb of profs) {
+                    const kh2 = pb.key.slice(8);
+                    const pr = JSON.parse((await prof.get(pb.key)) || "{}");
+                    if (!pr?.name && !pr?.discordTag) continue;
+                    const pid = pr.discordId ? `d:${pr.discordId}` : (pr.name ? `n:${pr.name.toLowerCase()}` : `k:${kh2.slice(0, 12)}`);
+                    if (people[pid]) continue;
+                    const dev2 = await blob("devices");
+                    const dd2 = JSON.parse((await dev2.get(`devices:${kh2}`)) || "{\"devices\":{}}");
+                    const ids = Object.keys(dd2.devices).map(d => d.slice(0, 10));
+                    people[pid] = { id: kh2.slice(0, 12), name: pr.name || "", discord: pr.discordTag || "", devices: ids.length, keys: 1, lastSeen: 0, online: false, deviceIds: ids, deviceKeys: Object.fromEntries(ids.map(d => [d, kh2.slice(0, 10)])) };
+                }
                 const members = Object.values(people).sort((a, b) => (b.online - a.online) || (b.lastSeen - a.lastSeen));
                 return json({ ok: true, members, online: members.filter(m => m.online).length });
             }
