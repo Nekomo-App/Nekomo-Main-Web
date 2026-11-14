@@ -507,8 +507,8 @@ export const handler = async (event) => {
                     const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), kh: "", devices: 0, lastSeen: 0, online: false, deviceIds: [], deviceKeys: {} });
                     g.kh = d.kh || g.kh;
                     g.devices += 1;
-                    g.deviceIds.push(did.slice(0, 10));
-                    if (d.kh) g.deviceKeys[did.slice(0, 10)] = d.kh.slice(0, 10);
+                    g.deviceIds.push(did); // full ids — ANDROID_ID prefixes can collide across devices
+                    if (d.kh) g.deviceKeys[did] = d.kh.slice(0, 10);
                     g.lastSeen = Math.max(g.lastSeen, d.lastSeen || 0);
                     if (now - (d.lastSeen || 0) < 240000) g.online = true;
                 }
@@ -529,8 +529,8 @@ export const handler = async (event) => {
                         byKh[bind.keyHash] = g;
                         byKey[`bound:${bind.keyHash}`] = g;
                     }
-                    if (!g.deviceIds.includes(did.slice(0, 10))) { g.devices += 1; g.deviceIds.push(did.slice(0, 10)); }
-                    (g.deviceKeys ||= {})[did.slice(0, 10)] = bind.keyHash.slice(0, 10);
+                    if (!g.deviceIds.includes(did)) { g.devices += 1; g.deviceIds.push(did); }
+                    (g.deviceKeys ||= {})[did] = bind.keyHash.slice(0, 10);
                 }
                 const groups = await Promise.all(Object.entries(byKey).map(async ([keyPart, g]) => {
                     const p = JSON.parse((await prof.get(`profile:${keyPart}`)) || "{}");
@@ -558,7 +558,7 @@ export const handler = async (event) => {
                     if (people[pid]) continue;
                     const dev2 = await blob("devices");
                     const dd2 = JSON.parse((await dev2.get(`devices:${kh2}`)) || "{\"devices\":{}}");
-                    const ids = Object.keys(dd2.devices).map(d => d.slice(0, 10));
+                    const ids = Object.keys(dd2.devices);
                     people[pid] = { id: kh2.slice(0, 12), name: pr.name || "", discord: pr.discordTag || "", devices: ids.length, keys: 1, lastSeen: 0, online: false, deviceIds: ids, deviceKeys: Object.fromEntries(ids.map(d => [d, kh2.slice(0, 10)])) };
                 }
                 const members = Object.values(people).sort((a, b) => (b.online - a.online) || (b.lastSeen - a.lastSeen));
@@ -771,7 +771,7 @@ export const handler = async (event) => {
             if (route === "/admin/abuse") {
                 const abuse = await blob("abuse");
                 const { blobs } = await abuse.list();
-                const flags = await Promise.all(blobs.map(async (b) => ({ did: b.key.slice(0, 10), ...(JSON.parse((await abuse.get(b.key)) || "{}")) })));
+                const flags = await Promise.all(blobs.map(async (b) => ({ did: b.key, didShort: b.key.slice(0, 10), ...(JSON.parse((await abuse.get(b.key)) || "{}")) })));
                 return json({ ok: true, abuse: flags, count: flags.length });
             }
             return json({ ok: true });

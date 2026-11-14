@@ -126,7 +126,7 @@ function renderAll() {
   const ms = (m.members || []).slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0)).filter(x => matchQ(x.name, x.discord, x.id, ...(x.deviceIds || [])));
   document.getElementById("sumMembers").textContent = `Members — ${ms.length} (${m.online || 0} online)`;
   members.innerHTML = ms.length ? ms.map(x => {
-    const chips = (x.deviceIds || []).map(d => `<span class="devchip">${esc(d)}<span class="muted">${esc((x.deviceKeys || {})[d] || "")}</span>${x.online ? "" : ""}<button title="Kick this device" onclick="kick('${esc(d)}','${esc(x.name || "member")}')">✕</button></span>`).join("");
+    const chips = (x.deviceIds || []).map(d => `<span class="devchip">${esc(String(d).slice(0, 10))}<span class="muted">${esc((x.deviceKeys || {})[d] || "")}</span><button title="Kick this device" onclick="kick('${esc(d)}','${esc(x.name || "member")}')">✕</button></span>`).join("");
     return `<div class="row"><span style="min-width:0"><b>${esc(x.name || "—")}</b> <span class="mono">${esc(x.id)}…</span><br><span class="muted">${esc(x.discord || "no discord")} · ${x.devices || 0} device${(x.devices || 0) === 1 ? "" : "s"} · ${x.keys || 0} key${(x.keys || 0) === 1 ? "" : "s"}${x.lastSeen ? " · seen " + new Date(x.lastSeen).toLocaleDateString() : ""}</span>${chips ? `<br>${chips}` : ""}</span><span class="flex"><span class="dot ${x.online ? "on" : "off"}"></span><span class="muted">${x.online ? "online" : "offline"}</span>${(x.devices || 0) === 0 ? `<button class="mini danger" title="Remove this empty member card" onclick="purgeProfile('${esc(x.id)}')">Remove</button>` : ""}</span></div>`;
   }).join("") : '<p class="muted">No members match.</p>';
   // Grouped codes
@@ -150,7 +150,7 @@ function renderAll() {
   // Abuse
   document.getElementById("sumAbuse").textContent = `Abuse flags — ${ab.count || 0}`;
   abuse.innerHTML = (ab.abuse || []).length ? ab.abuse.map(x =>
-    `<div class="row"><span class="mono">device ${esc(x.did)}…</span><span class="flex"><span class="muted">${(x.keys || []).length} keys</span><button class="mini danger" onclick="kick('${esc(x.did)}','abuse-flagged device')">Kick</button></span></div>`
+    `<div class="row"><span class="mono">device ${esc(x.didShort || String(x.did).slice(0, 10))}…</span><span class="flex"><span class="muted">${(x.keys || []).length} keys</span><button class="mini danger" onclick="kick('${esc(x.did)}','abuse-flagged device')">Kick</button></span></div>`
   ).join("") : '<p class="muted">No flagged devices.</p>';
 }
 async function show() {
