@@ -435,7 +435,19 @@ export const handler = async (event) => {
         if (route === "/staff/login") {
             const { u, p } = body();
             if (!u || !p) return json({ ok: false, error: "u/p required" }, 400);
-            if (!STAFF_HASHES.includes(sha(`${p}:nx-staff-s1`))) return json({ ok: false }, 403);
+            // Brute-force guard: 8 failures per IP per 15 minutes.
+            const ip = (event.headers || {})["x-nf-client-connection-ip"] || (event.headers || {})["client-ip"] || "?";
+            const ab = await blob("abuse");
+            const abKey = `loginfail:${ip}`;
+            const rec = (await ab.get(abKey, { type: "json" }).catch(() => null)) || { n: 0, first: 0 };
+            if (Date.now() - rec.first > 900000) { rec.n = 0; rec.first = 0; }
+            if (rec.n >= 8) return json({ ok: false, error: "rate_limited" }, 429);
+            if (!STAFF_HASHES.includes(sha(`${p}:nx-staff-s1`))) {
+                rec.n += 1; if (!rec.first) rec.first = Date.now();
+                await ab.setJSON(abKey, rec).catch(() => {});
+                return json({ ok: false }, 403);
+            }
+            await ab.delete(abKey).catch(() => {});
             const exp = Date.now() + 24 * 3600 * 1000;
             return json({ ok: true, user: u, token: `${u}.${exp}.${sha(`${u}:${exp}:${SECRET}`)}` });
         }

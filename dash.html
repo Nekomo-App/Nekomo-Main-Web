@@ -28,7 +28,11 @@
   <h1>Staff sign in</h1><p class="sub">NekōX members — restricted</p>
   <input id="u" placeholder="Username" autocomplete="off"><br>
   <input id="p" type="password" placeholder="Password"><br>
-  <button onclick="staffSignin()">Sign in</button>
+  <input id="hp" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true"><br>
+  <label class="botchk"><input id="notbot" type="checkbox"> I'm not a robot</label><br>
+  <p id="botq" class="muted"></p>
+  <input id="bota" inputmode="numeric" placeholder="Answer"><br>
+  <button id="signinBtn" onclick="staffSignin()" disabled>Sign in</button>
   <p id="loginMsg" class="muted"></p>
   <p class="muted">Save your credentials somewhere safe — there's no password reset.</p>
 </div>
@@ -130,6 +134,27 @@ async function revoke(h) {
   show();
 }
 if (tok()) show();
+</script>
+<script>
+// Simple bot verification: checkbox + math answer + honeypot.
+const q1 = 2 + Math.floor(Math.random() * 7), q2 = 1 + Math.floor(Math.random() * 8);
+document.getElementById('botq').textContent = `Bot check: what is ${q1} + ${q2}?`;
+function botOk() {
+  const ok = document.getElementById('notbot').checked
+    && parseInt(document.getElementById('bota').value, 10) === q1 + q2
+    && !document.getElementById('hp').value;
+  document.getElementById('signinBtn').disabled = !ok;
+}
+['notbot','bota'].forEach(id => document.getElementById(id).addEventListener('input', botOk));
+document.getElementById('notbot').addEventListener('change', botOk);
+// Page hardening — deterrent only; real auth is server-side.
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('selectstart', e => { if (!/input|textarea/i.test(e.target.tagName)) e.preventDefault(); });
+document.addEventListener('copy', e => { if (!/input|textarea/i.test(e.target.tagName)) e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && 'IJC'.includes(e.key.toUpperCase())) || (e.ctrlKey && 'US'.includes(e.key.toUpperCase()))) e.preventDefault();
+});
+setInterval(() => { if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) document.body.style.filter = 'blur(6px)'; }, 800);
 </script>
 </body>
 </html>
