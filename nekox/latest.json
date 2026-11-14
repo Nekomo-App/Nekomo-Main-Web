@@ -1,6 +1,6 @@
 {
-  "version": "1.0.16",
+  "version": "1.0.17",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Setup now asks about Incognito (no history saved) and 18+ content during sign-in — both off unless you turn them on, changeable anytime in Settings.",
-  "versionCode": 15
+  "notes": "All audio and subtitle languages now appear in the player picker, plus same-language backup failover.",
+  "versionCode": 16
 }
