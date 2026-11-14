@@ -1,143 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><title>Dashboard</title>
+<meta charset="utf-8"><title>NekōX Staff</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <style>
-  body{background:#0c0508;color:#e8d5dc;font-family:Inter,system-ui,sans-serif;max-width:640px;margin:0 auto;padding:32px 16px}
+  body{background:#0c0508;color:#e8d5dc;font-family:Inter,system-ui,sans-serif;max-width:680px;margin:0 auto;padding:32px 16px}
   h1{font-size:1.4rem;font-weight:700;margin-bottom:4px}
+  h2{font-size:1rem;font-weight:700;margin:0}
   .sub{color:#8a6a76;font-size:.85rem;margin-bottom:24px}
   input,button{background:#1a0e13;border:1px solid #3a2530;color:#e8d5dc;border-radius:10px;padding:10px 14px;font-size:.95rem}
-  input{width:100%;box-sizing:border-box;margin-bottom:10px}
+  input{box-sizing:border-box}
   button{cursor:pointer;font-weight:600}
   button:hover{background:#2a1620}
-  .card{background:#140a10;border:1px solid #2a1620;border-radius:14px;padding:16px;margin-bottom:16px}
-  .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #231218;font-size:.9rem}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  .card{background:#140a10;border:1px solid #2a1620;border-radius:14px;padding:16px;margin-bottom:14px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #231218;font-size:.9rem}
   .row:last-child{border-bottom:none}
-  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;flex:none}
   .on{background:#4ade80}.off{background:#52525b}
-  .mono{font-family:ui-monospace,monospace;font-size:.8rem;color:#a18997}
+  .mono{font-family:ui-monospace,monospace;font-size:.8rem;color:#d8b7c4;word-break:break-all}
   .accent{color:#ff5c7a}.muted{color:#8a6a76;font-size:.8rem}
-  .flex{display:flex;gap:8px}.hidden{display:none}
+  .flex{display:flex;gap:8px;align-items:center}.hidden{display:none}
   a{color:#ff5c7a}
+  .pill{font-size:.68rem;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:999px;border:1px solid #3a2530;color:#a18997;flex:none}
+  .pill.member{color:#7cc7ff;border-color:#24507a}
+  .pill.friend{color:#c9a7ff;border-color:#4a2f7a}
+  .pill.admin{color:#ffd27c;border-color:#7a5a24}
+  .pill.seed{color:#8affc1;border-color:#247a4a}
+  .mini{padding:4px 10px;font-size:.72rem;border-radius:8px;white-space:nowrap}
+  .danger{color:#ff8a8a}
+  details{margin-bottom:14px}
+  summary{cursor:pointer;font-weight:700;padding:12px 14px;background:#140a10;border:1px solid #2a1620;border-radius:12px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"▸ ";color:#ff5c7a}
+  details[open] summary{border-radius:12px 12px 0 0;border-bottom:none}
+  details[open] summary::before{content:"▾ "}
+  .dbody{background:#140a10;border:1px solid #2a1620;border-top:none;border-radius:0 0 12px 12px;padding:4px 14px 10px}
+  .stat{background:#140a10;border:1px solid #2a1620;border-radius:12px;padding:10px 14px;min-width:76px;text-align:center}
+  .stat b{font-size:19px;display:block}
+  .devchip{display:inline-flex;align-items:center;gap:5px;background:#1a0e13;border:1px solid #3a2530;border-radius:8px;padding:3px 8px;margin:2px;font-family:ui-monospace,monospace;font-size:.72rem}
+  .devchip button{padding:0 5px;border:none;background:none;color:#ff8a8a;font-size:.8rem;line-height:1}
+  .search{width:100%;margin-bottom:14px}
+  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#2a1620;border:1px solid #ff5c7a;color:#e8d5dc;padding:8px 18px;border-radius:999px;font-size:.8rem;opacity:0;transition:opacity .25s;pointer-events:none}
 </style>
 </head>
 <body>
 <div id="login">
-  <h1>Staff sign in</h1><p class="sub">NekōX members — restricted</p>
+  <h1>Staff sign in</h1><p class="sub">NekōX — restricted area</p>
   <input id="u" placeholder="Username" autocomplete="off"><br>
-  <input id="p" type="password" placeholder="Password"><br>
-  <input id="hp" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true"><br>
-  <label class="botchk"><input id="notbot" type="checkbox"> I'm not a robot</label><br>
+  <input id="p" type="password" placeholder="Password" style="width:100%;margin-top:10px"><br>
+  <input id="hp" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
+  <label style="display:block;margin:12px 0"><input id="notbot" type="checkbox" style="width:auto"> I'm not a robot</label>
   <p id="botq" class="muted"></p>
-  <input id="bota" inputmode="numeric" placeholder="Answer"><br>
-  <button id="signinBtn" onclick="staffSignin()" disabled>Sign in</button>
+  <input id="bota" inputmode="numeric" placeholder="Answer" style="width:100%"><br>
+  <button id="signinBtn" onclick="staffSignin()" disabled style="margin-top:12px;width:100%">Sign in</button>
   <p id="loginMsg" class="muted"></p>
   <p class="muted">Save your credentials somewhere safe — there's no password reset.</p>
 </div>
 
 <div id="board" class="hidden">
   <div class="flex" style="justify-content:space-between;align-items:baseline">
-    <h1>Members</h1>
-    <button onclick="staffSignout()">Sign out</button>
-  </div>
-  <div id="statbar" class="flex" style="gap:10px;margin-bottom:16px;flex-wrap:wrap"></div>
-  <div class="card" id="members"></div>
-  <div class="card">
-    <div class="flex" style="justify-content:space-between;align-items:baseline">
-      <h1>Invite keys</h1>
-      <div class="flex"><input id="mintName" placeholder="Friend name" style="width:140px;margin:0"><button onclick="mint()">Mint</button></div>
+    <h1>NekōX Staff</h1>
+    <div class="flex">
+      <button class="mini" onclick="show()" title="Reload all data">↻ Refresh</button>
+      <button class="mini" onclick="staffSignout()">Sign out</button>
     </div>
-    <div id="keys"></div>
+  </div>
+  <div id="statbar" class="flex" style="gap:8px;margin:14px 0;flex-wrap:wrap"></div>
+  <input id="q" class="search" placeholder="Search name, discord, key, device…" oninput="renderAll()">
+
+  <details open><summary id="sumMembers">Members</summary><div class="dbody" id="members"></div></details>
+  <details><summary id="sumMemberKeys">Member codes</summary><div class="dbody" id="memberkeys"></div></details>
+  <details><summary id="sumFriendKeys">Friend codes</summary><div class="dbody" id="friendkeys"></div></details>
+  <details><summary id="sumAdminKeys">Admin keys</summary><div class="dbody" id="adminkeys"></div></details>
+  <details><summary>Invite key manager</summary><div class="dbody">
+    <div class="flex" style="margin:10px 0"><input id="mintName" placeholder="Label / name" style="flex:1"><button class="mini" onclick="mint()">Mint invite</button></div>
     <p id="newKey" class="accent mono"></p>
-  </div>
-  <div class="card">
-    <h1>All sign-in keys</h1>
-    <div id="allkeys"></div>
-  </div>
-  <div class="card">
-    <h1>Abuse flags</h1>
-    <div id="abuse"></div>
-  </div>
+    <div id="keys"></div>
+  </div></details>
+  <details><summary id="sumSeeds">Seed codes</summary><div class="dbody" id="seeds"></div></details>
+  <details><summary id="sumAbuse">Abuse flags</summary><div class="dbody" id="abuse"></div></details>
 </div>
+<div id="toast"></div>
 
 <script>
 const API = "/api/anime";
 const tok = () => sessionStorage.getItem("nx_staff") || "";
+let DATA = { m: {}, ak: {}, k: {}, ab: {} };
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
 async function api(path, opts = {}) {
   const r = await fetch(`${API}${path}${path.includes("?") ? "&" : "?"}token=${encodeURIComponent(tok())}`, opts);
   return r.json();
 }
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.style.opacity = 1;
+  setTimeout(() => t.style.opacity = 0, 1800);
+}
+async function copyKey(k) {
+  try { await navigator.clipboard.writeText(k); toast("Copied " + k); }
+  catch { toast("Copy blocked — select and copy manually"); }
+}
 async function staffSignin() {
+  const btn = document.getElementById("signinBtn");
+  btn.disabled = true;
   const r = await fetch(`${API}/staff/login`, { method: "POST", body: JSON.stringify({ u: document.getElementById('u').value.trim(), p: document.getElementById('p').value }) });
   const d = await r.json();
   if (d.ok) { sessionStorage.setItem("nx_staff", d.token); show(); }
-  else document.getElementById('loginMsg').textContent = "Invalid staff credentials.";
+  else { document.getElementById('loginMsg').textContent = "Invalid staff credentials."; botOk(); }
+}
+const matchQ = (...vals) => {
+  const q = document.getElementById("q").value.trim().toLowerCase();
+  return !q || vals.some(v => String(v || "").toLowerCase().includes(q));
+};
+function codeRow(x, typeLabel) {
+  const code = x.key ? `<span class="mono">${esc(x.key)}</span>` : `<span class="mono muted" title="Minted before code tracking — hash only">${esc(x.hash)}…</span>`;
+  const meta = [x.name, x.discord, x.parentName ? "for " + x.parentName : null, x.devices ? x.devices + " dev" : null].filter(Boolean).join(" · ");
+  return `<div class="row"><span class="flex" style="min-width:0"><span class="pill ${typeLabel}">${typeLabel}</span>${code}${meta ? ` <span class="muted">${esc(meta)}</span>` : ""}</span>${x.key ? `<button class="mini" onclick="copyKey('${esc(x.key)}')">Copy</button>` : ""}</div>`;
+}
+function renderAll() {
+  const { m, ak, k, ab } = DATA;
+  // Members
+  const ms = (m.members || []).slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0)).filter(x => matchQ(x.name, x.discord, x.id, ...(x.deviceIds || [])));
+  document.getElementById("sumMembers").textContent = `Members — ${ms.length} (${m.online || 0} online)`;
+  members.innerHTML = ms.length ? ms.map(x => {
+    const chips = (x.deviceIds || []).map(d => `<span class="devchip">${esc(d)}<span class="muted">${esc((x.deviceKeys || {})[d] || "")}</span>${x.online ? "" : ""}<button title="Kick this device" onclick="kick('${esc(d)}','${esc(x.name || "member")}')">✕</button></span>`).join("");
+    return `<div class="row"><span style="min-width:0"><b>${esc(x.name || "—")}</b> <span class="mono">${esc(x.id)}…</span><br><span class="muted">${esc(x.discord || "no discord")} · ${x.devices || 0} device${(x.devices || 0) === 1 ? "" : "s"} · ${x.keys || 0} key${(x.keys || 0) === 1 ? "" : "s"}${x.lastSeen ? " · seen " + new Date(x.lastSeen).toLocaleDateString() : ""}</span>${chips ? `<br>${chips}` : ""}</span><span class="flex"><span class="dot ${x.online ? "on" : "off"}"></span><span class="muted">${x.online ? "online" : "offline"}</span>${(x.devices || 0) === 0 ? `<button class="mini danger" title="Remove this empty member card" onclick="purgeProfile('${esc(x.id)}')">Remove</button>` : ""}</span></div>`;
+  }).join("") : '<p class="muted">No members match.</p>';
+  // Grouped codes
+  const fms = (ak.members || []).filter(x => matchQ(x.key, x.hash, x.name, x.discord));
+  const ffs = (ak.friends || []).filter(x => matchQ(x.key, x.hash, x.name, x.discord, x.parentName));
+  const fas = (ak.admins || []).filter(x => matchQ(x.key, x.hash, x.name, x.discord));
+  const fss = (ak.seeds || []).filter(x => matchQ(x.key, x.hash));
+  document.getElementById("sumMemberKeys").textContent = `Member codes — ${fms.length}`;
+  document.getElementById("sumFriendKeys").textContent = `Friend codes — ${ffs.length}`;
+  document.getElementById("sumAdminKeys").textContent = `Admin keys — ${fas.length}`;
+  document.getElementById("sumSeeds").textContent = `Seed codes — ${fss.length}`;
+  memberkeys.innerHTML = fms.map(x => codeRow(x, "member")).join("") || '<p class="muted">None.</p>';
+  friendkeys.innerHTML = ffs.map(x => codeRow(x, "friend")).join("") || '<p class="muted">None.</p>';
+  adminkeys.innerHTML = fas.map(x => codeRow(x, "admin")).join("") || '<p class="muted">None.</p>';
+  seeds.innerHTML = fss.map(x => codeRow(x, "seed")).join("") || '<p class="muted">None.</p>';
+  // Invite manager (full hash list w/ actions)
+  const ks = (k.keys || []).slice().sort((a, b) => (b.used ? 1 : 0) - (a.used ? 1 : 0)).filter(x => matchQ(x.hash, x.name, x.discord, x.type));
+  keys.innerHTML = ks.map(x =>
+    `<div class="row"><span class="flex" style="min-width:0"><span class="dot ${x.used ? "on" : "off"}"></span><span class="mono">${esc(x.hash)}…</span> <span class="muted">${esc(x.type)}${x.name ? " · " + esc(x.name) : ""}${x.discord ? " · " + esc(x.discord) : ""} · ${x.devices} dev</span></span><span class="flex">${(x.devices || 0) > 0 ? `<button class="mini" onclick="resetDevs('${esc(x.hash)}',${x.devices})">Reset</button>` : ""}<button class="mini danger" onclick="revoke('${esc(x.hash)}')">Revoke</button></span></div>`
+  ).join("") || '<p class="muted">No invite keys.</p>';
+  // Abuse
+  document.getElementById("sumAbuse").textContent = `Abuse flags — ${ab.count || 0}`;
+  abuse.innerHTML = (ab.abuse || []).length ? ab.abuse.map(x =>
+    `<div class="row"><span class="mono">device ${esc(x.did)}…</span><span class="flex"><span class="muted">${(x.keys || []).length} keys</span><button class="mini danger" onclick="kick('${esc(x.did)}','abuse-flagged device')">Kick</button></span></div>`
+  ).join("") : '<p class="muted">No flagged devices.</p>';
 }
 async function show() {
   login.classList.add("hidden"); board.classList.remove("hidden");
   const m = await api("/admin/members");
-  if (m && m.ok === false) { // staff token expired/invalid — back to sign-in
+  if (m && m.ok === false) {
     sessionStorage.removeItem("nx_staff");
     board.classList.add("hidden"); login.classList.remove("hidden");
     document.getElementById('loginMsg').textContent = "Session expired — sign in again.";
     return;
   }
-  const ak = await api("/admin/allkeys");
-  const k = await api("/admin/keys");
-  const ab = await api("/admin/abuse");
+  DATA.m = m;
+  DATA.ak = await api("/admin/allkeys");
+  DATA.k = await api("/admin/keys");
+  DATA.ab = await api("/admin/abuse");
   statbar.innerHTML = [
     ["Members", (m.members || []).length], ["Online", m.online || 0],
-    ["Keys", k.count || 0], ["Used", k.used || 0], ["Unused", k.unused || 0],
-    ["Sign-ins", (ak.keys || []).length], ["Abuse", ab.count || 0],
-  ].map(([l, v]) => `<div class="card" style="padding:10px 16px;margin:0"><div style="font-size:20px;font-weight:700">${v}</div><div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:1px">${l}</div></div>`).join("");
-  const sorted = (m.members || []).slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0));
-  members.innerHTML = sorted.length ? sorted.map(x =>
-    `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"} · ${x.devices || 1} device${(x.devices || 1) > 1 ? "s" : ""}${(x.keys || 1) > 1 ? ` · ${x.keys} keys` : ""}</span>${(x.deviceIds || []).length ? `<br><span class="muted">devices: ${x.deviceIds.map(d => `<button class="mono" style="padding:2px 8px;font-size:.72rem" onclick="kick('${d}','${(x.name || "member").replace(/'/g, "")}')">${d} ✕</button>`).join(" ")}</span>` : ""}</span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
-  ).join("") : '<p class="muted">No members online yet — heartbeats appear after first app launch.</p>';
-  const list = ak.keys || [];
-  const grp = (items, label, render, openFirst) => items.length ? `<details ${openFirst ? "open" : ""} style="margin-bottom:10px"><summary style="cursor:pointer;font-weight:600">${label} — ${items.length}</summary>${items.map(render).join("")}</details>` : "";
-  const rMember = x => `<div class="row"><span><span class="mono">${x.hash}…</span> <span class="muted">${x.type}${x.name ? " · " + x.name : ""}${x.discord ? " · " + x.discord : ""} · ${x.devices || 0} dev</span></span></div>`;
-  const rFriend = x => `<div class="row"><span class="mono">${x.key}</span><span class="muted">friend · of ${x.parent}</span></div>`;
-  const rSeed = x => `<div class="row"><span class="mono">${x.key}</span><span class="muted">member · seed</span></div>`;
-  allkeys.innerHTML =
-    grp(list.filter(x => x.type !== "friend" && !x.seed), "Member keys", rMember, true) +
-    grp(list.filter(x => x.type === "friend"), "Friend codes", rFriend) +
-    grp(list.filter(x => x.seed), "Seed codes", rSeed) ||
-    '<p class="muted">No keys.</p>';
-  abuse.innerHTML = (ab.abuse || []).length ? ab.abuse.map(x =>
-    `<div class="row"><span class="mono">device ${x.did}…</span><span class="muted">${(x.keys || []).length} keys</span></div>`
-  ).join("") : '<p class="muted">No flagged devices.</p>';
-  const ks = (k.keys || []).slice().sort((a, b) => (b.used ? 1 : 0) - (a.used ? 1 : 0));
-  keys.innerHTML = ks.map(x =>
-    `<div class="row"><span><span class="dot ${x.used ? "on" : "off"}"></span><span class="mono">${x.hash}…</span> <span class="muted">${x.type}${x.name ? "· " + x.name : ""}${x.discord ? "· " + x.discord : ""} · ${x.devices} dev</span></span><span class="flex">${(x.devices || 0) > 0 ? `<button onclick="resetDevs('${x.hash}',${x.devices})">Reset</button>` : ""}<button onclick="revoke('${x.hash}')">Revoke</button></span></div>`
-  ).join("");
+    ["Keys", DATA.k.count || 0], ["Used", DATA.k.used || 0], ["Unused", DATA.k.unused || 0],
+    ["Friend codes", (DATA.ak.friends || []).length], ["Abuse", DATA.ab.count || 0],
+  ].map(([l, v]) => `<div class="stat"><b>${v}</b><span class="muted" style="font-size:10px;text-transform:uppercase;letter-spacing:1px">${l}</span></div>`).join("");
+  renderAll();
 }
 function staffSignout() {
   if (!confirm("Sign out of the staff dashboard?")) return;
   sessionStorage.removeItem("nx_staff"); location.reload();
 }
 async function mint() {
-  const d = await api(`/admin/keys?mint=${encodeURIComponent(mintName.value || "friend")}`);
-  if (d.key) { newKey.textContent = `Share once: ${d.key}`; show(); }
+  const d = await api(`/admin/keys?mint=${encodeURIComponent(document.getElementById("mintName").value || "friend")}`);
+  if (d.key) { document.getElementById("newKey").innerHTML = `Share once: <b>${esc(d.key)}</b> <button class="mini" onclick="copyKey('${esc(d.key)}')">Copy</button>`; show(); }
 }
 async function kick(did, who) {
   if (!confirm(`Kick device ${did} from ${who}? They're signed out immediately.`)) return;
   const d = await api(`/admin/kick?did=${encodeURIComponent(did)}`);
   if (d.ok === false) alert(d.error || "Kick failed — device not found.");
+  else toast("Kicked " + did);
+  show();
+}
+async function purgeProfile(id) {
+  if (!confirm(`Remove member card ${id}…? Only removes the empty record — their keys and devices are untouched.`)) return;
+  const d = await api(`/admin/purgeprofile?id=${encodeURIComponent(id)}`);
+  if (d.ok === false) alert(d.error || "Remove failed.");
+  else toast("Removed " + id);
   show();
 }
 async function resetDevs(h, n) {
   if (!confirm(`Free all ${n} device slot(s) on key ${h}…? Signed-in devices are signed out.`)) return;
   const d = await api(`/admin/keys?resetDevices=${encodeURIComponent(h)}`);
   if (d.ok === false) alert(d.error || "Reset failed.");
+  else toast("Slots reset");
   show();
 }
 async function revoke(h) {
   if (!confirm(`Revoke key ${h}…? This permanently bans it — every signed-in device is kicked.`)) return;
   const d = await api(`/admin/keys?hash=${h}`, { method: "DELETE" });
   if (d.ok === false) alert(d.error || "Revoke failed — key not found.");
+  else toast("Key revoked");
   show();
 }
 if (tok()) show();
@@ -154,14 +223,15 @@ function botOk() {
 }
 ['notbot','bota'].forEach(id => document.getElementById(id).addEventListener('input', botOk));
 document.getElementById('notbot').addEventListener('change', botOk);
-// Page hardening — deterrent only; real auth is server-side.
+// Page hardening — deterrent only; real auth is server-side. Copy stays allowed
+// inside inputs/buttons so staff can still grab codes via the Copy buttons.
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('selectstart', e => { if (!/input|textarea/i.test(e.target.tagName)) e.preventDefault(); });
 document.addEventListener('copy', e => { if (!/input|textarea/i.test(e.target.tagName)) e.preventDefault(); });
 document.addEventListener('keydown', e => {
   if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && 'IJC'.includes(e.key.toUpperCase())) || (e.ctrlKey && 'US'.includes(e.key.toUpperCase()))) e.preventDefault();
 });
-setInterval(() => { if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) document.body.style.filter = 'blur(6px)'; }, 800);
+setInterval(() => { if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) document.body.style.filter = 'blur(6px)'; else document.body.style.filter = ''; }, 800);
 </script>
 </body>
 </html>

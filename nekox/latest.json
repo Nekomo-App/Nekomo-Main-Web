@@ -1,6 +1,6 @@
 {
-  "version": "1.0.10",
+  "version": "1.0.11",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Updater check, screenshot protection always on, Settings fixes and confirmations",
-  "versionCode": 9
+  "notes": "Admin dashboard overhaul: grouped collapsible member/friend/admin/seed code sections with plaintext where known, member remove/kick tools, dynamic version footer, ghost-record cleanup.",
+  "versionCode": 10
 }

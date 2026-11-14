@@ -340,6 +340,7 @@ export const handler = async (event) => {
                     fk = `NX-F-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
                     await store.set(keyHash(fk), JSON.stringify({ type: "friend", parent: keyHash(key), at: Date.now() }));
                     await fr.set(slot, fk);
+                    await (await blob("plainkeys")).set(keyHash(fk), fk);
                 }
                 return json({ ok: true, type: "member", friendKey: fk, discordVerified });
             }
@@ -584,11 +585,17 @@ export const handler = async (event) => {
                         const rec = JSON.parse((await pres.get(b.key)) || "null");
                         if (rec?.kh === hit.key) await pres.delete(b.key);
                     }
+                    // Drop the key's profile + plaintext record so it stops
+                    // appearing as a ghost member/sign-in code.
+                    const prof = await blob("profiles"), pk2 = await blob("plainkeys");
+                    await prof.delete(`profile:${hit.key}`);
+                    await pk2.delete(hit.key);
                     return json({ ok: true, revoked: hit.key.slice(0, 10) });
                 }
                 if (params.mint) { // ?mint=name -> returns the plaintext key once
                     const newKey = `NX-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
                     await store.set(keyHash(newKey), JSON.stringify({ name: params.mint, at: Date.now() }));
+                    await (await blob("plainkeys")).set(keyHash(newKey), newKey);
                     return json({ ok: true, key: newKey });
                 }
                 if (params.resetDevices) { // ?resetDevices=<keyhash or 10-char prefix> frees a key's device slots
@@ -616,11 +623,12 @@ export const handler = async (event) => {
             }
             if (route === "/admin/mintadmin") { // ?n=2 → elevated keys: no device cap, unlocks staff/dev in-app
                 const n = Math.min(parseInt(params.n || "2"), 10);
-                const inv = await blob("invites");
+                const inv = await blob("invites"), pk = await blob("plainkeys");
                 const keys = [];
                 for (let i = 0; i < n; i++) {
                     const k = `NEKX-ADM-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
                     await inv.set(keyHash(k), JSON.stringify({ type: "admin", minted: Date.now() }));
+                    await pk.set(keyHash(k), k);
                     keys.push(k);
                 }
                 return json({ ok: true, keys });
@@ -640,34 +648,63 @@ export const handler = async (event) => {
                     const rec = JSON.parse((await inv.get(b.key)) || "{}");
                     if (rec.type === "friend") await inv.delete(b.key);
                 }
-                const pairs = [];
+                const pairs = [], pk = await blob("plainkeys");
                 for (let i = 0; i < n; i++) {
                     const mk = `NEKX-${crypto2.randomBytes(2).toString("hex").toUpperCase()}-${crypto2.randomBytes(2).toString("hex").toUpperCase()}`;
                     const fk = `NX-F-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
                     await inv.set(keyHash(mk), JSON.stringify({ type: "member", minted: Date.now() }));
                     await inv.set(keyHash(fk), JSON.stringify({ type: "friend", parent: keyHash(mk), at: Date.now() }));
                     await fr.set(`friend:${keyHash(mk)}`, fk);
+                    await pk.set(keyHash(mk), mk);
+                    await pk.set(keyHash(fk), fk);
                     pairs.push({ member: mk, friend: fk });
                 }
                 return json({ ok: true, count: pairs.length, pairs });
             }
-            if (route === "/admin/allkeys") { // every usable sign-in key (plaintext friend keys + member seeds)
-                const inv = await blob("invites");
-                const fr = await blob("friendkeys");
-                const { blobs } = await fr.list();
-                const friendKeys = await Promise.all(blobs.map(async (b) => ({ key: await fr.get(b.key), parent: b.key.slice(7, 17), type: "friend" })));
-                const seedKeys = (process.env.NEKOX_SEED_KEYS || "NEKX-NEKO-2025").split(",").map(k => ({ key: k.trim(), type: "member", seed: true }));
-                // Member keys are stored hashed — plaintext can't be recovered, so
-                // staff see the hash, owner and device count instead of the code.
-                const { blobs: invs } = await inv.list();
+            if (route === "/admin/allkeys") { // every sign-in key, grouped: member / friend / admin / seed
+                const inv = await blob("invites"), fr = await blob("friendkeys"), pk = await blob("plainkeys");
                 const prof2 = await blob("profiles"), dev2 = await blob("devices");
-                const memberKeys = await Promise.all(invs.map(async (b) => {
+                // Plaintext known for: seed keys, auto-minted friend keys, anything minted after plainkeys tracking.
+                const plain = {}; // keyHash -> plaintext
+                const { blobs: frBlobs } = await fr.list();
+                for (const b of frBlobs) { const v = await fr.get(b.key); if (v) plain[keyHash(v)] = v; }
+                const { blobs: pkBlobs } = await pk.list();
+                for (const b of pkBlobs) { const v = await pk.get(b.key); if (v) plain[b.key] = v; }
+                const { blobs: invs } = await inv.list();
+                const out = await Promise.all(invs.map(async (b) => {
                     const rec = JSON.parse((await inv.get(b.key)) || "{}");
                     const pr = JSON.parse((await prof2.get(`profile:${b.key}`)) || "{}");
                     const dd = JSON.parse((await dev2.get(`devices:${b.key}`)) || "{\"devices\":{}}");
-                    return { hash: b.key.slice(0, 10), type: rec.type || "member", name: pr.name || rec.name || "", discord: pr.discordTag || pr.discord || "", devices: Object.keys(dd.devices).length };
+                    let parentName = "";
+                    if (rec.parent) {
+                        const pp = JSON.parse((await prof2.get(`profile:${rec.parent}`)) || "{}");
+                        parentName = pp.name || rec.parent.slice(0, 10);
+                    }
+                    return {
+                        key: plain[b.key] || null, hash: b.key.slice(0, 10),
+                        type: rec.type || "member", name: pr.name || rec.name || "",
+                        discord: pr.discordTag || pr.discord || "",
+                        devices: Object.keys(dd.devices).length,
+                        parent: rec.parent ? rec.parent.slice(0, 10) : null, parentName,
+                    };
                 }));
-                return json({ ok: true, keys: [...seedKeys, ...memberKeys, ...friendKeys] });
+                const seedKeys = (process.env.NEKOX_SEED_KEYS || "NEKX-NEKO-2025").split(",").map(k => ({ key: k.trim(), type: "member", seed: true, hash: keyHash(k.trim()).slice(0, 10) }));
+                const byType = t => out.filter(x => x.type === t && !seedKeys.some(s => s.hash === x.hash));
+                const members = byType("member"), friends = byType("friend"), admins = byType("admin");
+                return json({
+                    ok: true, members, friends, admins, seeds: seedKeys,
+                    keys: [...members, ...friends, ...admins, ...seedKeys], // flat list kept for older clients
+                    counts: { members: members.length, friends: friends.length, admins: admins.length, seeds: seedKeys.length },
+                });
+            }
+            if (route === "/admin/purgeprofile" && params.id) { // ?id=<member id/hash prefix> removes a ghost member card
+                const want = params.id.trim();
+                const prof = await blob("profiles");
+                const { blobs: ps } = await prof.list({ prefix: "profile:" });
+                const hit = ps.find(b => b.key.slice(8).startsWith(want));
+                if (!hit) return json({ ok: false, error: "profile not found" }, 404);
+                await prof.delete(hit.key);
+                return json({ ok: true, purged: hit.key.slice(8, 18) });
             }
             if (route === "/admin/kick" && params.did) { // ?did=<deviceId or 10-char prefix> unbinds that device
                 const want = params.did.trim();
