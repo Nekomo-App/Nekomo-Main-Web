@@ -503,10 +503,11 @@ export const handler = async (event) => {
                     const d = JSON.parse((await store.get(b.key)) || "{}");
                     const keyPart = b.key.split(":")[0];
                     const did = b.key.split(":")[1] || "?";
-                    const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), kh: "", devices: 0, lastSeen: 0, online: false, deviceIds: [] });
+                    const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), kh: "", devices: 0, lastSeen: 0, online: false, deviceIds: [], deviceKeys: {} });
                     g.kh = d.kh || g.kh;
                     g.devices += 1;
                     g.deviceIds.push(did.slice(0, 10));
+                    if (d.kh) g.deviceKeys[did.slice(0, 10)] = d.kh.slice(0, 10);
                     g.lastSeen = Math.max(g.lastSeen, d.lastSeen || 0);
                     if (now - (d.lastSeen || 0) < 240000) g.online = true;
                 }
@@ -528,6 +529,7 @@ export const handler = async (event) => {
                         byKey[`bound:${bind.keyHash}`] = g;
                     }
                     if (!g.deviceIds.includes(did.slice(0, 10))) { g.devices += 1; g.deviceIds.push(did.slice(0, 10)); }
+                    (g.deviceKeys ||= {})[did.slice(0, 10)] = bind.keyHash.slice(0, 10);
                 }
                 const groups = await Promise.all(Object.entries(byKey).map(async ([keyPart, g]) => {
                     const p = JSON.parse((await prof.get(`profile:${keyPart}`)) || "{}");
@@ -537,9 +539,10 @@ export const handler = async (event) => {
                 const people = {};
                 for (const g of groups) {
                     const pid = g.discordId ? `d:${g.discordId}` : (g.name ? `n:${g.name.toLowerCase()}` : `k:${g.id}`);
-                    const p = (people[pid] ||= { id: g.id, name: "", discord: "", devices: 0, keys: 0, lastSeen: 0, online: false, deviceIds: [] });
+                    const p = (people[pid] ||= { id: g.id, name: "", discord: "", devices: 0, keys: 0, lastSeen: 0, online: false, deviceIds: [], deviceKeys: {} });
                     p.devices += g.devices; p.keys += 1;
                     p.deviceIds.push(...g.deviceIds);
+                    Object.assign(p.deviceKeys, g.deviceKeys || {});
                     p.name = p.name || g.name; p.discord = p.discord || g.discord;
                     p.lastSeen = Math.max(p.lastSeen, g.lastSeen);
                     p.online = p.online || g.online;
@@ -648,7 +651,16 @@ export const handler = async (event) => {
                 const dev = await blob("devices"), pres = await blob("presence");
                 const { blobs } = await dev.list({ prefix: "devicekeys:" });
                 const hit = blobs.find(b => b.key === `devicekeys:${want}` || b.key.slice(11, 21) === want || b.key.endsWith(want));
-                if (!hit) return json({ ok: false, error: "device not found" }, 404);
+                if (!hit) { // no live binding — still purge orphaned presence rows for this did
+                    const { blobs: ps } = await pres.list();
+                    let purged = 0;
+                    for (const b of ps) {
+                        const d2 = b.key.split(":")[1] || "";
+                        if (d2 === want || d2.startsWith(want) || d2.slice(0, 10) === want.slice(0, 10)) { await pres.delete(b.key); purged++; }
+                    }
+                    if (purged) return json({ ok: true, did: want, purged });
+                    return json({ ok: false, error: "device not found" }, 404);
+                }
                 const did = hit.key.slice(11);
                 const bound = JSON.parse((await dev.get(hit.key)) || "null");
                 await dev.delete(hit.key);
