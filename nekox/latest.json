@@ -1,6 +1,6 @@
 {
-  "version": "1.0.13",
+  "version": "1.0.14",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Working sub/dub switching, private auto-resolved sources, built-in backup subtitle fetching, subtitle language + on/off preferences in setup and Settings.",
-  "versionCode": 12
+  "notes": "Incognito mode (no watch history or progress saved) and a default-off 18+ content filter, both in Settings -> Library. Friend-key sign-ins no longer receive a shareable friend code.",
+  "versionCode": 13
 }

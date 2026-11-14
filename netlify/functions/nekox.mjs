@@ -23,7 +23,7 @@ const PAGE = `query($page:Int,$per:Int,$sort:[MediaSort],$search:String,$genre:[
     media(sort:$sort,search:$search,genre_in:$genre,type:ANIME){
       id title{romaji english native} coverImage{extraLarge large}
       episodes status format seasonYear description nextAiringEpisode{episode}
-      siteUrl genres studios(isMain:true){edges{node{name}}} startDate{year}
+      siteUrl genres isAdult studios(isMain:true){edges{node{name}}} startDate{year}
     }
   }
 }`;
@@ -31,7 +31,7 @@ const PAGE = `query($page:Int,$per:Int,$sort:[MediaSort],$search:String,$genre:[
 const SCHEDULE = `query($page:Int,$per:Int){
   Page(page:$page,perPage:$per){
     airingSchedules(sort:TIME,notYetAired:true){
-      episode airingAt media{title{romaji english} coverImage{large} id}
+      episode airingAt media{title{romaji english} coverImage{large} id isAdult}
     }
   }
 }`;
@@ -40,7 +40,7 @@ const INFO = `query($id:Int){
   Media(id:$id,type:ANIME){
     id title{romaji english native} coverImage{extraLarge large}
     episodes status format seasonYear description nextAiringEpisode{episode}
-    siteUrl genres studios(isMain:true){edges{node{name}}} startDate{year}
+    siteUrl genres isAdult studios(isMain:true){edges{node{name}}} startDate{year}
   }
 }`;
 
