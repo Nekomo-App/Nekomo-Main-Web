@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NekōX — Pair a TV</title>
+<meta name="theme-color" content="#0c0508" />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#0c0508; color:#e4e4e7; font-family:'Inter',system-ui,sans-serif;
+         min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .card { width:100%; max-width:420px; margin:16px; padding:28px 24px;
+          background:#141416; border:1px solid #27272a; border-radius:20px; }
+  h1 { font-family:'Outfit',sans-serif; font-size:22px; margin:0 0 4px; }
+  .sub { color:#a1a1aa; font-size:13px; margin:0 0 20px; line-height:1.5; }
+  .code { font-family:'Outfit',sans-serif; font-size:30px; letter-spacing:8px; text-align:center;
+          color:#fff; background:#09090b; border:1px solid #3f3f46; border-radius:12px;
+          padding:10px 0; margin-bottom:18px; }
+  label { display:block; font-size:12px; color:#a1a1aa; margin:12px 0 5px; }
+  input { width:100%; box-sizing:border-box; background:#09090b; border:1px solid #3f3f46;
+          border-radius:12px; color:#fff; font-size:15px; padding:12px 14px; outline:none; }
+  input:focus { border-color:#8d2249; }
+  button { width:100%; margin-top:20px; padding:14px; border:0; border-radius:12px;
+           background:#8d2249; color:#fff; font-family:'Outfit',sans-serif; font-size:16px;
+           font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.5; }
+  .msg { margin-top:14px; font-size:14px; text-align:center; min-height:20px; }
+  .ok { color:#4ade80; }
+  .err { color:#f87171; }
+  .hint { margin-top:18px; font-size:12px; color:#71717a; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Sign in your TV</h1>
+  <p class="sub">You're approving a sign-in on an Android TV. Enter the invite key that belongs to you — it lands on the TV only.</p>
+  <div class="code" id="code"></div>
+  <label for="key">Invite key</label>
+  <input id="key" placeholder="NX-XXXXX" autocomplete="off" autocapitalize="characters" />
+  <label for="name">Display name</label>
+  <input id="name" placeholder="MarshMeadow" autocomplete="off" />
+  <label for="disc">Discord tag</label>
+  <input id="disc" placeholder="name#0000" autocomplete="off" />
+  <button id="go">Approve sign-in</button>
+  <div class="msg" id="msg"></div>
+  <p class="hint">The code comes from the QR on the TV screen and expires after 10 minutes. Member keys sign in on 3 devices max — the TV takes one slot.</p>
+</div>
+<script>
+  const code = (new URLSearchParams(location.search).get("c") || "").toUpperCase();
+  document.getElementById("code").textContent = code || "--------";
+  const msg = (t, ok) => { const el = document.getElementById("msg"); el.textContent = t; el.className = "msg " + (ok ? "ok" : "err"); };
+  document.getElementById("go").onclick = async () => {
+    const key = document.getElementById("key").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const discord = document.getElementById("disc").value.trim();
+    if (!code) return msg("No pairing code — scan the QR on the TV again.", false);
+    if (key.length < 4) return msg("Enter a valid invite key.", false);
+    if (!name || !discord) return msg("Name and Discord tag are required — same as signing in on the TV.", false);
+    const btn = document.getElementById("go"); btn.disabled = true;
+    try {
+      const r = await fetch("/api/anime/qr/approve", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, key, name, discord }) });
+      const d = await r.json();
+      if (d.ok) { msg("Approved — your TV is signing in now. You can close this page.", true); }
+      else msg(d.error === "code_expired" ? "That code expired — rescan the QR." : d.error === "bad_key" ? "That key isn't valid." : `Failed: ${d.error || r.status}`, false);
+    } catch (e) { msg("Network error — try again.", false); }
+    btn.disabled = false;
+  };
+</script>
+</body>
+</html>

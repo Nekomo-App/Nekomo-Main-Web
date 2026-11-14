@@ -252,15 +252,26 @@ export const handler = async (event) => {
                     await abuse.set(did, JSON.stringify({ keys: [...new Set([bound.keyHash, keyHash(key)])], at: Date.now() }));
                     return json({ ok: false, error: "key_abuse" });
                 }
-                if (!bound) await dev.set(dslot, JSON.stringify({ keyHash: keyHash(key), since: Date.now() }));
                 const slot = `devices:${keyHash(key)}`;
                 const d = JSON.parse((await dev.get(slot)) || "{\"devices\":{}}");
                 // Auto-prune devices silent for 14+ days (uninstalled/dead) before counting.
                 const cutoff = Date.now() - 14 * 86400000;
                 d.devices = Object.fromEntries(Object.entries(d.devices).filter(([, t]) => t > cutoff));
-                if (!(did in d.devices) && Object.keys(d.devices).length >= cap) {
-                    return json({ ok: false, error: "max_devices", max: cap });
+                if (!(did in d.devices)) {
+                    // The cap counts devices ONLINE right now (heartbeat <10 min): an
+                    // offline device, a sign-out, or an uninstalled app frees the slot.
+                    const pres = await blob("presence");
+                    let online = 0;
+                    for (const od of Object.keys(d.devices)) {
+                        const pr = JSON.parse((await pres.get(`${sha(key)}:${od}`)) || "null");
+                        if (pr && Date.now() - pr.lastSeen < 600000) online++;
+                    }
+                    if (online >= cap) {
+                        return json({ ok: false, error: "max_devices", max: cap });
+                    }
                 }
+                // Bind only after the cap check — a rejected attempt must not claim the device.
+                if (!bound) await dev.set(dslot, JSON.stringify({ keyHash: keyHash(key), since: Date.now() }));
                 d.devices[did] = Date.now();
                 await dev.set(slot, JSON.stringify(d));
             }
@@ -310,6 +321,22 @@ export const handler = async (event) => {
             if (isAdmin) return json({ ok: true, type: "admin", discordVerified });
             return json({ ok: true, type: "friend", discordVerified });
         }
+        if (route === "/devices") { // member asks "which devices are on my key?" ?key=&did=
+            const key = (params.key || "").trim(), did = (params.did || "").trim();
+            if (!key) return json({ ok: false }, 400);
+            const dev = await blob("devices"), pres = await blob("presence");
+            const d = JSON.parse((await dev.get(`devices:${keyHash(key)}`)) || "{\"devices\":{}}");
+            const out = [];
+            for (const [od, ts] of Object.entries(d.devices)) {
+                const pr = JSON.parse((await pres.get(`${sha(key)}:${od}`)) || "null");
+                out.push({
+                    id: od.slice(0, 12), online: !!(pr && Date.now() - pr.lastSeen < 600000),
+                    lastSeen: pr ? pr.lastSeen : ts, you: od === did,
+                });
+            }
+            out.sort((a, b) => (b.online - a.online) || (b.lastSeen - a.lastSeen));
+            return json({ ok: true, devices: out, online: out.filter(x => x.online).length });
+        }
         if (route === "/presence") { // member heartbeat: ?key=<invitekey>&did=<device>
             const key = (params.key || "").trim();
             const did = (params.did || "").trim();
@@ -320,6 +347,47 @@ export const handler = async (event) => {
             if (did && !bound) return json({ ok: false, kicked: true });
             const store = await blob("presence");
             await store.set(`${sha(key)}:${did || "dev"}`, JSON.stringify({ lastSeen: Date.now(), kh: keyHash(key) }));
+            return json({ ok: true });
+        }
+        // ---- QR pairing: a TV shows a QR code; the member's phone scans it and
+        // approves the sign-in (Disney+-style). The code is a one-shot 8-char
+        // token, valid for 10 minutes, that carries nothing until approved.
+        const QR_TTL = 600000;
+        if (route === "/qr/begin") { // TV starts a pairing session -> short code
+            const AL = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let code = "";
+            for (let i = 0; i < 8; i++) code += AL[crypto2.randomInt(AL.length)];
+            const store = await blob("qrpair");
+            await store.set(`pair:${code}`, JSON.stringify({ at: Date.now() }));
+            return json({ ok: true, code, url: `https://nekomoapp.netlify.app/pair?c=${code}`, exp: Date.now() + QR_TTL });
+        }
+        if (route === "/qr/poll") { // TV polls while the QR is on screen
+            const code = (params.code || "").trim().toUpperCase();
+            if (!code) return json({ ok: false }, 400);
+            const store = await blob("qrpair");
+            const rec = JSON.parse((await store.get(`pair:${code}`)) || "null");
+            if (!rec || Date.now() - rec.at > QR_TTL) return json({ ok: true, status: "expired" });
+            if (!rec.key) return json({ ok: true, status: "pending" });
+            await store.delete(`pair:${code}`); // one-shot: only the requesting TV reads the key
+            return json({ ok: true, status: "approved", key: rec.key, name: rec.name || "", discord: rec.discord || "" });
+        }
+        if (route === "/qr/approve" && event.httpMethod === "POST") { // phone approves a code
+            const b = body();
+            const code = (b.code || "").trim().toUpperCase();
+            const key = (b.key || "").trim();
+            if (!code || !key) return json({ ok: false, error: "code+key required" }, 400);
+            const store = await blob("qrpair");
+            const rec = JSON.parse((await store.get(`pair:${code}`)) || "null");
+            if (!rec || Date.now() - rec.at > QR_TTL) return json({ ok: false, error: "code_expired" });
+            // Only check the key exists — the TV's own /invite/validate call does
+            // the device-slot binding and abuse checks.
+            const inv = await blob("invites");
+            const known = JSON.parse((await inv.get(keyHash(key))) || "null");
+            if (!known) return json({ ok: false, error: "bad_key" });
+            await store.set(`pair:${code}`, JSON.stringify({
+                at: rec.at, key,
+                name: (b.name || "").slice(0, 40), discord: (b.discord || "").slice(0, 40),
+            }));
             return json({ ok: true });
         }
         if (route === "/signout") { // member signs out: frees their device slot
@@ -339,7 +407,7 @@ export const handler = async (event) => {
             const { u, p } = body();
             if (!u || !p) return json({ ok: false, error: "u/p required" }, 400);
             if (!STAFF_HASHES.includes(sha(`${p}:nx-staff-s1`))) return json({ ok: false }, 403);
-            const exp = Date.now() + 6 * 3600 * 1000;
+            const exp = Date.now() + 24 * 3600 * 1000;
             return json({ ok: true, user: u, token: `${u}.${exp}.${sha(`${u}:${exp}:${SECRET}`)}` });
         }
         // ---- Discord bot (interactions webhook — no websocket needed) ----
@@ -393,11 +461,32 @@ export const handler = async (event) => {
                 for (const b of blobs) {
                     const d = JSON.parse((await store.get(b.key)) || "{}");
                     const keyPart = b.key.split(":")[0];
-                    const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), kh: "", devices: 0, lastSeen: 0, online: false });
+                    const did = b.key.split(":")[1] || "?";
+                    const g = (byKey[keyPart] ||= { id: keyPart.slice(0, 12), kh: "", devices: 0, lastSeen: 0, online: false, deviceIds: [] });
                     g.kh = d.kh || g.kh;
                     g.devices += 1;
+                    g.deviceIds.push(did.slice(0, 10));
                     g.lastSeen = Math.max(g.lastSeen, d.lastSeen || 0);
                     if (now - (d.lastSeen || 0) < 240000) g.online = true;
+                }
+                // Devices bound at sign-in but not heartbeating right now only exist
+                // in the device bindings — merge them in, including keys that never
+                // heartbeated at all (fresh sign-ins, orphaned bindings).
+                const dev = await blob("devices");
+                const { blobs: bound } = await dev.list({ prefix: "devicekeys:" });
+                const byKh = {};
+                for (const g of Object.values(byKey)) if (g.kh) byKh[g.kh] = g;
+                for (const b of bound) {
+                    const did = b.key.slice(11);
+                    const bind = JSON.parse((await dev.get(b.key)) || "null");
+                    if (!bind?.keyHash) continue;
+                    let g = byKh[bind.keyHash];
+                    if (!g) {
+                        g = { id: bind.keyHash.slice(0, 12), kh: bind.keyHash, devices: 0, lastSeen: 0, online: false, deviceIds: [] };
+                        byKh[bind.keyHash] = g;
+                        byKey[`bound:${bind.keyHash}`] = g;
+                    }
+                    if (!g.deviceIds.includes(did.slice(0, 10))) { g.devices += 1; g.deviceIds.push(did.slice(0, 10)); }
                 }
                 const groups = await Promise.all(Object.entries(byKey).map(async ([keyPart, g]) => {
                     const p = JSON.parse((await prof.get(`profile:${keyPart}`)) || "{}");
@@ -407,8 +496,9 @@ export const handler = async (event) => {
                 const people = {};
                 for (const g of groups) {
                     const pid = g.discordId ? `d:${g.discordId}` : (g.name ? `n:${g.name.toLowerCase()}` : `k:${g.id}`);
-                    const p = (people[pid] ||= { id: g.id, name: "", discord: "", devices: 0, keys: 0, lastSeen: 0, online: false });
+                    const p = (people[pid] ||= { id: g.id, name: "", discord: "", devices: 0, keys: 0, lastSeen: 0, online: false, deviceIds: [] });
                     p.devices += g.devices; p.keys += 1;
+                    p.deviceIds.push(...g.deviceIds);
                     p.name = p.name || g.name; p.discord = p.discord || g.discord;
                     p.lastSeen = Math.max(p.lastSeen, g.lastSeen);
                     p.online = p.online || g.online;
@@ -419,16 +509,40 @@ export const handler = async (event) => {
             if (route === "/admin/keys") {
                 const store = await blob("invites");
                 if (route === "/admin/keys" && event.httpMethod === "DELETE") {
-                    await store.delete(params.hash || ""); return json({ ok: true });
+                    // ?hash=<full or 10-char prefix> — revoking deletes the invite so
+                    // new sign-ins fail, AND kicks every device already bound to the
+                    // key so the ban takes effect immediately, not at next sign-in.
+                    const want = (params.hash || "").trim();
+                    if (!want) return json({ ok: false, error: "hash required" }, 400);
+                    const { blobs: invs } = await store.list();
+                    const hit = invs.find(b => b.key === want || b.key.startsWith(want));
+                    if (!hit) return json({ ok: false, error: "key not found" }, 404);
+                    await store.delete(hit.key);
+                    const dev = await blob("devices"), pres = await blob("presence");
+                    const dd = JSON.parse((await dev.get(`devices:${hit.key}`)) || "{\"devices\":{}}");
+                    for (const d of Object.keys(dd.devices)) await dev.delete(`devicekeys:${d}`);
+                    await dev.delete(`devices:${hit.key}`);
+                    const { blobs: ps } = await pres.list();
+                    for (const b of ps) {
+                        const rec = JSON.parse((await pres.get(b.key)) || "null");
+                        if (rec?.kh === hit.key) await pres.delete(b.key);
+                    }
+                    return json({ ok: true, revoked: hit.key.slice(0, 10) });
                 }
                 if (params.mint) { // ?mint=name -> returns the plaintext key once
                     const newKey = `NX-${crypto2.randomBytes(3).toString("hex").toUpperCase()}`;
                     await store.set(keyHash(newKey), JSON.stringify({ name: params.mint, at: Date.now() }));
                     return json({ ok: true, key: newKey });
                 }
-                if (params.resetDevices) { // ?resetDevices=<fullkeyhash> clears a key's 3-device slots
+                if (params.resetDevices) { // ?resetDevices=<keyhash or 10-char prefix> frees a key's device slots
+                    const want = (params.resetDevices || "").trim();
+                    const { blobs: invs } = await store.list();
+                    const hit = invs.find(b => b.key === want || b.key.startsWith(want));
+                    if (!hit) return json({ ok: false, error: "key not found" }, 404);
                     const dev = await blob("devices");
-                    await dev.delete(`devices:${params.resetDevices}`);
+                    const dd = JSON.parse((await dev.get(`devices:${hit.key}`)) || "{\"devices\":{}}");
+                    for (const d of Object.keys(dd.devices)) await dev.delete(`devicekeys:${d}`);
+                    await dev.delete(`devices:${hit.key}`);
                     return json({ ok: true });
                 }
                 const { blobs } = await store.list();
@@ -487,6 +601,27 @@ export const handler = async (event) => {
                 const friendKeys = await Promise.all(blobs.map(async (b) => ({ key: await fr.get(b.key), parent: b.key.slice(7, 17), type: "friend" })));
                 const seedKeys = (process.env.NEKOX_SEED_KEYS || "NEKX-NEKO-2025").split(",").map(k => ({ key: k.trim(), type: "member" }));
                 return json({ ok: true, keys: [...seedKeys, ...friendKeys] });
+            }
+            if (route === "/admin/kick" && params.did) { // ?did=<deviceId or 10-char prefix> unbinds that device
+                const want = params.did.trim();
+                const dev = await blob("devices"), pres = await blob("presence");
+                const { blobs } = await dev.list({ prefix: "devicekeys:" });
+                const hit = blobs.find(b => b.key === `devicekeys:${want}` || b.key.slice(11, 21) === want || b.key.endsWith(want));
+                if (!hit) return json({ ok: false, error: "device not found" }, 404);
+                const did = hit.key.slice(11);
+                const bound = JSON.parse((await dev.get(hit.key)) || "null");
+                await dev.delete(hit.key);
+                if (bound) {
+                    const slot = `devices:${bound.keyHash}`;
+                    const d = JSON.parse((await dev.get(slot)) || "{\"devices\":{}}");
+                    delete d.devices[did];
+                    await dev.set(slot, JSON.stringify(d));
+                    const { blobs: all } = await pres.list();
+                    for (const b of all) if (b.key.endsWith(`:${did}`)) await pres.delete(b.key);
+                }
+                const ab = await blob("abuse");
+                await ab.delete(did);
+                return json({ ok: true, did });
             }
             if (route === "/admin/kick") { // ?member=<presenceId> kicks that device; &all=1 kicks every device on the key
                 const mid = (params.member || "").trim();

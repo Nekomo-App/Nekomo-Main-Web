@@ -36,7 +36,7 @@
 <div id="board" class="hidden">
   <div class="flex" style="justify-content:space-between;align-items:baseline">
     <h1>Members</h1>
-    <button onclick="sessionStorage.removeItem('nx_staff');location.reload()">Sign out</button>
+    <button onclick="staffSignout()">Sign out</button>
   </div>
   <div id="statbar" class="flex" style="gap:10px;margin-bottom:16px;flex-wrap:wrap"></div>
   <div class="card" id="members"></div>
@@ -74,6 +74,12 @@ async function staffSignin() {
 async function show() {
   login.classList.add("hidden"); board.classList.remove("hidden");
   const m = await api("/admin/members");
+  if (m && m.ok === false) { // staff token expired/invalid — back to sign-in
+    sessionStorage.removeItem("nx_staff");
+    board.classList.add("hidden"); login.classList.remove("hidden");
+    document.getElementById('loginMsg').textContent = "Session expired — sign in again.";
+    return;
+  }
   const ak = await api("/admin/allkeys");
   const k = await api("/admin/keys");
   const ab = await api("/admin/abuse");
@@ -84,7 +90,7 @@ async function show() {
   ].map(([l, v]) => `<div class="card" style="padding:10px 16px;margin:0"><div style="font-size:20px;font-weight:700">${v}</div><div class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:1px">${l}</div></div>`).join("");
   const sorted = (m.members || []).slice().sort((a, b) => (b.online ? 1 : 0) - (a.online ? 1 : 0));
   members.innerHTML = sorted.length ? sorted.map(x =>
-    `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"} · ${x.devices || 1} device${(x.devices || 1) > 1 ? "s" : ""}${(x.keys || 1) > 1 ? ` · ${x.keys} keys` : ""}</span></span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
+    `<div class="row"><span>${x.name ? `<b>${x.name}</b>` : "—"} <span class="mono">${x.id}…</span><br><span class="muted">${x.discord || "no discord"} · ${x.devices || 1} device${(x.devices || 1) > 1 ? "s" : ""}${(x.keys || 1) > 1 ? ` · ${x.keys} keys` : ""}</span>${(x.deviceIds || []).length ? `<br><span class="muted">devices: ${x.deviceIds.map(d => `<button class="mono" style="padding:2px 8px;font-size:.72rem" onclick="kick('${d}','${(x.name || "member").replace(/'/g, "")}')">${d} ✕</button>`).join(" ")}</span>` : ""}</span><span><span class="dot ${x.online ? "on" : "off"}"></span>${x.online ? "online" : "offline"}</span></div>`
   ).join("") : '<p class="muted">No members online yet — heartbeats appear after first app launch.</p>';
   allkeys.innerHTML = (ak.keys || []).map(x =>
     `<div class="row"><span class="mono">${x.key}</span><span class="muted">${x.type}</span></div>`
@@ -94,14 +100,35 @@ async function show() {
   ).join("") : '<p class="muted">No flagged devices.</p>';
   const ks = (k.keys || []).slice().sort((a, b) => (b.used ? 1 : 0) - (a.used ? 1 : 0));
   keys.innerHTML = ks.map(x =>
-    `<div class="row"><span><span class="dot ${x.used ? "on" : "off"}"></span><span class="mono">${x.hash}…</span> <span class="muted">${x.type}${x.name ? "· " + x.name : ""}${x.discord ? "· " + x.discord : ""} · ${x.devices} dev</span></span><button onclick="revoke('${x.hash}')">Revoke</button></div>`
+    `<div class="row"><span><span class="dot ${x.used ? "on" : "off"}"></span><span class="mono">${x.hash}…</span> <span class="muted">${x.type}${x.name ? "· " + x.name : ""}${x.discord ? "· " + x.discord : ""} · ${x.devices} dev</span></span><span class="flex">${(x.devices || 0) > 0 ? `<button onclick="resetDevs('${x.hash}',${x.devices})">Reset</button>` : ""}<button onclick="revoke('${x.hash}')">Revoke</button></span></div>`
   ).join("");
+}
+function staffSignout() {
+  if (!confirm("Sign out of the staff dashboard?")) return;
+  sessionStorage.removeItem("nx_staff"); location.reload();
 }
 async function mint() {
   const d = await api(`/admin/keys?mint=${encodeURIComponent(mintName.value || "friend")}`);
   if (d.key) { newKey.textContent = `Share once: ${d.key}`; show(); }
 }
-async function revoke(h) { await api(`/admin/keys?hash=${h}`, { method: "DELETE" }); show(); }
+async function kick(did, who) {
+  if (!confirm(`Kick device ${did} from ${who}? They're signed out immediately.`)) return;
+  const d = await api(`/admin/kick?did=${encodeURIComponent(did)}`);
+  if (d.ok === false) alert(d.error || "Kick failed — device not found.");
+  show();
+}
+async function resetDevs(h, n) {
+  if (!confirm(`Free all ${n} device slot(s) on key ${h}…? Signed-in devices are signed out.`)) return;
+  const d = await api(`/admin/keys?resetDevices=${encodeURIComponent(h)}`);
+  if (d.ok === false) alert(d.error || "Reset failed.");
+  show();
+}
+async function revoke(h) {
+  if (!confirm(`Revoke key ${h}…? This permanently bans it — every signed-in device is kicked.`)) return;
+  const d = await api(`/admin/keys?hash=${h}`, { method: "DELETE" });
+  if (d.ok === false) alert(d.error || "Revoke failed — key not found.");
+  show();
+}
 if (tok()) show();
 </script>
 </body>

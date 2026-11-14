@@ -1,6 +1,6 @@
 {
-  "version": "1.0.7",
+  "version": "1.0.8",
   "apkUrl": "https://nekomoapp.netlify.app/nekox/nekox-beta.apk",
-  "notes": "Live presence heartbeat for staff views, landscape safe-area fixes",
-  "versionCode": 6
+  "notes": "TV QR sign-in, per-device kick + real key revoke for staff, sign-out confirmations, online device slots",
+  "versionCode": 7
 }
