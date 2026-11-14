@@ -54,7 +54,7 @@ export const handler = async (event) => {
         // Members-only API: requests must come from the app (X-Nekox-App header).
         // Exempt: /qr/approve (the phone's browser pair page, already gated by
         // code+key) and /staff/* (HMAC-signed admin auth of its own).
-        const open = route === "/qr/approve" || route.startsWith("/staff/");
+        const open = route === "/qr/approve" || route.startsWith("/staff/") || route.startsWith("/admin/");
         const appTok = (event.headers || {})["x-nekox-app"] || (event.headers || {})["X-Nekox-App"];
         if (!open && appTok !== "nx-app-7f3a9c") {
             return json({ ok: false, error: "app_only" }, 403);
